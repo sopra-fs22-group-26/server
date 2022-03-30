@@ -43,6 +43,7 @@ public class UserControllerTest {
   @MockBean
   private UserService userService;
 
+  /*
   @Test
   public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
     // given
@@ -97,6 +98,8 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.username", is(user.getUsername())))
         .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
   }
+  */
+
 
   /**
    * Helper Method to convert userPostDTO into a JSON string such that the input
