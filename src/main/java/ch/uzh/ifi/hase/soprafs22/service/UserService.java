@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.service;
 
-import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs22.util.passwordHasher;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
 import org.slf4j.Logger;
@@ -26,56 +26,78 @@ import java.util.UUID;
 @Transactional
 public class UserService {
 
-  private final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  @Autowired
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
+    private final passwordHasher passwordHasher = new passwordHasher();
 
-  public List<User> getUsers() {
+    @Autowired
+    public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public List<User> getUsers() {
     return this.userRepository.findAll();
   }
 
-  public User createUser(User newUser) {
-    newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.OFFLINE);
+    /**
+     * Used by: POST /users
+     * @param newUser
+     * @return the created user
+     */
+    public User createUser(User newUser) {
 
-    checkIfUserExists(newUser);
+        checkIfUserExists(newUser);
 
-    // saves the given entity but data is only persisted in the database once
-    // flush() is called
-    newUser = userRepository.save(newUser);
-    userRepository.flush();
+        String plainPassword = newUser.getPassword();
+        String hashedPassword = passwordHasher.hashFunction(plainPassword);
+        newUser.setPassword(hashedPassword);
 
-    log.debug("Created Information for User: {}", newUser);
-    return newUser;
+        java.util.Date creationDate = java.util.Calendar.getInstance().getTime();
+        newUser.setCreationDate(creationDate);
+
+        newUser.setLoggedIn(true);
+
+        newUser.setToken(UUID.randomUUID().toString());
+
+        // saves the given entity but data is only persisted in the database once
+        // flush() is called
+        newUser = userRepository.save(newUser);
+        userRepository.flush();
+
+        log.debug("Created Information for User: {}", newUser);
+        return newUser;
   }
 
-  /**
-   * This is a helper method that will check the uniqueness criteria of the
-   * username and the name
-   * defined in the User entity. The method will do nothing if the input is unique
-   * and throw an error otherwise.
-   *
-   * @param userToBeCreated
-   * @throws org.springframework.web.server.ResponseStatusException
-   * @see User
-   */
-  private void checkIfUserExists(User userToBeCreated) {
-    User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-    User userByName = userRepository.findByName(userToBeCreated.getName());
+    /**
+    * This is a helper method that will check the uniqueness criteria of the
+    * username and the name
+    * defined in the User entity. The method will do nothing if the input is unique
+    * and throw an error otherwise.
+    *
+    * @param userToBeCreated
+    * @throws org.springframework.web.server.ResponseStatusException
+    * @see User
+    */
+    private void checkIfUserExists(User userToBeCreated) {
 
-    String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-    if (userByUsername != null && userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          String.format(baseErrorMessage, "username and the name", "are"));
-    } else if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
-    } else if (userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
+        User userByUsername = this.userRepository.findByUsername(userToBeCreated.getUsername());
+        User userByEmailAddress = this.userRepository.findByEmailAddress(userToBeCreated.getEmailAddress());
+
+        String baseErrorMessage = "The %s provided %s already used!";
+
+        if (userByUsername != null && userByEmailAddress != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            String.format(baseErrorMessage, "username and the email address", "are"));
+        }
+        else if (userByUsername != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
+        }
+        else if (userByEmailAddress != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "email address", "is"));
+        }
+
     }
-  }
+
 }

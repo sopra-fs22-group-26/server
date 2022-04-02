@@ -50,7 +50,7 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String token;
 
-    @Column(columnDefinition = "0")
+    @Column(nullable = false)
     private int score;
 
     public void setId(long id) { this.id = id; }
