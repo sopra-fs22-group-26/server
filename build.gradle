@@ -7,7 +7,7 @@ plugins {
     id "org.sonarqube" version "3.1.1"
 }
 
-group 'ch.uzh.ifi.hase'
+group 'ch.uzh.ifi.group26'
 version '1.0.0'
 
 java {
@@ -28,7 +28,7 @@ repositories {
 }
 
 springBoot {
-    mainClass.set('ch.uzh.ifi.hase.soprafs22.Application')
+    mainClass.set('ch.uzh.ifi.group26.scrumblebee.Application')
 }
 
 dependencies {
@@ -47,6 +47,9 @@ dependencies {
     }
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+
+    // implementation 'org.springframework.boot:spring-boot-starter-security:2.6.5'
+
 }
 
 bootJar {
