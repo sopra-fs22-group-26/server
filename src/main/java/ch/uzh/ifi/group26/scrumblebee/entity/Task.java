@@ -1,7 +1,7 @@
-package ch.uzh.ifi.hase.soprafs22.entity;
+package ch.uzh.ifi.group26.scrumblebee.entity;
 
-import ch.uzh.ifi.hase.soprafs22.constant.TaskPriority;
-import ch.uzh.ifi.hase.soprafs22.constant.TaskStatus;
+import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
+import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -89,7 +89,7 @@ public class Task implements Serializable {
 
     /***/
 
-    public TaskPriority getTaskPriority() { return TaskPriority; }
+    public TaskPriority getTaskPriority() { return priority; }
 
     public void setTaskPriority(TaskPriority priority) { this.priority = priority; }
 

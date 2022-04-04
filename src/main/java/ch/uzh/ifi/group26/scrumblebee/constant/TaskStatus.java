@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs22.constant;
+package ch.uzh.ifi.group26.scrumblebee.constant;
 
 public enum TaskStatus {
   ACTIVE,
