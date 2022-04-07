@@ -3,6 +3,7 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
+import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,37 @@ public class TaskService {
     @Autowired
     public TaskService(@Qualifier("taskRepository") TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
+    }
+
+    public List<Task> getTasks() {
+        return this.taskRepository.findAll();
+    }
+
+     /**
+     * Used by: POST /tasks
+     * @param newTask
+     * @return the created task
+     */
+    public Task createTask(Task newTask) {
+
+        newTask.setTaskStatus(TaskStatus.ACTIVE);
+
+        checkIfTaskIdExists(newTask);
+
+        log.debug(newTask.getDueDate());
+        log.debug(newTask.getTitle());
+        log.debug(newTask.getDescription());
+        log.debug(newTask.getEstimate());
+        log.debug(newTask.getTaskPriority());
+        log.debug(newTask.getTaskStatus());
+
+        // saves the given entity but data is only persisted in the database once
+        // flush() is called
+        newTask = taskRepository.save(newTask);
+        taskRepository.flush();
+
+        log.debug("Created Information for Task: {}", newTask);
+        return newTask;
     }
 
     /**

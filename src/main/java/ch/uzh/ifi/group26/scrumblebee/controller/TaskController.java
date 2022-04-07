@@ -32,9 +32,46 @@ public class TaskController {
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/
 
+    /**
+     * Type: GET
+     * URL: /tasks
+     * Body: none
+     * @return list<Task>
+     */
+    @GetMapping("/tasks")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<TaskGetDTO> getAllTasks() {
+        List<Task> tasks = taskService.getTasks();
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+        for (Task task : tasks) {
+            taskGetDTOs.add(TaskMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
+    }
 
 
     /*------------------------------------- POST requests ----------------------------------------------------------*/
+
+    /**
+     * Type: POST
+     * URL: /tasks
+     * Body: dueDate, title, description, estimate, priority, status
+     * Protection: check if request is coming from the client (check for special token)
+     * @return Task
+     */
+    @PostMapping("/tasks")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public TaskPostDTO createTask(@RequestBody TaskPostDTO taskPostDTO){
+        // convert API task to internal representation
+        Task input = TaskMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
+        // create task
+        Task createdTask = taskService.createTask(input);
+        //convert internal representation of task back to API
+        return TaskMapper.INSTANCE.convertEntityToTaskGetDTO(createdTask);
+    }
+
 
 
     /*------------------------------------- PUT requests -----------------------------------------------------------*/

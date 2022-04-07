@@ -19,7 +19,7 @@ public interface TaskMapper {
     @Mapping(source = "priority", target = "priority")
     @Mapping(source = "location", target = "location")
     @Mapping(source = "status", target = "status")
-    @Mapping(source = "score", target = "score")
+    @Mapping(target = "score", ignore = true)                 // changed from " source target" to "target ignore=true"
     Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
 
     @Mapping(source = "task_id", target = "task_id")

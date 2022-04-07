@@ -42,7 +42,7 @@ public class Task implements Serializable {
     @Column(nullable = false)
     private TaskPriority priority;
 
-    @Column(nullable = false)
+    @Column
     private String location;
 
     @Column(nullable = false)
