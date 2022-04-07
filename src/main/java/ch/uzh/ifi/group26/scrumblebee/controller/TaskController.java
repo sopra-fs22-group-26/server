@@ -8,6 +8,7 @@ import ch.uzh.ifi.group26.scrumblebee.rest.mapper.TaskMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -84,7 +85,7 @@ public class TaskController {
      * @return User
      */
     @PutMapping("/tasks/{taskId}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public TaskGetDTO updateTask(@RequestBody TaskPostDTO taskPostDTO, @PathVariable long taskId) {
         Task changesTask = TaskMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);

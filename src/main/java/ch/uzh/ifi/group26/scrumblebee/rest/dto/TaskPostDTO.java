@@ -41,9 +41,9 @@ public class TaskPostDTO {
 
     public String getDescription() { return description; }
 
-    public void setEstimate(int estimate) { this.estimate = estimate; }
+    public void setEstimate(Integer estimate) { this.estimate = estimate; }
 
-    public int getEstimate() { return estimate; }
+    public Integer getEstimate() { return estimate; }
 
     public void setTaskPriority(TaskPriority priority) { this.priority = priority; }
 

@@ -37,7 +37,7 @@ public class Task implements Serializable {
     private String description;
 
     @Column(nullable = false)
-    private int estimate;
+    private Integer estimate;
 
     @Column(nullable = false)
     private TaskPriority priority;
@@ -83,9 +83,9 @@ public class Task implements Serializable {
 
     /***/
 
-    public int getEstimate() { return estimate; }
+    public Integer getEstimate() { return estimate; }
 
-    public void setEstimate(int estimate) { this.estimate = estimate; }
+    public void setEstimate(Integer estimate) { this.estimate = estimate; }
 
     /***/
 
