@@ -1,7 +1,6 @@
 package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
-import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,10 +55,9 @@ public class TaskService {
         if(changesTask.getTaskPriority()!=null){
             taskById.setTaskPriority(changesTask.getTaskPriority());
         }
-//        ??????? int cannot check null, could we change int to Integer?
-//        if(changesTask.getEstimate()!=null){
-//            taskById.setEstimate(changesTask.getEstimate());
-//        }
+        if(changesTask.getEstimate()!=null){
+            taskById.setEstimate(changesTask.getEstimate());
+        }
         if(changesTask.getLocation()!=null){
             taskById.setLocation(changesTask.getLocation());
         }
