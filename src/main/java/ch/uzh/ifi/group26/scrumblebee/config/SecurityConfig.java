@@ -1,46 +1,43 @@
 package ch.uzh.ifi.group26.scrumblebee.config;
 
-
 /*
-@Configuration
+import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static java.lang.String.format;
+
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${spring.security.signing-key")
-    private String signingKey;
+    private final UserRepository userRepo;
 
-    @Value("${spring.security.encoding-strength")
-    private int encodingStrength;
-
-    @Value("${spring.security.security-realm")
-    private String securityRealm;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Bean
-    @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
+    public SecurityConfig(UserRepository userRepository) {
+        this.userRepo = userRepository;
     }
 
+    // configure authentication manager with correct provider
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        //auth.userDetailsService();
+    }
+
+    // configure web security for URL protection
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .httpBasic()
-                .realmName(securityRealm)
-                .and()
-                .csrf()
-                .disable();
+
     }
 
     @Bean
-    public JwtAccessTokenConverter accessTokenConverter
-
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }
 
