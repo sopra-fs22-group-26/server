@@ -1,6 +1,9 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.mapper;
 
+import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskGetDTO;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
 import org.mapstruct.*;
@@ -46,3 +49,4 @@ public interface DTOMapper {
   UserGetDTO convertEntityToUserGetDTO(User user);
 
 }
+
