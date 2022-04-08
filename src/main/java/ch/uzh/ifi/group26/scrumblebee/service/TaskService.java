@@ -103,6 +103,18 @@ public class TaskService {
         return taskById;
     }
 
+
+    /**
+     * Used by: DELETE /tasks/{taskId}
+     * @param taskId
+     * @return the created user
+     */
+    public void deleteTask(long taskId) {
+        Task taskById = checkIfTaskIdExist(taskId);
+
+        taskRepository.delete(taskById);
+    }
+
     //check is task exist by id
     private Task checkIfTaskIdExist(long taskId) {
         Task taskById = taskRepository.findByTaskId(taskId);

@@ -79,7 +79,7 @@ public class TaskController {
 
     /**
      * Type: PUT
-     * URL: /
+     * URL: /tasks/{taskId}
      * Body: username, name*, email, password
      * Protection: check if request is coming from the client (check for special token)
      * @return User
@@ -95,5 +95,19 @@ public class TaskController {
     }
     /*------------------------------------- DELETE requests --------------------------------------------------------*/
 
+    /**
+     * Type: DELETE
+     * URL: /tasks/{taskId}
+     * Body: username, name*, email, password
+     * Protection: check if request is coming from the client (check for special token)
+     * @return User
+     */
+    @DeleteMapping("/tasks/{taskId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<Long> deleteTask(@PathVariable long taskId) {
+        taskService.deleteTask(taskId);
 
+        return new ResponseEntity<>(taskId, HttpStatus.OK);
+    }
 }
