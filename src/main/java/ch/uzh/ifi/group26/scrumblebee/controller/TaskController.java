@@ -64,7 +64,7 @@ public class TaskController {
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public TaskPostDTO createTask(@RequestBody TaskPostDTO taskPostDTO){
+    public TaskGetDTO createTask(@RequestBody TaskPostDTO taskPostDTO){
         // convert API task to internal representation
         Task input = TaskMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
         // create task

@@ -46,16 +46,16 @@ public class TaskService {
      */
     public Task createTask(Task newTask) {
 
-        newTask.setTaskStatus(TaskStatus.ACTIVE);
+        newTask.setStatus(TaskStatus.ACTIVE);
 
-        checkIfTaskIdExists(newTask);
+        checkIfTaskIdExist(newTask.getTask_id());
 
-        log.debug(newTask.getDueDate());
+        log.debug(newTask.getDueDate().toString());
         log.debug(newTask.getTitle());
         log.debug(newTask.getDescription());
-        log.debug(newTask.getEstimate());
-        log.debug(newTask.getTaskPriority());
-        log.debug(newTask.getTaskStatus());
+        log.debug(newTask.getEstimate().toString());
+        log.debug(newTask.getPriority().toString());
+        log.debug(newTask.getStatus().toString());
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
@@ -84,8 +84,8 @@ public class TaskService {
         if(changesTask.getDueDate()!=null){
             taskById.setDueDate(changesTask.getDueDate());
         }
-        if(changesTask.getTaskPriority()!=null){
-            taskById.setTaskPriority(changesTask.getTaskPriority());
+        if(changesTask.getPriority()!=null){
+            taskById.setPriority(changesTask.getPriority());
         }
         if(changesTask.getEstimate()!=null){
             taskById.setEstimate(changesTask.getEstimate());

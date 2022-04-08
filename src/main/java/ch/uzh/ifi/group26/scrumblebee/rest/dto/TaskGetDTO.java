@@ -46,17 +46,26 @@ public class TaskGetDTO {
 
     public Integer getEstimate() { return estimate; }
 
-    public void setTaskPriority(TaskPriority priority) { this.priority = priority; }
+    public void setPriority(TaskPriority priority) { this.priority = priority; }
 
-    public TaskPriority getTaskPriority() { return priority; }
+    public TaskPriority getPriority() { return priority; }
 
     public void setLocation(String location) { this.location = location; }
 
     public String getLocation() { return location; }
 
-    public void setTaskStatus(TaskStatus status) { this.status = status; }
+    public void setStatus(TaskStatus status) { this.status = status; }
 
-    public TaskStatus getTaskStatus() { return status; }
+    public String getStatus() {
+        String returnStatus = "";
+        switch (status) {
+            case ACTIVE -> returnStatus = "ACTIVE";
+            case ARCHIVED -> returnStatus = "ARCHIVED";
+            case REPORTED -> returnStatus = "REPORTED";
+            case COMPLETED -> returnStatus = "COMPLETED";
+        }
+        return returnStatus;
+    }
 
     public void setScore(int score) { this.score = score; }
 

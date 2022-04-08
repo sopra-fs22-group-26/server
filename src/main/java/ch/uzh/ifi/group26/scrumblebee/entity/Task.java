@@ -89,9 +89,9 @@ public class Task implements Serializable {
 
     /***/
 
-    public TaskPriority getTaskPriority() { return priority; }
+    public TaskPriority getPriority() { return priority; }
 
-    public void setTaskPriority(TaskPriority priority) { this.priority = priority; }
+    public void setPriority(TaskPriority priority) { this.priority = priority; }
 
      /***/
 
@@ -100,9 +100,9 @@ public class Task implements Serializable {
     public void setLocation(String location) { this.location = location; }
 
      /***/
-    public TaskStatus getTaskStatus() { return status; }
+    public TaskStatus getStatus() { return status; }
 
-    public void setTaskStatus(TaskStatus status) { this.status = status; }
+    public void setStatus(TaskStatus status) { this.status = status; }
 
     /***/
 
