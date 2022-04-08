@@ -6,6 +6,7 @@ public class UserPostDTO {
     private String username;
     private String emailAddress;
     private String password;
+    private String token;
 
     public void setName(String name) {
         this.name = name;
@@ -31,4 +32,11 @@ public class UserPostDTO {
 
     public String getPassword() { return password; }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }
