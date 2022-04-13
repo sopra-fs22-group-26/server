@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User Controller
@@ -56,16 +57,16 @@ public class UserController {
      * URL: /users
      * Body: username, name*, email, password
      * Protection: check if request is coming from the client (check for special token)
+     * => POST: /register?accessToken=special_token
      * @return User
      */
-    @PostMapping("/users")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         User createdUser = userService.createUser(userInput);
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
-
     }
 
     /*------------------------------------- PUT requests -----------------------------------------------------------*/

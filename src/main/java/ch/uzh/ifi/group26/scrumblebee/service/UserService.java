@@ -1,6 +1,9 @@
 package ch.uzh.ifi.group26.scrumblebee.service;
 
+import ch.uzh.ifi.group26.scrumblebee.constant.RoleType;
+import ch.uzh.ifi.group26.scrumblebee.entity.Role;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.repository.RoleRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * User Service
@@ -28,6 +30,9 @@ public class UserService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     public UserService(@Qualifier("userRepository") UserRepository userRepository) {
@@ -53,10 +58,11 @@ public class UserService {
         java.util.Date creationDate = java.util.Calendar.getInstance().getTime();
         newUser.setCreationDate(creationDate);
 
-        log.debug(newUser.getEmailAddress());
-        log.debug(newUser.getName());
-        log.debug(newUser.getUsername());
-        log.debug(newUser.getPassword());
+        Set<Role> roles = new HashSet<>();
+        Optional<Role> userRole = roleRepository.findByRoleName(RoleType.ROLE_USER);
+        userRole.ifPresent(roles::add);
+
+        newUser.setRoles(roles);
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
@@ -79,16 +85,16 @@ public class UserService {
     */
     private void checkIfUserExists(User userToBeCreated) {
 
-        User userByUsername = this.userRepository.findByUsername(userToBeCreated.getUsername());
+        Optional<User> userByUsername = this.userRepository.findByUsername(userToBeCreated.getUsername());
         User userByEmailAddress = this.userRepository.findByEmailAddress(userToBeCreated.getEmailAddress());
 
         String baseErrorMessage = "The %s provided %s already used!";
 
-        if (userByUsername != null && userByEmailAddress != null) {
+        if (userByUsername.isPresent() && userByEmailAddress != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
             String.format(baseErrorMessage, "username and the email address", "are"));
         }
-        else if (userByUsername != null) {
+        else if (userByUsername.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
         }
         else if (userByEmailAddress != null) {
