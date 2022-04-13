@@ -71,7 +71,41 @@ public class UserService {
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
-  }
+    }
+
+
+    /**
+     * Handles login procedure
+     * @param currentUser
+     * @return User
+     */
+    public User verifyUser(User currentUser) {
+        User veryfiedUser = checkCredentials(currentUser);
+        // No exception => login was successful
+        veryfiedUser.setLoggedIn(true);
+        return veryfiedUser;
+    }
+
+
+    /**
+     * Handles logout procedure. User is identified by token.
+     * @param currentUser
+     * @return
+     */
+    public User logoutUser(User currentUser) {
+        String token = currentUser.getToken();
+        User repUser = userRepository.findByToken(token);
+
+        String errorMessage = "Error: Token does not match any user in the repository. Logout failed.";
+        if (repUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
+        }
+        // No exception => logout was successful
+        repUser.setLoggedIn(false);
+        return repUser;
+    }
+
+
 
     /**
     * This is a helper method that will check the uniqueness criteria of the
@@ -102,5 +136,30 @@ public class UserService {
         }
 
     }
+
+
+    /**
+     * This is a helper function that will check credentials of user who wants to log in
+     * and throws an error if username or password does not match any user
+     * @param userToCheck
+     */
+    private User checkCredentials(User userToCheck) {
+        String providedUsername = userToCheck.getUsername();
+        String providedPassword = userToCheck.getPassword();
+
+        User userByUsername = userRepository.findByUsername(providedUsername);
+        String errorMessage = "Error: The username/password combination did not match any user. Login failed.";
+
+        if (userByUsername == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, errorMessage);
+        }
+        else {
+            if (!providedPassword.equals(userByUsername.getPassword())) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, errorMessage);
+            }
+        }
+        return userByUsername;
+    }
+
 
 }

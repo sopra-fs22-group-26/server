@@ -30,7 +30,7 @@ public interface DTOMapper {
   @Mapping(target = "birthDate", ignore = true)
   @Mapping(target = "creationDate", ignore = true)
   @Mapping(target = "loggedIn", ignore = true)
-  @Mapping(target = "token", ignore = true)
+  @Mapping(source = "token", target = "token")
   @Mapping(target = "score", ignore = true)
   @Mapping(target = "roles", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);

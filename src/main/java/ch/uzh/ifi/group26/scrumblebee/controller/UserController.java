@@ -53,6 +53,40 @@ public class UserController {
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
     /**
+     * Handles login process. User is identified by username and password.
+     * Type: POST
+     * URL: /login
+     * Body: username, password
+     * @return User
+     */
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO verifyCredentials(@RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        User loggedInUser = userService.verifyUser(userInput);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loggedInUser);
+    }
+
+
+    /**
+     * Handles the logout process. User is identified by their token.
+     * Type: POST
+     * URL: /logout
+     * Body: token
+     * @return
+     */
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public UserGetDTO logOutUser(@RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        User loggedInUser = userService.logoutUser(userInput);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loggedInUser);
+    }
+
+
+    /**
      * Type: POST
      * URL: /users
      * Body: username, name*, email, password
