@@ -4,11 +4,15 @@ import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
+import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
-import org.springframework.http.HttpHeaders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +27,18 @@ import java.util.List;
 @RestController
 public class UserController {
 
+    private final Logger log = LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtils jwtUils;
+
+    @Autowired
+    PasswordEncoder encoder;
 
     UserController(UserService userService) { this.userService = userService; }
 
@@ -52,54 +67,20 @@ public class UserController {
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
     /**
-     * Handles login process. User is identified by username and password.
-     * Type: POST
-     * URL: /login
-     * Body: username, password
-     * @return User
-     */
-    @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public UserGetDTO verifyCredentials(@RequestBody UserPostDTO userPostDTO) {
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        User loggedInUser = userService.verifyUser(userInput);
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loggedInUser);
-    }
-
-
-    /**
-     * Handles the logout process. User is identified by their token.
-     * Type: POST
-     * URL: /logout
-     * Body: token
-     * @return
-     */
-    @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
-    public UserGetDTO logOutUser(@RequestBody UserPostDTO userPostDTO) {
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        User loggedInUser = userService.logoutUser(userInput);
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loggedInUser);
-    }
-
-
-    /**
      * Type: POST
      * URL: /users
      * Body: username, name*, email, password
      * Protection: check if request is coming from the client (check for special token)
+     * => POST: /register?accessToken=special_token
      * @return User
      */
-    @PostMapping("/users")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         User createdUser = userService.createUser(userInput);
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
-
     }
 
     /*------------------------------------- PUT requests -----------------------------------------------------------*/

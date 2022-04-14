@@ -1,8 +1,12 @@
 package ch.uzh.ifi.group26.scrumblebee.entity;
 
 
+import ch.uzh.ifi.group26.scrumblebee.constant.RoleType;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Internal User Representation
@@ -15,7 +19,7 @@ import java.io.Serializable;
  * the primary key
  */
 @Entity
-@Table(name = "scrumblebee_user")
+@Table(name = "sb_user")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,10 +50,15 @@ public class User implements Serializable {
     private boolean loggedIn;
 
     @Column(nullable = false)
-    private String token;
-
-    @Column(nullable = false)
     private int score;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "sb_user_roles",
+            joinColumns = @JoinColumn(name = "sb_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "sb_role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public void setId(Long id) { this.id = id; }
 
@@ -83,12 +92,12 @@ public class User implements Serializable {
 
     public boolean getLoggedIn() { return loggedIn; }
 
-    public void setToken(String token) { this.token = token; }
-
-    public String getToken() { return token; }
-
     public void setScore(int score) { this.score = score; }
 
     public int getScore() { return score; }
+
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
+
+    public Set<Role> getRoles() { return roles; }
 
 }
