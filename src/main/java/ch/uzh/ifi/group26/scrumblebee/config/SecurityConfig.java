@@ -29,6 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
+    private final boolean dev = true;
+
 //    @Bean
 //    public AuthTokenFilter authenticationTokenFilter() {
 //        return new AuthTokenFilter();
@@ -47,12 +49,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // all endpoints need to be authenticated, except the ones specified in .antMatchers("/....")
-        http.cors().and().csrf().disable()
-                .authorizeRequests().antMatchers("/register**").permitAll()
-                .antMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated().and()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        if (dev) {
+            http.cors().and().csrf().disable()
+                    .authorizeRequests().antMatchers("/**").permitAll()
+                    .anyRequest().authenticated().and()
+                    .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        } else {
+            http.cors().and().csrf().disable()
+                    .authorizeRequests().antMatchers("/register**").permitAll()
+                    .antMatchers("/auth/**").permitAll()
+                    .anyRequest().authenticated().and()
+                    .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        }
 
         http.addFilterBefore(this.authTokenFilter, BasicAuthenticationFilter.class);
     }
