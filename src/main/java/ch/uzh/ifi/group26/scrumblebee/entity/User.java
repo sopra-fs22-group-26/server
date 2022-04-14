@@ -50,9 +50,6 @@ public class User implements Serializable {
     private boolean loggedIn;
 
     @Column(nullable = false)
-    private String token;
-
-    @Column(nullable = false)
     private int score;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -94,10 +91,6 @@ public class User implements Serializable {
     public void setLoggedIn(boolean loggedIn) { this.loggedIn = loggedIn; }
 
     public boolean getLoggedIn() { return loggedIn; }
-
-    public void setToken(String token) { this.token = token; }
-
-    public String getToken() { return token; }
 
     public void setScore(int score) { this.score = score; }
 

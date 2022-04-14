@@ -1,6 +1,7 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.mapper;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.AuthGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
 import org.mapstruct.*;
@@ -30,7 +31,6 @@ public interface DTOMapper {
   @Mapping(target = "birthDate", ignore = true)
   @Mapping(target = "creationDate", ignore = true)
   @Mapping(target = "loggedIn", ignore = true)
-  @Mapping(source = "token", target = "token")
   @Mapping(target = "score", ignore = true)
   @Mapping(target = "roles", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
@@ -42,8 +42,12 @@ public interface DTOMapper {
   @Mapping(source = "birthDate", target = "birthDate")
   @Mapping(source = "creationDate", target = "creationDate")
   @Mapping(source = "loggedIn", target = "loggedIn")
-  @Mapping(source = "token", target = "token")
   @Mapping(source = "score", target = "score")
   UserGetDTO convertEntityToUserGetDTO(User user);
+
+  @Mapping(source = "username", target = "username")
+  @Mapping(source = "emailAddress", target = "emailAddress")
+  @Mapping(target = "token", ignore = true)
+  AuthGetDTO convertEntityToAuthGetDTO(User user);
 
 }

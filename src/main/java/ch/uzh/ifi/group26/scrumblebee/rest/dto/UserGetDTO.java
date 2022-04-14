@@ -1,6 +1,5 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
-import org.mapstruct.Mapping;
 
 import java.text.SimpleDateFormat;
 
@@ -13,7 +12,6 @@ public class UserGetDTO {
     private java.util.Date birthDate;
     private java.util.Date creationDate;
     private boolean loggedIn;
-    private String token;
     private int score;
 
     private static final SimpleDateFormat dateFormat
@@ -53,10 +51,6 @@ public class UserGetDTO {
     public void setLoggedIn(boolean loggedIn) { this.loggedIn = loggedIn; }
 
     public boolean getLoggedIn() { return loggedIn; }
-
-    public void setToken(String token) { this.token = token; }
-
-    public String getToken() { return token; }
 
     public void setScore(int score) { this.score = score; }
 
