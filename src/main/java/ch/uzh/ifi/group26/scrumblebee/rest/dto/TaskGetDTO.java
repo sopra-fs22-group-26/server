@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class TaskGetDTO {
 
-    private Long task_id;
+    private Long taskId;
     private java.util.Date dueDate;
     private String title;
     private String description;
@@ -22,12 +22,12 @@ public class TaskGetDTO {
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
 
-    public void setTask_id(Long task_id) {
-        this.task_id = task_id;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
-    public Long getTask_id() {
-        return task_id;
+    public Long getTaskId() {
+        return taskId;
     }
 
     public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
@@ -48,7 +48,16 @@ public class TaskGetDTO {
 
     public void setPriority(TaskPriority priority) { this.priority = priority; }
 
-    public TaskPriority getPriority() { return priority; }
+    public String getPriority() {
+        String returnPriority = "";
+        switch (priority) {
+            case NONE -> returnPriority = "NONE";
+            case LOW -> returnPriority = "LOW";
+            case MEDIUM -> returnPriority = "MEDIUM";
+            case HIGH -> returnPriority = "HIGH";
+        }
+        return returnPriority;
+    }
 
     public void setLocation(String location) { this.location = location; }
 

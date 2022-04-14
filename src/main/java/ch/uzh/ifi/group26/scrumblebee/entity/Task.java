@@ -18,14 +18,14 @@ import java.util.Date;
  * the primary key.
  */
 @Entity
-@Table(name = "TASK")
+@Table(name = "sb_task")
 public class Task implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
-    private Long task_id;
+    private Long taskId;
 
     @Column(nullable = false)
     private Date dueDate;
@@ -59,9 +59,9 @@ public class Task implements Serializable {
      * Getter & setter methods 
      */
 
-    public Long getTask_id() { return task_id; }
+    public Long getTaskId() { return taskId; }
 
-    public void setTask_id(Long task_id) { this.task_id = task_id; }
+    public void setTaskId(Long taskId) { this.taskId = taskId; }
 
     /***/
 

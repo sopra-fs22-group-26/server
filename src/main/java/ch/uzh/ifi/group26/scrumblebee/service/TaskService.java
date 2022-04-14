@@ -48,8 +48,6 @@ public class TaskService {
 
         newTask.setStatus(TaskStatus.ACTIVE);
 
-        checkIfTaskIdExist(newTask.getTask_id());
-
         log.debug(newTask.getDueDate().toString());
         log.debug(newTask.getTitle());
         log.debug(newTask.getDescription());

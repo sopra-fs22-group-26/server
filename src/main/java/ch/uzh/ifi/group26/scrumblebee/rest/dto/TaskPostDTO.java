@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class TaskPostDTO {
 
-    private Long task_id;
+    private Long taskId;
     private java.util.Date dueDate;
     private String title;
     private String description;
@@ -21,12 +21,12 @@ public class TaskPostDTO {
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
 
-    public void setTask_id(Long task_id) {
-        this.task_id = task_id;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
-    public Long getTask_id() {
-        return task_id;
+    public Long getTaskId() {
+        return taskId;
     }
 
     public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
@@ -45,7 +45,14 @@ public class TaskPostDTO {
 
     public Integer getEstimate() { return estimate; }
 
-    public void setPriority(TaskPriority priority) { this.priority = priority; }
+    public void setPriority(String priority) {
+        switch (priority) {
+            case "NONE" -> this.priority = TaskPriority.NONE;
+            case "LOW"  -> this.priority = TaskPriority.LOW;
+            case "MEDIUM"  -> this.priority = TaskPriority.MEDIUM;
+            case "HIGH"  -> this.priority = TaskPriority.HIGH;
+        }
+    }
 
     public TaskPriority getPriority() { return priority; }
 
