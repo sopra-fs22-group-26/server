@@ -4,8 +4,8 @@ import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
-import ch.uzh.ifi.group26.scrumblebee.rest.mapper.TaskMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +46,7 @@ public class TaskController {
         List<Task> tasks = taskService.getTasks();
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
         for (Task task : tasks) {
-            taskGetDTOs.add(TaskMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
         }
         return taskGetDTOs;
     }
@@ -66,11 +66,11 @@ public class TaskController {
     @ResponseBody
     public TaskGetDTO createTask(@RequestBody TaskPostDTO taskPostDTO){
         // convert API task to internal representation
-        Task input = TaskMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
+        Task input = DTOMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
         // create task
         Task createdTask = taskService.createTask(input);
         //convert internal representation of task back to API
-        return TaskMapper.INSTANCE.convertEntityToTaskGetDTO(createdTask);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(createdTask);
     }
 
 
@@ -88,9 +88,9 @@ public class TaskController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public TaskGetDTO updateTask(@RequestBody TaskPostDTO taskPostDTO, @PathVariable long taskId) {
-        Task changesTask = TaskMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
+        Task changesTask = DTOMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
         Task updatedTask = taskService.updateTask(taskId, changesTask);
-        return TaskMapper.INSTANCE.convertEntityToTaskGetDTO(updatedTask);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(updatedTask);
 
     }
     /*------------------------------------- DELETE requests --------------------------------------------------------*/

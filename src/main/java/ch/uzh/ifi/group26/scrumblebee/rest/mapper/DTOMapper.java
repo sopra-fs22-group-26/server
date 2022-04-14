@@ -48,5 +48,27 @@ public interface DTOMapper {
   @Mapping(source = "score", target = "score")
   UserGetDTO convertEntityToUserGetDTO(User user);
 
+  @Mapping(target = "taskId", ignore = true)
+  @Mapping(source = "dueDate", target = "dueDate")
+  @Mapping(source = "title", target = "title")
+  @Mapping(source = "description", target = "description")
+  @Mapping(source = "estimate", target = "estimate")
+  @Mapping(source = "priority", target = "priority")
+  @Mapping(source = "location", target = "location")
+  @Mapping(source = "status", target = "status")
+  @Mapping(target = "score", ignore = true)                 // changed from " source target" to "target ignore=true"
+  Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
+
+  @Mapping(source = "taskId", target = "taskId")
+  @Mapping(source = "dueDate", target = "dueDate")
+  @Mapping(source = "title", target = "title")
+  @Mapping(source = "description", target = "description")
+  @Mapping(source = "estimate", target = "estimate")
+  @Mapping(source = "priority", target = "priority")
+  @Mapping(source = "location", target = "location")
+  @Mapping(source = "status", target = "status")
+  @Mapping(source = "score", target = "score")
+  TaskGetDTO convertEntityToTaskGetDTO(Task task);
+
 }
 
