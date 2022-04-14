@@ -1,9 +1,17 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
 public class AuthGetDTO {
+    private Long id;
     private String username;
-    private String emailAddress;
     private String token;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -12,10 +20,6 @@ public class AuthGetDTO {
     public String getUsername() {
         return username;
     }
-
-    public void setEmailAddress(String emailAddress) { this.emailAddress = emailAddress; }
-
-    public String getEmailAddress() { return emailAddress; }
 
     public void setToken(String token) {
         this.token = token;

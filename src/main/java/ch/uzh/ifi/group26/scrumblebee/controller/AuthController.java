@@ -35,27 +35,27 @@ public class AuthController {
     AuthController(AuthService authService) { this.authService = authService; }
 
     /**
-     * Handles the logout process. User is identified by their token.
+     * Handles the logout process. User is identified by their username.
      * Type: POST
-     * URL: /logout
-     * Body: token
-     * @return
+     * URL: /auth/logout
+     * Body: username
+     * Returns: id, username
      */
     @PostMapping("/auth/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public UserGetDTO logOutUser(@RequestBody UserPostDTO userPostDTO) {
+    public AuthGetDTO logOutUser(@RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         User loggedInUser = authService.logoutUser(userInput);
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loggedInUser);
+        return DTOMapper.INSTANCE.convertEntityToAuthGetDTO(loggedInUser);
     }
 
     /**
      * Handles login process. User is identified by username and password.
      * Type: POST
-     * URL: /login
+     * URL: /auth/login
      * Body: username, password
-     * @return User
+     * Returns: id, username, token
      */
     @PostMapping("/auth/login")
     @ResponseStatus(HttpStatus.OK)

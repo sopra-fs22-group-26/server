@@ -68,8 +68,8 @@ public class UserController {
 
     /**
      * Type: POST
-     * URL: /users
-     * Body: username, name*, email, password
+     * URL: /register
+     * Body: name, username, email, password
      * Protection: check if request is coming from the client (check for special token)
      * => POST: /register?accessToken=special_token
      * @return User
