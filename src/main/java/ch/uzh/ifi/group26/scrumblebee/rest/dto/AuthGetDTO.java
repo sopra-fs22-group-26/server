@@ -4,6 +4,7 @@ public class AuthGetDTO {
     private Long id;
     private String username;
     private String token;
+    private String name;
 
     public void setId(Long id) {
         this.id = id;
@@ -27,5 +28,13 @@ public class AuthGetDTO {
 
     public String getToken() {
         return token;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

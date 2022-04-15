@@ -44,12 +44,29 @@ public class UserService {
     }
 
 
+    /**
+     * Return a list of all users.
+     * @return List<User>
+     */
     public List<User> getUsers() {
     return this.userRepository.findAll();
   }
 
+
     /**
-     * Used by: POST /users
+     * Return a single user by ID if this user exists, null otherwise.
+     * @param userID
+     * @return
+     */
+    public User getUser(long userID) {
+        String baseErrorMessage = "Error: No user found with userID %d!";
+        return userRepository.findById(userID).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, userID)));
+    }
+
+
+    /**
+     * Used by: POST /register
      * @param newUser
      * @return the created user
      */

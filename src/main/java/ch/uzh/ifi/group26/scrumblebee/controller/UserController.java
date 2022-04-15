@@ -64,6 +64,27 @@ public class UserController {
         return userGetDTOs;
     }
 
+
+    /**
+     * Type: GET
+     * URL: /users/{id}
+     * Body: none
+     * Return a single user, identified by id in the url.
+     * @param id
+     * @return User
+     */
+    @GetMapping(value = "users/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO getUserByUserID(@PathVariable("id") long id) {
+        // find corresponding user if the id is valid (getUser throws an exception otherwise)
+        User user = userService.getUser(id);
+
+        // convert internal representation of user back to API
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+    }
+
+
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
     /**
