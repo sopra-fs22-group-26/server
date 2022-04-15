@@ -1,20 +1,13 @@
 package ch.uzh.ifi.group26.scrumblebee.security.utils;
 
-import ch.uzh.ifi.group26.scrumblebee.entity.SecurityUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.SecretKey;
-import javax.print.attribute.standard.JobKOctets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +20,13 @@ public class JwtUtils {
 
     private SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
+    private final Long refreshTokenDurationsMS = Long.valueOf(900000);
+
     public String generateJwtToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 5))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenDurationsMS))
                 .signWith(key, SignatureAlgorithm.HS256).compact();
     }
 
@@ -56,6 +51,15 @@ public class JwtUtils {
         return extractExpiration(token).before(new Date());
     }
 
+    public String generateTokenFromUsername(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + refreshTokenDurationsMS))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return createTokenInfinity(claims, username);
@@ -66,7 +70,7 @@ public class JwtUtils {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 5) )
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenDurationsMS) )
                 .signWith(key, SignatureAlgorithm.HS256).compact();
     }
 
@@ -75,7 +79,7 @@ public class JwtUtils {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 5) )
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenDurationsMS) )
                 .signWith(key, SignatureAlgorithm.HS256).compact();
     }
 

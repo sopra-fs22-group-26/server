@@ -69,8 +69,15 @@ public interface DTOMapper {
   @Mapping(source = "username", target = "username")
   @Mapping(source = "id", target = "id")
   @Mapping(target = "token", ignore = true)
-  @Mapping(source = "name", target = "name")
+  @Mapping(target = "refreshToken", ignore = true)
+  @Mapping(target = "type", ignore = true)
   AuthGetDTO convertEntityToAuthGetDTO(User user);
+
+  @Mapping(source = "id", target = "id")
+  @Mapping(target = "type", ignore = true)
+  @Mapping(target = "token", ignore = true)
+  @Mapping(target = "refreshToken", ignore = true)
+  RefreshGetDTO convertEntityToRefreshGetDTO(User user);
 
 }
 
