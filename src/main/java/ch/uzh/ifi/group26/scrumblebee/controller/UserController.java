@@ -106,6 +106,25 @@ public class UserController {
 
     /*------------------------------------- PUT requests -----------------------------------------------------------*/
 
+    /**
+     * Type: PUT
+     * URL: /users/{id}
+     * Body: username, name*, email, birthdate, password, newPassword
+     * Protection: check if request is coming from the client (check for special token)
+     * @return User
+     */
+    @PutMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public UserGetDTO updateUserById(@PathVariable("id") Long userId, @RequestBody UserPostDTO userInput) {
+
+        User userById = userService.getUserByIDNum(userId);
+
+        // update user
+        userService.updateUser(userById, userInput);
+
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userById);
+    }
 
     /*------------------------------------- DELETE requests --------------------------------------------------------*/
 }
