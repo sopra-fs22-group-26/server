@@ -39,6 +39,7 @@ public class TaskService {
         return this.taskRepository.findAll();
     }
 
+    public Task getTask(long taskId) {return this.taskRepository.findByTaskId(taskId);}
      /**
      * Used by: POST /tasks
      * @param newTask

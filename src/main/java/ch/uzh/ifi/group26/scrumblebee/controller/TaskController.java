@@ -48,6 +48,19 @@ public class TaskController {
         return taskGetDTOs;
     }
 
+    /**
+     * Type: GET
+     * URL: /tasks
+     * Body: none
+     * @return list<Task>
+     */
+    @GetMapping("/tasks/{taskId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public TaskGetDTO getTask(@PathVariable long taskId) {
+        Task task = taskService.getTask(taskId);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task);
+    }
 
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
