@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * User Service
@@ -35,10 +36,25 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
+    // Get all tasks, completed or not
     public List<Task> getTasks() {
         return this.taskRepository.findAll();
     }
 
+    // Return only either active or completed (= not active) tasks
+    public List<Task> getTasks(String status) {
+        List<Task> allTasks = getTasks();
+        switch (status) {
+            case "active":
+                allTasks = allTasks.stream().filter(task -> task.getStatus() == TaskStatus.ACTIVE).collect(Collectors.toList());
+                break;
+            case "completed":
+                allTasks = allTasks.stream().filter(task -> task.getStatus() != TaskStatus.ACTIVE).collect(Collectors.toList());
+        }
+        return allTasks;
+    }
+
+    public Task getTask(long taskId) {return this.taskRepository.findByTaskId(taskId);}
      /**
      * Used by: POST /tasks
      * @param newTask
@@ -70,7 +86,7 @@ public class TaskService {
      * @param changesTask
      * @return the created user
      */
-    public Task updateTask(long taskId, Task changesTask) {
+    public Task updateTask(long taskId, Task changesTask, String updateStatus) {
         Task taskById = checkIfTaskIdExist(taskId);
 
         if(changesTask.getTitle()!=null){
@@ -90,6 +106,23 @@ public class TaskService {
         }
         if(changesTask.getLocation()!=null){
             taskById.setLocation(changesTask.getLocation());
+        }
+
+        // Update status if one was provided in the query
+        if(updateStatus != null) {
+            switch (updateStatus) {
+                case "active":
+                    taskById.setStatus(TaskStatus.ACTIVE);
+                    break;
+                case "completed":
+                    taskById.setStatus(TaskStatus.COMPLETED);
+                    break;
+                case "reported":
+                    taskById.setStatus(TaskStatus.REPORTED);
+                    break;
+                case "archived":
+                    taskById.setStatus(TaskStatus.ARCHIVED);
+            }
         }
 
         // saves the given entity but data is only persisted in the database once

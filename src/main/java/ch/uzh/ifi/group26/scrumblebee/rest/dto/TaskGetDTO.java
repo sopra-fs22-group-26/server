@@ -18,6 +18,8 @@ public class TaskGetDTO {
     private String location;
     private TaskStatus status;
     private int score;
+    private long assignee;
+    private long reporter;
 
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
@@ -80,4 +82,19 @@ public class TaskGetDTO {
 
     public int getScore() { return score; }
 
+    public void setAssignee(long assignee) {
+        this.assignee = assignee;
+    }
+
+    public long getAssignee() {
+        return assignee;
+    }
+
+    public void setReporter(long reporter) {
+        this.reporter = reporter;
+    }
+
+    public long getReporter() {
+        return reporter;
+    }
 }
