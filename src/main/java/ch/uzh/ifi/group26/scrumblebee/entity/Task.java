@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * Internal Task representation
- * This class composes the internal representation of a task and deifnes
+ * This class composes the internal representation of a task and defines
  * how a task is stored in the database.
  * Every variable will be mapped into a database field with the @Column
  * annotation
@@ -50,6 +50,12 @@ public class Task implements Serializable {
 
     @Column
     private int score;
+
+    @Column
+    private long assignee;
+
+    @Column
+    private long reporter;
 
     //Comment entity not implemented yet
     //@Column
@@ -109,6 +115,25 @@ public class Task implements Serializable {
     public int getScore() { return score; }
 
     public void setScore(int score) { this.score = score; }
+
+    /***/
+
+    public long getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(long assignee) {
+        this.assignee = assignee;
+    }
+
+    /***/
+    public long getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(long reporter) {
+        this.reporter = reporter;
+    }
 
     /**
      * Add Getter and setter for comment list here.
