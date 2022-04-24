@@ -71,6 +71,7 @@ public interface DTOMapper {
   TaskGetDTO convertEntityToTaskGetDTO(Task task);
 
   @Mapping(source = "username", target = "username")
+  @Mapping(source = "name", target = "name")
   @Mapping(source = "id", target = "id")
   @Mapping(target = "token", ignore = true)
   @Mapping(target = "refreshToken", ignore = true)

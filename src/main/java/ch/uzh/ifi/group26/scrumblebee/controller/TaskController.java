@@ -33,14 +33,23 @@ public class TaskController {
     /**
      * Type: GET
      * URL: /tasks
+     * Query parameter: show [active|completed] (optional)
      * Body: none
      * @return list<Task>
      */
     @GetMapping("/tasks")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<TaskGetDTO> getAllTasks() {
-        List<Task> tasks = taskService.getTasks();
+    public List<TaskGetDTO> getAllTasks(@RequestParam(required = false) String show) {
+        // If parameter "show" was specified, get only active or completed tasks.
+        // Otherwise get all tasks.
+        List<Task> tasks;
+        if (show != null) {
+            tasks = taskService.getTasks(show);
+        }
+        else {
+            tasks = taskService.getTasks();
+        }
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
         for (Task task : tasks) {
             taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
@@ -50,9 +59,9 @@ public class TaskController {
 
     /**
      * Type: GET
-     * URL: /tasks
+     * URL: /tasks/{taskId}
      * Body: none
-     * @return list<Task>
+     * @return Task
      */
     @GetMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.OK)
@@ -97,9 +106,11 @@ public class TaskController {
     @PutMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public TaskGetDTO updateTask(@RequestBody TaskPostDTO taskPostDTO, @PathVariable long taskId) {
+    public TaskGetDTO updateTask(@RequestBody TaskPostDTO taskPostDTO,
+                                 @PathVariable long taskId,
+                                 @RequestParam(required = false) String updateStatus) {
         Task changesTask = DTOMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
-        Task updatedTask = taskService.updateTask(taskId, changesTask);
+        Task updatedTask = taskService.updateTask(taskId, changesTask, updateStatus);
         return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(updatedTask);
 
     }

@@ -3,6 +3,7 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 public class AuthGetDTO {
     private Long id;
     private String username;
+    private String name;
     private String type = "Bearer";
     private String token;
     private String refreshToken;
@@ -21,6 +22,14 @@ public class AuthGetDTO {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setToken(String token) {
