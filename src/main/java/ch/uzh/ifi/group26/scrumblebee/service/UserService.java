@@ -5,6 +5,7 @@ import ch.uzh.ifi.group26.scrumblebee.entity.Role;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.repository.RoleRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,62 @@ public class UserService {
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
+    }
+
+    /**
+     * Used by: PUT /users/{id}
+     * @param userToUpdate and inputUser
+     * @return void
+     */
+    public void updateUser(User userToUpdate, UserPostDTO inputUser){
+
+        if (inputUser.getUsername() != null) {
+            userToUpdate.setUsername(inputUser.getUsername());
+        }
+        if (inputUser.getBirthDate() != null){
+            userToUpdate.setBirthDate(inputUser.getBirthDate());
+        }
+        if (inputUser.getEmailAddress() != null){
+            userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+        }
+        if (inputUser.getPassword() != null && inputUser.getNewPassword() != null ){
+            if (encoder.matches(inputUser.getPassword(),userToUpdate.getPassword())){
+                userToUpdate.setPassword(encoder.encode(inputUser.getNewPassword()));
+            }
+            else { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Current password incorrect - try again")); }
+        }
+
+        updateRepository(userToUpdate);
+    }
+
+    /**
+     * Used by: PUT /users/{id}
+     * @param userId
+     * @return User found by ID
+     */
+    public User getUserByIDNum(Long userId){
+        Optional<User> userRepo = userRepository.findById(userId);
+        User user;
+        try{
+            user = userRepo.orElse(null);
+            if (user == null){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ID not found"));
+            }
+        }catch (NullPointerException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ID not found"));
+        }
+        return user;
+
+    }
+
+    /**
+     * Used by: PUT /users/{id}
+     * @param aUser
+     * @return void
+     */
+    private void updateRepository(User aUser){
+        userRepository.save(aUser);
+        userRepository.flush();
     }
 
     /**
