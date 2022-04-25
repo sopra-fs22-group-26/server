@@ -89,25 +89,6 @@ public class TaskService {
     public Task updateTask(long taskId, Task changesTask, String updateStatus) {
         Task taskById = checkIfTaskIdExist(taskId);
 
-        if(changesTask.getTitle()!=null){
-            taskById.setTitle(changesTask.getTitle());
-        }
-        if(changesTask.getDescription()!=null){
-            taskById.setDescription(changesTask.getDescription());
-        }
-        if(changesTask.getDueDate()!=null){
-            taskById.setDueDate(changesTask.getDueDate());
-        }
-        if(changesTask.getPriority()!=null){
-            taskById.setPriority(changesTask.getPriority());
-        }
-        if(changesTask.getEstimate()!=null){
-            taskById.setEstimate(changesTask.getEstimate());
-        }
-        if(changesTask.getLocation()!=null){
-            taskById.setLocation(changesTask.getLocation());
-        }
-
         // Update status if one was provided in the query
         if(updateStatus != null) {
             switch (updateStatus) {
@@ -123,6 +104,30 @@ public class TaskService {
                 case "archived":
                     taskById.setStatus(TaskStatus.ARCHIVED);
             }
+        }
+        else {
+
+            if (changesTask.getTitle() != null) {
+                taskById.setTitle(changesTask.getTitle());
+            }
+            if (changesTask.getDescription() != null) {
+                taskById.setDescription(changesTask.getDescription());
+            }
+            if (changesTask.getDueDate() != null) {
+                taskById.setDueDate(changesTask.getDueDate());
+            }
+            if (changesTask.getPriority() != null) {
+                taskById.setPriority(changesTask.getPriority());
+            }
+            if (changesTask.getEstimate() != null) {
+                taskById.setEstimate(changesTask.getEstimate());
+            }
+            if (changesTask.getLocation() != null) {
+                taskById.setLocation(changesTask.getLocation());
+            }
+
+            taskById.setAssignee(changesTask.getAssignee());
+            taskById.setReporter(changesTask.getReporter());
         }
 
         // saves the given entity but data is only persisted in the database once
