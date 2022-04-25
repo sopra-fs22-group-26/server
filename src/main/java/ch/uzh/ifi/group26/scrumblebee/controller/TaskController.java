@@ -5,12 +5,9 @@ import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +33,23 @@ public class TaskController {
     /**
      * Type: GET
      * URL: /tasks
+     * Query parameter: show [active|completed] (optional)
      * Body: none
      * @return list<Task>
      */
     @GetMapping("/tasks")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<TaskGetDTO> getAllTasks() {
-        List<Task> tasks = taskService.getTasks();
+    public List<TaskGetDTO> getAllTasks(@RequestParam(required = false) String show) {
+        // If parameter "show" was specified, get only active or completed tasks.
+        // Otherwise get all tasks.
+        List<Task> tasks;
+        if (show != null) {
+            tasks = taskService.getTasks(show);
+        }
+        else {
+            tasks = taskService.getTasks();
+        }
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
         for (Task task : tasks) {
             taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
@@ -51,6 +57,19 @@ public class TaskController {
         return taskGetDTOs;
     }
 
+    /**
+     * Type: GET
+     * URL: /tasks/{taskId}
+     * Body: none
+     * @return Task
+     */
+    @GetMapping("/tasks/{taskId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public TaskGetDTO getTask(@PathVariable long taskId) {
+        Task task = taskService.getTask(taskId);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task);
+    }
 
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
@@ -87,9 +106,11 @@ public class TaskController {
     @PutMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public TaskGetDTO updateTask(@RequestBody TaskPostDTO taskPostDTO, @PathVariable long taskId) {
+    public TaskGetDTO updateTask(@RequestBody TaskPostDTO taskPostDTO,
+                                 @PathVariable long taskId,
+                                 @RequestParam(required = false) String updateStatus) {
         Task changesTask = DTOMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
-        Task updatedTask = taskService.updateTask(taskId, changesTask);
+        Task updatedTask = taskService.updateTask(taskId, changesTask, updateStatus);
         return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(updatedTask);
 
     }

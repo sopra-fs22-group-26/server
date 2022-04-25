@@ -53,6 +53,8 @@ public interface DTOMapper {
   @Mapping(source = "location", target = "location")
   @Mapping(source = "status", target = "status")
   @Mapping(target = "score", ignore = true)                 // changed from " source target" to "target ignore=true"
+  @Mapping(source = "assignee", target = "assignee")
+  @Mapping(source = "reporter", target = "reporter")
   Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
 
   @Mapping(source = "taskId", target = "taskId")
@@ -64,13 +66,23 @@ public interface DTOMapper {
   @Mapping(source = "location", target = "location")
   @Mapping(source = "status", target = "status")
   @Mapping(source = "score", target = "score")
+  @Mapping(source = "assignee", target = "assignee")
+  @Mapping(source = "reporter", target = "reporter")
   TaskGetDTO convertEntityToTaskGetDTO(Task task);
 
   @Mapping(source = "username", target = "username")
+  @Mapping(source = "name", target = "name")
   @Mapping(source = "id", target = "id")
   @Mapping(target = "token", ignore = true)
-  @Mapping(source = "name", target = "name")
+  @Mapping(target = "refreshToken", ignore = true)
+  @Mapping(target = "type", ignore = true)
   AuthGetDTO convertEntityToAuthGetDTO(User user);
+
+  @Mapping(source = "id", target = "id")
+  @Mapping(target = "type", ignore = true)
+  @Mapping(target = "token", ignore = true)
+  @Mapping(target = "refreshToken", ignore = true)
+  RefreshGetDTO convertEntityToRefreshGetDTO(User user);
 
 }
 

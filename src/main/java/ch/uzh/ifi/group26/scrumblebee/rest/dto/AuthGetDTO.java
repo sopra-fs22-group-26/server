@@ -3,8 +3,10 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 public class AuthGetDTO {
     private Long id;
     private String username;
-    private String token;
     private String name;
+    private String type = "Bearer";
+    private String token;
+    private String refreshToken;
 
     public void setId(Long id) {
         this.id = id;
@@ -22,6 +24,14 @@ public class AuthGetDTO {
         return username;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -30,11 +40,20 @@ public class AuthGetDTO {
         return token;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
-    public String getName() {
-        return name;
+    public String getRefreshToken() {
+        return refreshToken;
     }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 }
