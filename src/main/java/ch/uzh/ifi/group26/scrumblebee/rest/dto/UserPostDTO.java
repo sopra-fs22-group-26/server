@@ -19,14 +19,6 @@ public class UserPostDTO {
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    private Date birthDate;
-    private String newPassword;
-
-    private final Logger log = LoggerFactory.getLogger(UserPostDTO.class);
-
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-
     public void setName(String name) {
         this.name = name;
     }
