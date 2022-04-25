@@ -12,6 +12,12 @@ public class UserPostDTO {
     private String username;
     private String emailAddress;
     private String password;
+    private Date birthDate;
+    private String newPassword;
+
+    private final Logger log = LoggerFactory.getLogger(UserPostDTO.class);
+
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     private Date birthDate;
     private String newPassword;
@@ -44,7 +50,6 @@ public class UserPostDTO {
     public void setPassword(String password) { this.password = password; }
 
     public String getPassword() { return password; }
-
 
     public String getNewPassword(){ return newPassword; }
 
