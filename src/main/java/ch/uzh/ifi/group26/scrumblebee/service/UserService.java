@@ -100,22 +100,26 @@ public class UserService {
      * @param userToUpdate and inputUser
      * @return void
      */
-    public void updateUser(User userToUpdate, UserPostDTO inputUser){
+    public void updateUser(User userToUpdate, User inputUser, User userCredentials){
+        // Check if user wants to change password => if yes, verify credentials
+        if (inputUser.getPassword() != null && userCredentials.getPassword() != null ){
+            if (encoder.matches(userCredentials.getPassword(),userToUpdate.getPassword())){
+                userToUpdate.setPassword(encoder.encode(inputUser.getPassword()));
+            }
+            else { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Current password incorrect - try again")); }
+        }
 
+        userToUpdate.setBirthDate(inputUser.getBirthDate());
+
+        // The following attributes must not be null => only override if values are provided
+        if (inputUser.getName() != null) {
+            userToUpdate.setName(inputUser.getName());
+        }
         if (inputUser.getUsername() != null) {
             userToUpdate.setUsername(inputUser.getUsername());
         }
-        if (inputUser.getBirthDate() != null){
-            userToUpdate.setBirthDate(inputUser.getBirthDate());
-        }
         if (inputUser.getEmailAddress() != null){
             userToUpdate.setEmailAddress(inputUser.getEmailAddress());
-        }
-        if (inputUser.getPassword() != null && inputUser.getNewPassword() != null ){
-            if (encoder.matches(inputUser.getPassword(),userToUpdate.getPassword())){
-                userToUpdate.setPassword(encoder.encode(inputUser.getNewPassword()));
-            }
-            else { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Current password incorrect - try again")); }
         }
 
         updateRepository(userToUpdate);
