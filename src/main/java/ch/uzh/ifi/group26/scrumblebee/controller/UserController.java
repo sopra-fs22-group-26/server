@@ -3,8 +3,10 @@ package ch.uzh.ifi.group26.scrumblebee.controller;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPutDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
+import ch.uzh.ifi.group26.scrumblebee.service.AuthService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,16 +116,17 @@ public class UserController {
      * @return User
      */
     @PutMapping("/users/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public UserGetDTO updateUserById(@PathVariable("id") Long userId, @RequestBody UserPostDTO userInput) {
-
-        User userById = userService.getUserByIDNum(userId);
+    public UserGetDTO updateUserById(@PathVariable("id") Long userId, @RequestBody UserPutDTO userPutDTO) {
+        User userToUpdate = userService.getUserByIDNum(userId);
+        User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+        User userCredentials = DTOMapper.INSTANCE.convertUserPutDTOtoTempEntity(userPutDTO);
 
         // update user
-        userService.updateUser(userById, userInput);
+        userService.updateUser(userToUpdate, userInput, userCredentials);
 
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userById);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userToUpdate);
     }
 
     /*------------------------------------- DELETE requests --------------------------------------------------------*/

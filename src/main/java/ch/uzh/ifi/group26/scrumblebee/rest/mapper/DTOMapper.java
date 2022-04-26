@@ -34,6 +34,27 @@ public interface DTOMapper {
   @Mapping(target = "roles", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
+  // Helper to check credentials in case of password change
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "password", target = "password")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "loggedIn", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    User convertUserPutDTOtoTempEntity(UserPutDTO userPutDTO);
+
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "emailAddress", target = "emailAddress")
+    @Mapping(source = "birthDate", target = "birthDate")
+    @Mapping(source = "newPassword", target = "password")
+    @Mapping(source = "score", target = "score")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "loggedIn", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
+
   @Mapping(source = "id", target = "id")
   @Mapping(source = "username", target = "username")
   @Mapping(source = "emailAddress", target = "emailAddress")
