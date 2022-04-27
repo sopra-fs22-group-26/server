@@ -124,9 +124,9 @@ public class UserController {
         User userCredentials = DTOMapper.INSTANCE.convertUserPutDTOtoTempEntity(userPutDTO);
 
         // update user
-        userService.updateUser(userToUpdate, userInput, userCredentials);
+        User updatedUser = userService.updateUser(userToUpdate, userInput, userCredentials);
 
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userToUpdate);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
     }
 
     /*------------------------------------- DELETE requests --------------------------------------------------------*/

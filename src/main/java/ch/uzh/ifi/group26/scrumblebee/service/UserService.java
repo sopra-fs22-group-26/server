@@ -100,7 +100,7 @@ public class UserService {
      * @param userToUpdate and inputUser
      * @return void
      */
-    public void updateUser(User userToUpdate, User inputUser, User userCredentials){
+    public User updateUser(User userToUpdate, User inputUser, User userCredentials){
         // Check if user wants to change password => if yes, verify credentials
         if (inputUser.getPassword() != null && userCredentials.getPassword() != null ){
             if (encoder.matches(userCredentials.getPassword(),userToUpdate.getPassword())){
@@ -123,6 +123,8 @@ public class UserService {
         }
 
         updateRepository(userToUpdate);
+
+        return userToUpdate;
     }
 
     /**
