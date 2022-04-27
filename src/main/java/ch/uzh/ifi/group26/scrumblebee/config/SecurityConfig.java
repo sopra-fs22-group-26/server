@@ -3,6 +3,7 @@ package ch.uzh.ifi.group26.scrumblebee.config;
 import ch.uzh.ifi.group26.scrumblebee.security.Entrypoints.AuthEntryPointJwt;
 import ch.uzh.ifi.group26.scrumblebee.security.filters.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +23,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    UserDetailsService userDetailsService;
+    @Qualifier("securityUserDetailsService")
+    UserDetailsService securityUserDetailsService;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -40,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // configure authentication manager with correct provider
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(securityUserDetailsService);
     }
 
     // configure web security for URL protection
@@ -80,5 +82,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
 }
