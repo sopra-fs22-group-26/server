@@ -3,8 +3,11 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class PollMeetingGetDTO {
 
@@ -14,8 +17,8 @@ public class PollMeetingGetDTO {
     private Integer averageEstimate;
     private PollMeetingStatus status;
     private List<Integer> votes;
-    private List<User> invitees;
-    private List<User> participants;
+    private List<UserGetDTO> invitees;
+    private List<UserGetDTO> participants;
 
     public Long getMeetingId() { return meetingId; }
 
@@ -33,13 +36,25 @@ public class PollMeetingGetDTO {
 
     public void setEstimateThreshold(Integer estimateThreshold) { this.estimateThreshold = estimateThreshold; }
 
-    public List<User> getInvitees() { return invitees; }
+    public List<UserGetDTO> getInvitees() {return invitees; }
 
-    public void setInvitees(List<User> invitees) { this.invitees = invitees; }
+    public void setInvitees(Set<User> invitees) {
+        List<UserGetDTO> userGetDTOs = new ArrayList<>();
+        for (User user : invitees) {
+            userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
+        }
+        this.invitees = userGetDTOs;
+    }
 
-    public List<User> getParticipants() { return participants; }
+    public List<UserGetDTO> getParticipants() { return participants; }
 
-    public void setParticipants(List<User> participants) { this.participants = participants; }
+    public void setParticipants(Set<User> participants) {
+        List<UserGetDTO> userGetDTOs = new ArrayList<>();
+        for (User user : participants) {
+            userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
+        }
+        this.participants = userGetDTOs;
+    }
 
     public List<Integer> getVotes() {return votes;}
 

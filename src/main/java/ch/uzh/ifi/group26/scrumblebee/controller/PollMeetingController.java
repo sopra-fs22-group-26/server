@@ -1,10 +1,12 @@
 package ch.uzh.ifi.group26.scrumblebee.controller;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
+import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.PollMeetingService;
+import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,13 @@ public class PollMeetingController {
 
     private final PollMeetingService pollMeetingService;
 
-    PollMeetingController(PollMeetingService pollMeetingService) { this.pollMeetingService = pollMeetingService; }
+    private final UserService userService;
+
+
+    PollMeetingController(PollMeetingService pollMeetingService, UserService userService) {
+        this.pollMeetingService = pollMeetingService;
+        this.userService = userService;
+    }
 
 
 
@@ -32,36 +40,27 @@ public class PollMeetingController {
 
     /**
      * Type: GET
-     * URL: /tasks
-     * Query parameter: show [active|completed] (optional)
+     * URL: /poll-meetings
      * Body: none
-     * @return list<Task>
+     * @return list<PollMeetings>
      */
     @GetMapping("/poll-meetings")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<PollMeetingGetDTO> getAllPollMeetings(@RequestParam(required = false) String show) {
-        // If parameter "show" was specified, get only active or completed tasks.
-        // Otherwise get all tasks.
-        List<PollMeeting> pollMeetings;
-        if (show != null) {
-            pollMeetings = pollMeetingService.getPollMeetings(show);
-        }
-        else {
-            pollMeetings = pollMeetingService.getPollMeetings();
-        }
-        List<PollMeetingGetDTO> pollMeetingGetDTOS = new ArrayList<>();
+    public List<PollMeetingGetDTO> getAllPollMeetings() {
+        List<PollMeeting> pollMeetings = pollMeetingService.getPollMeetings();
+        List<PollMeetingGetDTO> pollMeetingGetDTOs = new ArrayList<>();
         for (PollMeeting pollMeeting : pollMeetings) {
-            pollMeetingGetDTOS.add(DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(pollMeeting));
+            pollMeetingGetDTOs.add(DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(pollMeeting));
         }
-        return pollMeetingGetDTOS;
+        return pollMeetingGetDTOs;
     }
 
     /**
      * Type: GET
      * URL: /poll-meetings/{meetingId}
      * Body: none
-     * @return Task
+     * @return PollMeeting
      */
     @GetMapping("/poll-meetings/{meetingId}")
     @ResponseStatus(HttpStatus.OK)
@@ -78,7 +77,7 @@ public class PollMeetingController {
      * URL: /poll-meetings
      * Body: dueDate, title, description, estimate, priority, status
      * Protection: check if request is coming from the client (check for special token)
-     * @return Task
+     * @return PollMeeting
      */
     @PostMapping("/poll-meetings")
     @ResponseStatus(HttpStatus.CREATED)
@@ -86,12 +85,21 @@ public class PollMeetingController {
     public PollMeetingGetDTO createPollMeeting(@RequestBody PollMeetingPostDTO pollMeetingPostDTO){
         // convert API task to internal representation
         PollMeeting input = DTOMapper.INSTANCE.convertPollMeetingPostDTOtoEntity(pollMeetingPostDTO);
+
         // create task
         PollMeeting createdPollMeeting = pollMeetingService.createPollMeeting(input);
+
+        // add invitees to meeting
+        for (long userId : pollMeetingPostDTO.getInvitees()) {
+            User invitee = userService.getUser(userId);
+            if (invitee != null) {
+                createdPollMeeting = pollMeetingService.addInvitee(createdPollMeeting, invitee);
+            }
+        }
+
         //convert internal representation of task back to API
         return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(createdPollMeeting);
     }
-
 
 
 //    /*------------------------------------- PUT requests -----------------------------------------------------------*/

@@ -1,6 +1,5 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
-import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 
 import java.util.List;
@@ -11,9 +10,8 @@ public class PollMeetingPostDTO {
     private long creatorId;
     private Integer estimateThreshold;
     private Integer averageEstimate;
-    private PollMeetingStatus status;
     private List<Integer> votes;
-    private List<User> invitees;
+    private List<Long> invitees;
     private List<User> participants;
 
     public Long getMeetingId() { return meetingId; }
@@ -32,9 +30,9 @@ public class PollMeetingPostDTO {
 
     public void setEstimateThreshold(Integer estimateThreshold) { this.estimateThreshold = estimateThreshold; }
 
-    public List<User> getInvitees() { return invitees; }
+    public List<Long> getInvitees() { return invitees; }
 
-    public void setInvitees(List<User> invitees) { this.invitees = invitees; }
+    public void setInvitees(List<Long> invitees) { this.invitees = invitees; }
 
     public List<User> getParticipants() { return participants; }
 
@@ -44,12 +42,6 @@ public class PollMeetingPostDTO {
 
     public void setVotes(List<Integer> votes) {
         this.votes = votes;
-    }
-
-    public PollMeetingStatus getStatus() {return status;}
-
-    public void setStatus(PollMeetingStatus status) {
-        this.status = status;
     }
 
 }

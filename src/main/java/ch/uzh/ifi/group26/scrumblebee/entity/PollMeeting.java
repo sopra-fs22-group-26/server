@@ -2,12 +2,15 @@ package ch.uzh.ifi.group26.scrumblebee.entity;
 
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
+import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import org.springframework.jmx.export.naming.IdentityNamingStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Internal PollMeeting representation
@@ -44,12 +47,37 @@ public class PollMeeting implements Serializable {
     @ElementCollection
     private List<Integer> votes;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<User> invitees;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "meeting_invitees",
+    joinColumns = @JoinColumn(name = "meeting_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> invitees = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<User> participants;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "meeting_participants",
+            joinColumns = @JoinColumn(name = "meeting_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id"))
+    private Set<User> participants = new HashSet<>();
 
+    /**
+     * Add and remove invitees and participants
+     */
+    public void addInvitee(User user) {
+        invitees.add(user);
+        user.getMeeting_invitations().add(this);
+    }
+    public void removeInvitee(User user) {
+        invitees.remove(user);
+        user.getMeeting_invitations().remove(this);
+    }
+    public void addParticipant(User user) {
+        participants.add(user);
+        user.getMeeting_participations().add(this);
+    }
+    public void removeParticipant(User user) {
+        participants.remove(user);
+        user.getMeeting_participations().remove(this);
+    }
 
     /**
      * Getter & setter methods
@@ -78,15 +106,24 @@ public class PollMeeting implements Serializable {
     public void setEstimateThreshold(Integer estimateThreshold) { this.estimateThreshold = estimateThreshold; }
 
     /***/
-    public List<User> getInvitees() { return invitees; }
 
-    public void setInvitees(List<User> invitees) { this.invitees = invitees; }
+    public void setInvitees(Set<User> invitees) {
+        this.invitees = invitees;
+    }
+
+    public Set<User> getInvitees() {
+        return invitees;
+    }
 
     /***/
 
-    public List<User> getParticipants() { return participants; }
+    public void setParticipants(Set<User> participants) {
+        this.participants = participants;
+    }
 
-    public void setParticipants(List<User> participants) { this.participants = participants; }
+    public Set<User> getParticipants() {
+        return participants;
+    }
 
     /***/
 
@@ -103,6 +140,4 @@ public class PollMeeting implements Serializable {
     public void setStatus(PollMeetingStatus status) {
         this.status = status;
     }
-
-
 }

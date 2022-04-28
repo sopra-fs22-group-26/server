@@ -34,6 +34,8 @@ public interface DTOMapper {
   @Mapping(target = "loggedIn", ignore = true)
   @Mapping(target = "score", ignore = true)
   @Mapping(target = "roles", ignore = true)
+  @Mapping(target = "meeting_invitations", ignore = true)
+  @Mapping(target = "meeting_participations", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
   @Mapping(source = "id", target = "id")
@@ -75,11 +77,11 @@ public interface DTOMapper {
   @Mapping(target = "meetingId", ignore = true)
   @Mapping(source = "creatorId", target = "creatorId")
   @Mapping(source = "estimateThreshold", target = "estimateThreshold")
-  @Mapping(source = "averageEstimate", target = "averageEstimate")
-  @Mapping(source = "votes", target = "votes")
-  @Mapping(source = "invitees", target = "invitees")
-  @Mapping(source = "participants", target = "participants")
-  @Mapping(source = "status", target = "status")
+  @Mapping(target = "averageEstimate", ignore = true)
+  @Mapping(target = "votes", ignore = true)
+  @Mapping(target = "invitees", ignore = true)
+  @Mapping(target = "participants", ignore = true)
+  @Mapping(target = "status", ignore = true)
   PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
 
     @Mapping(source = "meetingId", target = "meetingId")

@@ -2,9 +2,8 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
-import ch.uzh.ifi.group26.scrumblebee.entity.Task;
+import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollMeetingRepository;
-import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * User Service
+ * PollMeeting Service
  * This class is the "worker" and responsible for all functionality related to
- * the user
- * (e.g., it creates, modifies, deletes, finds). The result will be passed back
- * to the caller.
+ * the Poll-meetings
  */
 @Service
 @Transactional
@@ -37,29 +33,19 @@ public class PollMeetingService {
         this.pollMeetingRepository = pollMeetingRepository;
     }
 
-    // Get all tasks, completed or not
+    // Get all meetings
     public List<PollMeeting> getPollMeetings() {
         return this.pollMeetingRepository.findAll();
     }
 
-    // Return only either active or completed (= not active) tasks
-    public List<PollMeeting> getPollMeetings(String status) {
-        List<PollMeeting> allPollMeetings = getPollMeetings();
-        switch (status) {
-            case "active":
-                allPollMeetings = allPollMeetings.stream().filter(pollMeeting -> pollMeeting.getStatus() == PollMeetingStatus.OPEN).collect(Collectors.toList());
-                break;
-            case "completed":
-                allPollMeetings = allPollMeetings.stream().filter(pollMeeting -> pollMeeting.getStatus() != PollMeetingStatus.OPEN).collect(Collectors.toList());
-        }
-        return allPollMeetings;
+    public PollMeeting getPollMeeting(long meetingId) {
+        return this.pollMeetingRepository.findByMeetingId(meetingId);
     }
 
-    public PollMeeting getPollMeeting(long meetingId) {return this.pollMeetingRepository.findByMeetingId(meetingId);}
     /**
-     * Used by: POST /tasks
+     * Used by: POST /poll-meetings
      * @param newPollMeeting
-     * @return the created task
+     * @return the created meeting
      */
     public PollMeeting createPollMeeting(PollMeeting newPollMeeting) {
 
@@ -75,9 +61,26 @@ public class PollMeetingService {
         newPollMeeting = pollMeetingRepository.save(newPollMeeting);
         pollMeetingRepository.flush();
 
-        log.debug("Created Information for Task: {}", newPollMeeting);
         return newPollMeeting;
     }
+
+    // Add invitee to set and update repository
+    public PollMeeting addInvitee(PollMeeting pollMeeting, User user) {
+        pollMeeting.addInvitee(user);
+        pollMeeting =  pollMeetingRepository.save(pollMeeting);
+        pollMeetingRepository.flush();
+        return pollMeeting;
+    }
+
+    // Add participant to set and update repository
+    public PollMeeting addParticipant(PollMeeting pollMeeting, User user) {
+        pollMeeting.addParticipant(user);
+        pollMeeting =  pollMeetingRepository.save(pollMeeting);
+        pollMeetingRepository.flush();
+        return pollMeeting;
+    }
+
+
 //
 //    /**
 //     * Used by: PUT /tasks/{taskId}
@@ -154,7 +157,7 @@ public class PollMeetingService {
     private PollMeeting checkIfTaskIdExist(long meetingId) {
         PollMeeting pollMeetingById = pollMeetingRepository.findByMeetingId(meetingId);
 
-        String baseErrorMessage = "The user with id: %s not found!";
+        String baseErrorMessage = "The task with id: %s not found!";
         if (pollMeetingById == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, meetingId));
         }
