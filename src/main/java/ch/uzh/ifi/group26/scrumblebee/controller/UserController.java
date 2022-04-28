@@ -116,17 +116,15 @@ public class UserController {
      * @return User
      */
     @PutMapping("/users/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public UserGetDTO updateUserById(@PathVariable("id") Long userId, @RequestBody UserPutDTO userPutDTO) {
+    public void updateUserById(@PathVariable("id") Long userId, @RequestBody UserPutDTO userPutDTO) {
         User userToUpdate = userService.getUserByIDNum(userId);
         User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
         User userCredentials = DTOMapper.INSTANCE.convertUserPutDTOtoTempEntity(userPutDTO);
 
         // update user
-        User updatedUser = userService.updateUser(userToUpdate, userInput, userCredentials);
-
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
+        userService.updateUser(userToUpdate, userInput, userCredentials);
     }
 
     /*------------------------------------- DELETE requests --------------------------------------------------------*/

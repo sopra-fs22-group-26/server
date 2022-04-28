@@ -9,7 +9,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -32,11 +30,9 @@ import java.util.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -311,7 +307,7 @@ public class UserControllerTest {
 
     /**
      * type: PUT
-     * url: /users/{userId}
+     * url: /users/{id}
      * INPUT: valid
      * @throws Exception
      */
@@ -324,19 +320,6 @@ public class UserControllerTest {
         userPutDTO.setEmailAddress("new@domain.com");
         userPutDTO.setBirthDate("2004-11-18");
 
-        User updatedUser = new User();
-        updatedUser.setId(user1.getId());
-        updatedUser.setUsername(userPutDTO.getUsername());
-        updatedUser.setName(userPutDTO.getName());
-        updatedUser.setEmailAddress(userPutDTO.getEmailAddress());
-        updatedUser.setBirthDate(userPutDTO.getBirthDate());
-        updatedUser.setRoles(user1.getRoles());
-        updatedUser.setScore(user1.getScore());
-        updatedUser.setPassword(user1.getPassword());
-        updatedUser.setCreationDate(user1.getCreationDate());
-        updatedUser.setLoggedIn(user1.getLoggedIn());
-
-        when(userService.updateUser(any(User.class), any(User.class), any(User.class))).thenReturn(updatedUser);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder putRequest = MockMvcRequestBuilders.put(
@@ -345,17 +328,30 @@ public class UserControllerTest {
                 .content(asJsonString(userPutDTO));
 
 
-        mockMvc.perform(putRequest).andExpect(status().isOk()).andDo(print());
-                /*.andExpect(jsonPath("$.id", is(user1.getId().intValue())))
-                .andExpect(jsonPath("$.name", is(userPutDTO.getName())))
-                .andExpect(jsonPath("$.username", is(userPutDTO.getUsername())))
-                .andExpect(jsonPath("$.emailAddress", is(userPutDTO.getEmailAddress())))
-                .andExpect(jsonPath("$.loggedIn", is(user1.getLoggedIn())))
-                .andExpect(jsonPath("$.birthDate", is(dateFormat.format(userPutDTO.getBirthDate()))))
-                .andExpect(jsonPath("$.creationDate", is(dateFormat.format(user1.getCreationDate()))))
-                .andExpect(jsonPath("$.score", is(user1.getScore())));
+        mockMvc.perform(putRequest).andExpect(status().isNoContent());
+    }
 
-                 */
+    /**
+     * type: PUT
+     * url: /users/{id}
+     * INPUT: invalid
+     * @throws Exception
+     */
+    @Test
+    public void updateUser_invalidInput_return404() throws Exception {
+        UserPutDTO userPutDTO = new UserPutDTO();
+        userPutDTO.setUsername("any@username");
+
+        given(userService.getUserByIDNum(anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder putRequest = MockMvcRequestBuilders.put("/users/9999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPutDTO));
+
+        // then
+        mockMvc.perform(putRequest)
+                .andExpect(status().is(404));
     }
 
 
