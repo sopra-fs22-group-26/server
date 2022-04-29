@@ -54,6 +54,13 @@ public class TaskService {
         return allTasks;
     }
 
+    // Return all active task for which user with userId is assigned
+    public List<Task> getTasksForUser(long userId) {
+        List<Task> allTasks = getTasks();
+        return allTasks.stream().filter(task -> (task.getStatus() == TaskStatus.ACTIVE) && (task.getAssignee() == userId)).collect(Collectors.toList());
+    }
+
+
     public Task getTask(long taskId) {return this.taskRepository.findByTaskId(taskId);}
      /**
      * Used by: POST /tasks
