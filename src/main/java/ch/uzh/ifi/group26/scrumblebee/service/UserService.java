@@ -121,6 +121,9 @@ public class UserService {
         if (inputUser.getEmailAddress() != null){
             userToUpdate.setEmailAddress(inputUser.getEmailAddress());
         }
+        if (inputUser.getScore() > 0) {
+            userToUpdate.addScore(inputUser.getScore());
+        }
 
         updateRepository(userToUpdate);
     }

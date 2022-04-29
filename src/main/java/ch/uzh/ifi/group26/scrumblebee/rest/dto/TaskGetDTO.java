@@ -34,7 +34,7 @@ public class TaskGetDTO {
 
     public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
 
-    public Date getDueDate() { return dueDate; }
+    public String getDueDate() { return dateFormat.format(dueDate); }
 
     public void setTitle(String title) { this.title = title; }
 

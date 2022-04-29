@@ -101,16 +101,15 @@ public class TaskController {
      * URL: /tasks/{taskId}
      * Body: username, name*, email, password
      * Protection: check if request is coming from the client (check for special token)
-     * @return User
+     * @return Task
      */
     @PutMapping("/tasks/{taskId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TaskGetDTO updateTask(@RequestBody TaskPostDTO taskPostDTO,
-                                 @PathVariable long taskId,
-                                 @RequestParam(required = false) String updateStatus) {
+                                 @PathVariable long taskId) {
         Task changesTask = DTOMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
-        Task updatedTask = taskService.updateTask(taskId, changesTask, updateStatus);
+        Task updatedTask = taskService.updateTask(taskId, changesTask);
         return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(updatedTask);
 
     }
@@ -121,14 +120,15 @@ public class TaskController {
      * URL: /tasks/{taskId}
      * Body: username, name*, email, password
      * Protection: check if request is coming from the client (check for special token)
-     * @return User
+     * @return Task
      */
     @DeleteMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<Long> deleteTask(@PathVariable long taskId) {
-        taskService.deleteTask(taskId);
+    public TaskGetDTO deleteTask(@PathVariable long taskId) {
+        Task deletedTask = taskService.deleteTask(taskId);
 
-        return new ResponseEntity<>(taskId, HttpStatus.OK);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(deletedTask);
     }
+
 }

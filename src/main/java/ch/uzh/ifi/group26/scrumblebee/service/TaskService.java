@@ -63,13 +63,13 @@ public class TaskService {
     public Task createTask(Task newTask) {
 
         newTask.setStatus(TaskStatus.ACTIVE);
-
-        log.debug(newTask.getDueDate().toString());
-        log.debug(newTask.getTitle());
-        log.debug(newTask.getDescription());
-        log.debug(newTask.getEstimate().toString());
-        log.debug(newTask.getPriority().toString());
-        log.debug(newTask.getStatus().toString());
+//
+//        log.debug(newTask.getDueDate().toString());
+//        log.debug(newTask.getTitle());
+//        log.debug(newTask.getDescription());
+//        log.debug(newTask.getEstimate().toString());
+//        log.debug(newTask.getPriority().toString());
+//        log.debug(newTask.getStatus().toString());
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
@@ -86,49 +86,38 @@ public class TaskService {
      * @param changesTask
      * @return the created user
      */
-    public Task updateTask(long taskId, Task changesTask, String updateStatus) {
+    public Task updateTask(long taskId, Task changesTask) {
         Task taskById = checkIfTaskIdExist(taskId);
 
         // Update status if one was provided in the query
-        if(updateStatus != null) {
-            switch (updateStatus) {
-                case "active":
-                    taskById.setStatus(TaskStatus.ACTIVE);
-                    break;
-                case "completed":
-                    taskById.setStatus(TaskStatus.COMPLETED);
-                    break;
-                case "reported":
-                    taskById.setStatus(TaskStatus.REPORTED);
-                    break;
-                case "archived":
-                    taskById.setStatus(TaskStatus.ARCHIVED);
-            }
+        if(changesTask.getStatus() != null) {
+            taskById.setStatus(changesTask.getStatus());
         }
-        else {
-
-            if (changesTask.getTitle() != null) {
+        if (changesTask.getTitle() != null) {
                 taskById.setTitle(changesTask.getTitle());
-            }
-            if (changesTask.getDescription() != null) {
-                taskById.setDescription(changesTask.getDescription());
-            }
-            if (changesTask.getDueDate() != null) {
-                taskById.setDueDate(changesTask.getDueDate());
-            }
-            if (changesTask.getPriority() != null) {
-                taskById.setPriority(changesTask.getPriority());
-            }
-            if (changesTask.getEstimate() != null) {
-                taskById.setEstimate(changesTask.getEstimate());
-            }
-            if (changesTask.getLocation() != null) {
-                taskById.setLocation(changesTask.getLocation());
-            }
-
-            taskById.setAssignee(changesTask.getAssignee());
-            taskById.setReporter(changesTask.getReporter());
         }
+        if (changesTask.getDescription() != null) {
+            taskById.setDescription(changesTask.getDescription());
+        }
+        if (changesTask.getDueDate() != null) {
+            taskById.setDueDate(changesTask.getDueDate());
+        }
+        if (changesTask.getPriority() != null) {
+            taskById.setPriority(changesTask.getPriority());
+        }
+        if (changesTask.getEstimate() != null) {
+            taskById.setEstimate(changesTask.getEstimate());
+        }
+        if (changesTask.getLocation() != null) {
+            taskById.setLocation(changesTask.getLocation());
+        }
+        if (changesTask.getScore() > 0) {
+            taskById.setScore(changesTask.getScore());
+        }
+
+        taskById.setAssignee(changesTask.getAssignee());
+        taskById.setReporter(changesTask.getReporter());
+
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
@@ -145,14 +134,17 @@ public class TaskService {
      * @param taskId
      * @return the created user
      */
-    public void deleteTask(long taskId) {
+    public Task deleteTask(long taskId) {
         Task taskById = checkIfTaskIdExist(taskId);
 
         taskRepository.delete(taskById);
+
+        return taskById;
     }
 
+    // must be public for testing the put endpoint
     //check is task exist by id
-    private Task checkIfTaskIdExist(long taskId) {
+    public Task checkIfTaskIdExist(long taskId) {
         Task taskById = taskRepository.findByTaskId(taskId);
 
         String baseErrorMessage = "The user with id: %s not found!";

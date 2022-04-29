@@ -320,7 +320,6 @@ public class UserControllerTest {
         userPutDTO.setEmailAddress("new@domain.com");
         userPutDTO.setBirthDate("2004-11-18");
 
-
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder putRequest = MockMvcRequestBuilders.put(
                 "/users/{id}", user1.getId().intValue())
@@ -353,6 +352,9 @@ public class UserControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().is(404));
     }
+
+
+    
 
 
     /**
