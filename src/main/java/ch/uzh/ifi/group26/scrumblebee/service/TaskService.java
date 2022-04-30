@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -54,15 +53,33 @@ public class TaskService {
         return allTasks;
     }
 
-    // Return all active task for which user with userId is assigned
+    /**
+     * Used by: GET /tasks/assignee/{userId}
+     * @param userId
+     * @return all active tasks for which user with userId is assigned
+     */
     public List<Task> getTasksForUser(long userId) {
         List<Task> allTasks = getTasks();
         return allTasks.stream().filter(task -> (task.getStatus() == TaskStatus.ACTIVE) && (task.getAssignee() == userId)).collect(Collectors.toList());
     }
 
 
-    public Task getTask(long taskId) {return this.taskRepository.findByTaskId(taskId);}
-     /**
+    /**
+     * Used by: GET /tasks/reporter/{userId}
+     * @param userId
+     * @return all tasks (active and completed) for which user with userId is the reporter
+     */
+    public List<Task> getTasksToReportForUser(long userId) {
+        List<Task> allTasks = getTasks();
+        return allTasks.stream().filter(task -> (task.getReporter() == userId)).collect(Collectors.toList());
+    }
+
+
+    public Task getTask(long taskId) {
+        return this.taskRepository.findByTaskId(taskId);
+    }
+
+    /**
      * Used by: POST /tasks
      * @param newTask
      * @return the created task
@@ -93,49 +110,37 @@ public class TaskService {
      * @param changesTask
      * @return the created user
      */
-    public Task updateTask(long taskId, Task changesTask, String updateStatus) {
+    public Task updateTask(long taskId, Task changesTask) {
+        // Check if taskId is valid (checkIfTaskIdExist throws an exception otherwise)
         Task taskById = checkIfTaskIdExist(taskId);
 
-        // Update status if one was provided in the query
-        if(updateStatus != null) {
-            switch (updateStatus) {
-                case "active":
-                    taskById.setStatus(TaskStatus.ACTIVE);
-                    break;
-                case "completed":
-                    taskById.setStatus(TaskStatus.COMPLETED);
-                    break;
-                case "reported":
-                    taskById.setStatus(TaskStatus.REPORTED);
-                    break;
-                case "archived":
-                    taskById.setStatus(TaskStatus.ARCHIVED);
-            }
+        if (changesTask.getTitle() != null) {
+            taskById.setTitle(changesTask.getTitle());
         }
-        else {
-
-            if (changesTask.getTitle() != null) {
-                taskById.setTitle(changesTask.getTitle());
-            }
-            if (changesTask.getDescription() != null) {
-                taskById.setDescription(changesTask.getDescription());
-            }
-            if (changesTask.getDueDate() != null) {
-                taskById.setDueDate(changesTask.getDueDate());
-            }
-            if (changesTask.getPriority() != null) {
-                taskById.setPriority(changesTask.getPriority());
-            }
-            if (changesTask.getEstimate() != null) {
-                taskById.setEstimate(changesTask.getEstimate());
-            }
-            if (changesTask.getLocation() != null) {
-                taskById.setLocation(changesTask.getLocation());
-            }
-
-            taskById.setAssignee(changesTask.getAssignee());
-            taskById.setReporter(changesTask.getReporter());
+        if (changesTask.getDescription() != null) {
+            taskById.setDescription(changesTask.getDescription());
         }
+        if (changesTask.getDueDate() != null) {
+            taskById.setDueDate(changesTask.getDueDate());
+        }
+        if (changesTask.getPriority() != null) {
+            taskById.setPriority(changesTask.getPriority());
+        }
+        if (changesTask.getEstimate() != null) {
+            taskById.setEstimate(changesTask.getEstimate());
+        }
+        if (changesTask.getLocation() != null) {
+            taskById.setLocation(changesTask.getLocation());
+        }
+        if (changesTask.getStatus() != null) {
+            taskById.setStatus(changesTask.getStatus());
+        }
+        if (changesTask.getScore() > 0) {
+            taskById.setScore(changesTask.getScore());
+        }
+
+        taskById.setAssignee(changesTask.getAssignee());
+        taskById.setReporter(changesTask.getReporter());
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
