@@ -44,7 +44,7 @@ public class UserRepositoryIntegrationTest {
      * make sure that a user can only be saved when all mandatory fields are present
      */
     @Test
-    public void throwException_wrongFields(){
+    public void throwException_missingFields(){
 
         user.setUsername(null);
         user.setPassword(null);

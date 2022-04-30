@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,12 @@ public class TaskService {
         return allTasks;
     }
 
-    public Task getTask(long taskId) {return this.taskRepository.findByTaskId(taskId);}
+    public Task getTask(long taskId) {
+        Optional<Task> found = this.taskRepository.findByTaskId(taskId);
+        if (found.isPresent()) return found.get();
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "task does not exist");
+    }
+
      /**
      * Used by: POST /tasks
      * @param newTask
@@ -145,13 +151,13 @@ public class TaskService {
     // must be public for testing the put endpoint
     //check is task exist by id
     private Task checkIfTaskIdExist(long taskId) {
-        Task taskById = taskRepository.findByTaskId(taskId);
+        Optional<Task> taskById = taskRepository.findByTaskId(taskId);
 
         String baseErrorMessage = "The user with id: %s not found!";
-        if (taskById == null) {
+        if (taskById.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId));
         }
-        return taskById;
+        return taskById.get();
     }
 
 
