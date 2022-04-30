@@ -68,27 +68,28 @@ public class TaskRepositoryIntegrationTest {
      * check if the correct task is returned
      */
     @Test
-    public void findbyTaskId_success() {
+    public void findByTaskId_success() {
 
         entityManager.persist(task);
         entityManager.flush();
 
-        Optional<Task> found = taskRepository.findByTaskId(1L);
+        Optional<Task> foundByTitle = taskRepository.findTaskByTitle(task.getTitle());
+        Optional<Task> found = taskRepository.findByTaskId(foundByTitle.get().getTaskId());
 
-        if (found.isPresent()) {
-            assertNotNull(found.get().getTaskId());
-            assertEquals(task.getDueDate(), found.get().getDueDate());
-            assertEquals(task.getTitle(), found.get().getTitle());
-            assertEquals(task.getDescription(), found.get().getDescription());
-            assertEquals(task.getEstimate(), found.get().getEstimate());
-            assertEquals(task.getPriority(), found.get().getPriority());
-            assertEquals(task.getLocation(), found.get().getLocation());
-            assertEquals(task.getStatus(), found.get().getStatus());
-            assertEquals(task.getScore(), found.get().getScore());
-            assertEquals(task.getAssignee(), found.get().getAssignee());
-            assertEquals(task.getReporter(), found.get().getReporter());
-        }
-        else fail();
+        assertTrue(found.isPresent());
+
+        assertNotNull(found.get().getTaskId());
+        assertEquals(task.getDueDate(), found.get().getDueDate());
+        assertEquals(task.getTitle(), found.get().getTitle());
+        assertEquals(task.getDescription(), found.get().getDescription());
+        assertEquals(task.getEstimate(), found.get().getEstimate());
+        assertEquals(task.getPriority(), found.get().getPriority());
+        assertEquals(task.getLocation(), found.get().getLocation());
+        assertEquals(task.getStatus(), found.get().getStatus());
+        assertEquals(task.getScore(), found.get().getScore());
+        assertEquals(task.getAssignee(), found.get().getAssignee());
+        assertEquals(task.getReporter(), found.get().getReporter());
+
     }
 
     @Test
@@ -101,5 +102,37 @@ public class TaskRepositoryIntegrationTest {
 
         assertTrue(found.isEmpty());
 
+    }
+
+    @Test
+    public void findTaskByTitle_success() {
+        entityManager.persist(task);
+        entityManager.flush();
+
+        Optional<Task> found = taskRepository.findTaskByTitle(task.getTitle());
+
+        assertTrue(found.isPresent());
+
+        assertNotNull(found.get().getTaskId());
+        assertEquals(task.getDueDate(), found.get().getDueDate());
+        assertEquals(task.getTitle(), found.get().getTitle());
+        assertEquals(task.getDescription(), found.get().getDescription());
+        assertEquals(task.getEstimate(), found.get().getEstimate());
+        assertEquals(task.getPriority(), found.get().getPriority());
+        assertEquals(task.getLocation(), found.get().getLocation());
+        assertEquals(task.getStatus(), found.get().getStatus());
+        assertEquals(task.getScore(), found.get().getScore());
+        assertEquals(task.getAssignee(), found.get().getAssignee());
+        assertEquals(task.getReporter(), found.get().getReporter());
+    }
+
+    @Test
+    public void findTaskByTitle_fail() {
+        entityManager.persist(task);
+        entityManager.flush();
+
+        Optional<Task> found = taskRepository.findTaskByTitle("wrong");
+
+        assertTrue(found.isEmpty());
     }
 }

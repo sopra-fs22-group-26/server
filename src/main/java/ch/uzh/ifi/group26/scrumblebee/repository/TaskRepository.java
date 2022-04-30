@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository("taskRepository")
 public interface TaskRepository extends JpaRepository <Task, Long> {
     Optional<Task> findByTaskId(long taskId);
+    // for testing purpose
+    Optional<Task> findTaskByTitle(String title);
 }
