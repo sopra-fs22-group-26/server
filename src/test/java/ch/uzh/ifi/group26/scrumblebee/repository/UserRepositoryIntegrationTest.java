@@ -1,15 +1,11 @@
 package ch.uzh.ifi.group26.scrumblebee.repository;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,20 +26,28 @@ public class UserRepositoryIntegrationTest {
     private SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
 
+    User user = new User();
 
-    /**
-     * make sure that a user can only be saved when all mandatory fields are present
-     */
-    @Test
-    public void throwException_missingFields() throws ParseException {
-        // given
-        User user = new User();
+    @BeforeEach
+    public void setup() throws ParseException {
+        user.setUsername("test@user");
+        user.setPassword("password");
         user.setEmailAddress("test@domain.com");
         user.setName("name@lastname");
         user.setBirthDate(dateFormat.parse("1998-11-18"));
         user.setCreationDate(dateFormat.parse("2020-12-18"));
         user.setLoggedIn(false);
         user.setScore(0);
+    }
+
+    /**
+     * make sure that a user can only be saved when all mandatory fields are present
+     */
+    @Test
+    public void throwException_wrongFields(){
+
+        user.setUsername(null);
+        user.setPassword(null);
 
         assertThrows(Exception.class, ()->{
             entityManager.persist(user);
@@ -60,18 +64,7 @@ public class UserRepositoryIntegrationTest {
      * @throws ParseException
      */
     @Test
-    public void findByName_success() throws ParseException {
-
-        // given
-        User user = new User();
-        user.setUsername("test@user");
-        user.setPassword("password");
-        user.setEmailAddress("test@domain.com");
-        user.setName("name@lastname");
-        user.setBirthDate(dateFormat.parse("1998-11-18"));
-        user.setCreationDate(dateFormat.parse("2020-12-18"));
-        user.setLoggedIn(false);
-        user.setScore(0);
+    public void findByName_success() {
 
         entityManager.persist(user);
         entityManager.flush();
@@ -100,18 +93,7 @@ public class UserRepositoryIntegrationTest {
      * @throws ParseException
      */
     @Test
-    public void findByName_fail() throws ParseException {
-
-        // given
-        User user = new User();
-        user.setUsername("test@user");
-        user.setPassword("password");
-        user.setEmailAddress("test@domain.com");
-        user.setName("name@lastname");
-        user.setBirthDate(dateFormat.parse("1998-11-18"));
-        user.setCreationDate(dateFormat.parse("2020-12-18"));
-        user.setLoggedIn(false);
-        user.setScore(0);
+    public void findByName_fail(){
 
         entityManager.persist(user);
         entityManager.flush();
@@ -128,18 +110,7 @@ public class UserRepositoryIntegrationTest {
      * @throws ParseException
      */
     @Test
-    public void findById_success() throws ParseException {
-
-        // given
-        User user = new User();
-        user.setUsername("test@user");
-        user.setPassword("password");
-        user.setEmailAddress("test@domain.com");
-        user.setName("name@lastname");
-        user.setBirthDate(dateFormat.parse("1998-11-18"));
-        user.setCreationDate(dateFormat.parse("2020-12-18"));
-        user.setLoggedIn(false);
-        user.setScore(0);
+    public void findById_success() {
 
         entityManager.persist(user);
         entityManager.flush();
@@ -168,18 +139,7 @@ public class UserRepositoryIntegrationTest {
      * @throws ParseException
      */
     @Test
-    public void findById_fail() throws ParseException {
-
-        // given
-        User user = new User();
-        user.setUsername("test@user");
-        user.setPassword("password");
-        user.setEmailAddress("test@domain.com");
-        user.setName("name@lastname");
-        user.setBirthDate(dateFormat.parse("1998-11-18"));
-        user.setCreationDate(dateFormat.parse("2020-12-18"));
-        user.setLoggedIn(false);
-        user.setScore(0);
+    public void findById_fail() {
 
         entityManager.persist(user);
         entityManager.flush();
@@ -196,18 +156,7 @@ public class UserRepositoryIntegrationTest {
      * @throws ParseException
      */
     @Test
-    public void findByEmailAddress_success() throws ParseException {
-
-        // given
-        User user = new User();
-        user.setUsername("test@user");
-        user.setPassword("password");
-        user.setEmailAddress("test@domain.com");
-        user.setName("name@lastname");
-        user.setBirthDate(dateFormat.parse("1998-11-18"));
-        user.setCreationDate(dateFormat.parse("2020-12-18"));
-        user.setLoggedIn(false);
-        user.setScore(0);
+    public void findByEmailAddress_success() {
 
         entityManager.persist(user);
         entityManager.flush();
@@ -236,18 +185,7 @@ public class UserRepositoryIntegrationTest {
      * @throws ParseException
      */
     @Test
-    public void findByEmailAddress_fail() throws ParseException {
-
-        // given
-        User user = new User();
-        user.setUsername("test@user");
-        user.setPassword("password");
-        user.setEmailAddress("test@domain.com");
-        user.setName("name@lastname");
-        user.setBirthDate(dateFormat.parse("1998-11-18"));
-        user.setCreationDate(dateFormat.parse("2020-12-18"));
-        user.setLoggedIn(false);
-        user.setScore(0);
+    public void findByEmailAddress_fail() {
 
         entityManager.persist(user);
         entityManager.flush();
