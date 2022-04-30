@@ -100,4 +100,6 @@ public class User implements Serializable {
 
     public Set<Role> getRoles() { return roles; }
 
+    public void addScore(int additionalScore) { this.score += additionalScore; }
+
 }

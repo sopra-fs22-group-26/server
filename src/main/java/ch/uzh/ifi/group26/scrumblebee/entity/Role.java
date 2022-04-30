@@ -13,7 +13,7 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column()
+    @Column(nullable = false)
     private RoleType roleName;
 
     public Long getId() { return id; }

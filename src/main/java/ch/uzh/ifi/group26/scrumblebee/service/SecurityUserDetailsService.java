@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Service
+@Service("securityUserDetailsService")
 public class SecurityUserDetailsService implements UserDetailsService {
 
     @Autowired
