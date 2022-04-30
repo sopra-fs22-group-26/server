@@ -89,6 +89,24 @@ public class TaskController {
         return taskGetDTOs;
     }
 
+    /**
+     * Type: GET
+     * URL: /tasks/reporter/{userId}
+     * Body: none
+     * @return Task
+     */
+    @GetMapping("/tasks/reporter/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<TaskGetDTO> getTasksToReportForUser(@PathVariable long userId) {
+        List<Task> tasks = taskService.getTasksToReportForUser(userId);
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+        for (Task task : tasks) {
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
+    }
+
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
     /**
