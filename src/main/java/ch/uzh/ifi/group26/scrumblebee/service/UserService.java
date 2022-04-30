@@ -171,18 +171,18 @@ public class UserService {
     private void checkIfUserExists(User userToBeCreated) {
 
         Optional<User> userByUsername = this.userRepository.findByUsername(userToBeCreated.getUsername());
-        User userByEmailAddress = this.userRepository.findByEmailAddress(userToBeCreated.getEmailAddress());
+        Optional<User> userByEmailAddress = this.userRepository.findByEmailAddress(userToBeCreated.getEmailAddress());
 
         String baseErrorMessage = "The %s provided %s already used!";
 
-        if (userByUsername.isPresent() && userByEmailAddress != null) {
+        if (userByUsername.isPresent() && userByEmailAddress.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
             String.format(baseErrorMessage, "username and the email address", "are"));
         }
         else if (userByUsername.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
         }
-        else if (userByEmailAddress != null) {
+        else if (userByEmailAddress.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "email address", "is"));
         }
 

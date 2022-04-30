@@ -239,7 +239,7 @@ public class AuthControllerTest {
      * @throws Exception
      */
     @Test
-    public void refreshTokenFail_return404() throws Exception {
+    public void refreshTokenFail_return401() throws Exception {
 
         String token = UUID.randomUUID().toString();
         RefreshPostDTO refreshPostDTO = new RefreshPostDTO();
