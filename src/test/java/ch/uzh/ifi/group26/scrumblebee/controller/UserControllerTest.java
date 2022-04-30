@@ -59,7 +59,7 @@ public class UserControllerTest {
 
     private final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
 
-    private static final SimpleDateFormat dateFormat
+    private SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
 
     private User user1 = new User();

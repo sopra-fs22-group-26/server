@@ -56,7 +56,7 @@ public class AuthService {
         Optional<User> repUser = userRepository.findByUsername(currentUser.getUsername());
 
         String errorMessage = "Error: Username does not match any user in the repository. Logout failed.";
-        if (!repUser.isPresent()) {
+        if (repUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
         }
         // No exception => logout was successful

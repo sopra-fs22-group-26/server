@@ -573,11 +573,11 @@ public class TaskControllerTest {
      * INPUT: valid
      * @throws Exception
      */
-    /*
+
     @Test
     public void deleteTask_invalidInput_return404() throws Exception {
 
-        when(taskService.checkIfTaskIdExist(anyLong()))
+        when(taskService.deleteTask(anyLong()))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // when/then -> do the request + validate the result
@@ -589,7 +589,7 @@ public class TaskControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-     */
+
 
 
 

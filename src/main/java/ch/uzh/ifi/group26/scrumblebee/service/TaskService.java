@@ -144,7 +144,7 @@ public class TaskService {
 
     // must be public for testing the put endpoint
     //check is task exist by id
-    public Task checkIfTaskIdExist(long taskId) {
+    private Task checkIfTaskIdExist(long taskId) {
         Task taskById = taskRepository.findByTaskId(taskId);
 
         String baseErrorMessage = "The user with id: %s not found!";
