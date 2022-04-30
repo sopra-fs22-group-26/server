@@ -171,7 +171,7 @@ public class TaskService {
         Optional<Task> taskById = taskRepository.findByTaskId(taskId);
 
         String baseErrorMessage = "The user with id: %s not found!";
-        if (taskById.isEmpty()) {
+        if (!taskById.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId));
         }
         return taskById.get();
