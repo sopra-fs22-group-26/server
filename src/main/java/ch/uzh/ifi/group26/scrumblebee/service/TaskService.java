@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -75,7 +76,7 @@ public class TaskService {
     }
 
 
-    public Task getTask(long taskId) {
+    public Optional<Task> getTask(long taskId) {
         return this.taskRepository.findByTaskId(taskId);
     }
 
@@ -157,21 +158,23 @@ public class TaskService {
      * @param taskId
      * @return the created user
      */
-    public void deleteTask(long taskId) {
+    public Task deleteTask(long taskId) {
         Task taskById = checkIfTaskIdExist(taskId);
 
         taskRepository.delete(taskById);
+
+        return taskById;
     }
 
     //check is task exist by id
     private Task checkIfTaskIdExist(long taskId) {
-        Task taskById = taskRepository.findByTaskId(taskId);
+        Optional<Task> taskById = taskRepository.findByTaskId(taskId);
 
         String baseErrorMessage = "The user with id: %s not found!";
-        if (taskById == null) {
+        if (taskById.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId));
         }
-        return taskById;
+        return taskById.get();
     }
 
 

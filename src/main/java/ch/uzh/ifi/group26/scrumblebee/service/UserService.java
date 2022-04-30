@@ -5,7 +5,6 @@ import ch.uzh.ifi.group26.scrumblebee.entity.Role;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.repository.RoleRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
-import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +92,7 @@ public class UserService {
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
+
     }
 
     /**

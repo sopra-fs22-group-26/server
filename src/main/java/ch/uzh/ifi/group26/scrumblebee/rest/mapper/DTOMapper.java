@@ -78,6 +78,19 @@ public interface DTOMapper {
     @Mapping(source = "reporter", target = "reporter")
     Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
 
+    @Mapping(target = "taskId", ignore = true)
+    @Mapping(source = "dueDate", target = "dueDate")
+    @Mapping(source = "title", target = "title")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "estimate", target = "estimate")
+    @Mapping(source = "priority", target = "priority")
+    @Mapping(source = "location", target = "location")
+    @Mapping(source = "status", target = "status")
+    @Mapping(target = "score", ignore = true)
+    @Mapping(source = "assignee", target = "assignee")
+    @Mapping(source = "reporter", target = "reporter")
+    Task convertTaskPutDTOtoEntity(TaskPutDTO taskPutDTO);
+
     @Mapping(source = "taskId", target = "taskId")
     @Mapping(source = "dueDate", target = "dueDate")
     @Mapping(source = "title", target = "title")

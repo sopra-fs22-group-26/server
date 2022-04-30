@@ -11,9 +11,11 @@ import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Task Controller
@@ -74,8 +76,9 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TaskGetDTO getTask(@PathVariable long taskId) {
-        Task task = taskService.getTask(taskId);
-        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task);
+        Optional<Task> task = taskService.getTask(taskId);
+        if (task.isPresent()) return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task.get());
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -177,9 +180,8 @@ public class TaskController {
     @DeleteMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<Long> deleteTask(@PathVariable long taskId) {
-        taskService.deleteTask(taskId);
-
-        return new ResponseEntity<>(taskId, HttpStatus.OK);
+    public TaskGetDTO deleteTask(@PathVariable long taskId) {
+        Task deleted = taskService.deleteTask(taskId);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(deleted);
     }
 }

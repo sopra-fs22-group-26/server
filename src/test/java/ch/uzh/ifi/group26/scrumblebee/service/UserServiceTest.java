@@ -1,69 +1,97 @@
 package ch.uzh.ifi.group26.scrumblebee.service;
 
+import ch.uzh.ifi.group26.scrumblebee.config.TestConfig;
+import ch.uzh.ifi.group26.scrumblebee.constant.RoleType;
+import ch.uzh.ifi.group26.scrumblebee.entity.Role;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.repository.RoleRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-  @Mock
-  private UserRepository userRepository;
+    @Mock
+    UserRepository userRepository;
 
-  @InjectMocks
-  private UserService userService;
+    @Mock
+    RoleRepository roleRepository;
 
-  private User testUser;
+    @Mock
+    PasswordEncoder encoder;
 
-  private String hashedPassword;
+    @InjectMocks
+    UserService userService;
 
+    User testUser = new User();
 
-  @BeforeEach
-  public void setup() {
-    MockitoAnnotations.openMocks(this);
+    private SimpleDateFormat dateFormat
+            = new SimpleDateFormat("yyyy-MM-dd");
 
-    String password = "testPwd";
+    @BeforeEach
+    public void setup() throws ParseException {
 
-    // given
-    testUser = new User();
-    testUser.setId(1L);
-    testUser.setEmailAddress("testEmail");
-    testUser.setUsername("testUsername");
-    testUser.setPassword(password);
+        MockitoAnnotations.openMocks(this);
 
+        // given
+        testUser.setId(1L);
+        testUser.setEmailAddress("testEmail");
+        testUser.setUsername("testUsername");
+        testUser.setName("test");
+        testUser.setPassword("password");
+        testUser.setLoggedIn(false);
+        testUser.setScore(0);
 
-    // when -> any object is being save in the userRepository -> return the dummy
-    // testUser
-    Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
-  }
+    }
 
 /*
-  @Test
-  public void createUser_validInputs_success() {
-    // when -> any object is being save in the userRepository -> return the dummy
-    // testUser
-    User createdUser = userService.createUser(testUser);
+    @Test
+    public void createUser_validInputs_success() {
 
-    // then
-    Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
+        when(encoder.encode(anyString())).thenReturn("password");
 
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByEmailAddress(anyString())).thenReturn(Optional.empty());
 
-    assertEquals(testUser.getId(), createdUser.getId());
-    assertEquals(testUser.getEmailAddress(), createdUser.getEmailAddress());
-    assertEquals(testUser.getName(), createdUser.getName());
-    assertEquals(testUser.getUsername(), createdUser.getUsername());
-    assertEquals(hashedPassword, createdUser.getPassword());
-    assertNotNull(createdUser.getToken());
-    assertNotNull(createdUser.getCreationDate());
-    assertNull(createdUser.getBirthDate());
-    assertEquals(0, createdUser.getScore());
-    assertTrue(createdUser.getLoggedIn());
+        Role userRole = new Role();
+        userRole.setRoleName(RoleType.ROLE_USER);
+        when(roleRepository.findByRoleName(Mockito.any(RoleType.class))).thenReturn(Optional.of(userRole));
+
+        when(userRepository.save(Mockito.any())).thenReturn(testUser);
+
+        User createdUser = userService.createUser(testUser);
+
+        Mockito.verify(encoder, Mockito.times(1)).encode(Mockito.any());
+        Mockito.verify(roleRepository, Mockito.times(1)).findByRoleName(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
+
+        assertEquals(testUser.getId(), createdUser.getId());
+        assertEquals(testUser.getEmailAddress(), createdUser.getEmailAddress());
+        assertEquals(testUser.getName(), createdUser.getName());
+        assertEquals(testUser.getUsername(), createdUser.getUsername());
+        assertEquals(testUser.getPassword(), createdUser.getPassword());
+        assertNotNull(createdUser.getCreationDate());
+        assertNull(createdUser.getBirthDate());
+        assertEquals(0, createdUser.getScore());
+
   }
 
+ */
 
+/*
   @Test
   public void createUser_duplicateName_throwsException() {
     // given -> a first user has already been created

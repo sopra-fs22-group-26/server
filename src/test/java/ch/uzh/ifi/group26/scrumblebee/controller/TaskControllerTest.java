@@ -28,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
@@ -365,7 +366,7 @@ public class TaskControllerTest {
     @Test
     public void getTaskById_validInput_returnUserWithId() throws Exception {
 
-        given(taskService.getTask(task1.getTaskId())).willReturn(task1);
+        given(taskService.getTask(task1.getTaskId())).willReturn(Optional.ofNullable(task1));
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get(
                         "/tasks/{taskId}", task1.getTaskId())
