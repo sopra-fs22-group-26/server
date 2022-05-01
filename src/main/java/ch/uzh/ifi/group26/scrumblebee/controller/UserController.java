@@ -119,7 +119,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void updateUserById(@PathVariable("id") Long userId, @RequestBody UserPutDTO userPutDTO) {
-        User userToUpdate = userService.getUserByIDNum(userId);
+        User userToUpdate = userService.getUser(userId);
         User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
         User userCredentials = DTOMapper.INSTANCE.convertUserPutDTOtoTempEntity(userPutDTO);
 

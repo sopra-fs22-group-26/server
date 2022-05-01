@@ -30,7 +30,8 @@ public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    private final UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     RoleRepository roleRepository;
@@ -38,19 +39,14 @@ public class UserService {
     @Autowired
     PasswordEncoder encoder;
 
-    @Autowired
-    public UserService(@Qualifier("userRepository") UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
 
     /**
      * Return a list of all users.
      * @return List<User>
      */
     public List<User> getUsers() {
-    return this.userRepository.findAll();
-  }
+        return this.userRepository.findAll();
+    }
 
 
     /**
@@ -73,6 +69,8 @@ public class UserService {
     public User createUser(User newUser) {
 
         checkIfUserExists(newUser);
+
+        newUser.setLoggedIn(false);
 
         java.util.Date creationDate = java.util.Calendar.getInstance().getTime();
         newUser.setCreationDate(creationDate);
@@ -100,7 +98,7 @@ public class UserService {
      * @param userToUpdate and inputUser
      * @return void
      */
-    public void updateUser(User userToUpdate, User inputUser, User userCredentials){
+    public User updateUser(User userToUpdate, User inputUser, User userCredentials){
         // Check if user wants to change password => if yes, verify credentials
         if (inputUser.getPassword() != null && userCredentials.getPassword() != null ){
             if (encoder.matches(userCredentials.getPassword(),userToUpdate.getPassword())){
@@ -125,37 +123,20 @@ public class UserService {
             userToUpdate.addScore(inputUser.getScore());
         }
 
-        updateRepository(userToUpdate);
-    }
-
-    /**
-     * Used by: PUT /users/{id}
-     * @param userId
-     * @return User found by ID
-     */
-    public User getUserByIDNum(Long userId){
-        Optional<User> userRepo = userRepository.findById(userId);
-        User user;
-        try{
-            user = userRepo.orElse(null);
-            if (user == null){
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ID not found"));
-            }
-        }catch (NullPointerException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ID not found"));
-        }
-        return user;
+        return updateRepository(userToUpdate);
 
     }
+
 
     /**
      * Used by: PUT /users/{id}
      * @param aUser
      * @return void
      */
-    private void updateRepository(User aUser){
-        userRepository.save(aUser);
+    private User updateRepository(User aUser){
+        User updated = userRepository.save(aUser);
         userRepository.flush();
+        return updated;
     }
 
     /**
