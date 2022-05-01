@@ -73,7 +73,7 @@ public interface DTOMapper {
     @Mapping(source = "priority", target = "priority")
     @Mapping(source = "location", target = "location")
     @Mapping(source = "status", target = "status")
-    @Mapping(target = "score", ignore = true)                 // changed from " source target" to "target ignore=true"
+    @Mapping(target = "score", ignore = true)
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
     Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
@@ -86,7 +86,7 @@ public interface DTOMapper {
     @Mapping(source = "priority", target = "priority")
     @Mapping(source = "location", target = "location")
     @Mapping(source = "status", target = "status")
-    @Mapping(target = "score", ignore = true)
+    @Mapping(source = "score", target = "score")
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
     Task convertTaskPutDTOtoEntity(TaskPutDTO taskPutDTO);
