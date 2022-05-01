@@ -2,13 +2,11 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
-import org.mapstruct.Mapping;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TaskGetDTO {
-
+public class TaskPutDTO {
     private Long taskId;
     private java.util.Date dueDate;
     private String title;
@@ -34,7 +32,7 @@ public class TaskGetDTO {
 
     public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
 
-    public String getDueDate() { return dateFormat.format(dueDate); }
+    public Date getDueDate() { return dueDate; }
 
     public void setTitle(String title) { this.title = title; }
 
@@ -48,35 +46,31 @@ public class TaskGetDTO {
 
     public Integer getEstimate() { return estimate; }
 
-    public void setPriority(TaskPriority priority) { this.priority = priority; }
-
-    public String getPriority() {
-        String returnPriority = "";
+    public void setPriority(String priority) {
         switch (priority) {
-            case NONE -> returnPriority = "NONE";
-            case LOW -> returnPriority = "LOW";
-            case MEDIUM -> returnPriority = "MEDIUM";
-            case HIGH -> returnPriority = "HIGH";
+            case "NONE" -> this.priority = TaskPriority.NONE;
+            case "LOW"  -> this.priority = TaskPriority.LOW;
+            case "MEDIUM"  -> this.priority = TaskPriority.MEDIUM;
+            case "HIGH"  -> this.priority = TaskPriority.HIGH;
         }
-        return returnPriority;
     }
+
+    public TaskPriority getPriority() { return priority; }
 
     public void setLocation(String location) { this.location = location; }
 
     public String getLocation() { return location; }
 
-    public void setStatus(TaskStatus status) { this.status = status; }
-
-    public String getStatus() {
-        String returnStatus = "";
+    public void setStatus(String status) {
         switch (status) {
-            case ACTIVE -> returnStatus = "ACTIVE";
-            case ARCHIVED -> returnStatus = "ARCHIVED";
-            case REPORTED -> returnStatus = "REPORTED";
-            case COMPLETED -> returnStatus = "COMPLETED";
+            case "ACTIVE" -> this.status = TaskStatus.ACTIVE;
+            case "ARCHIVED" -> this.status = TaskStatus.ARCHIVED;
+            case "REPORTED" -> this.status = TaskStatus.REPORTED;
+            case "COMPLETED" -> this.status = TaskStatus.COMPLETED;
         }
-        return returnStatus;
     }
+
+    public TaskStatus getStatus() { return status; }
 
     public void setScore(int score) { this.score = score; }
 
@@ -97,4 +91,5 @@ public class TaskGetDTO {
     public long getReporter() {
         return reporter;
     }
+
 }

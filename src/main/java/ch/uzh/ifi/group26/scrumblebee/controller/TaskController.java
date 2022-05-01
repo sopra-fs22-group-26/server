@@ -1,16 +1,21 @@
 package ch.uzh.ifi.group26.scrumblebee.controller;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
+import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPostDTO;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPutDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
+import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Task Controller
@@ -23,8 +28,12 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
+    private final UserService userService;
 
-    TaskController(TaskService taskService) { this.taskService = taskService; }
+    TaskController(TaskService taskService, UserService userService) {
+        this.taskService = taskService;
+        this.userService = userService;
+    }
 
 
 
@@ -67,8 +76,9 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TaskGetDTO getTask(@PathVariable long taskId) {
-        Task task = taskService.getTask(taskId);
-        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task);
+        Optional<Task> task = taskService.getTask(taskId);
+        if (task.isPresent()) return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task.get());
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -81,6 +91,9 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<TaskGetDTO> getTasksForUser(@PathVariable long userId) {
+        // check if userId is valid (getUser throws an exception otherwise)
+        User user = userService.getUser(userId);
+
         List<Task> tasks = taskService.getTasksForUser(userId);
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
         for (Task task : tasks) {
@@ -88,6 +101,29 @@ public class TaskController {
         }
         return taskGetDTOs;
     }
+
+    /**
+     * Type: GET
+     * URL: /tasks/reporter/{userId}
+     * Body: none
+     * @return Task
+     */
+    @GetMapping("/tasks/reporter/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<TaskGetDTO> getTasksToReportForUser(@PathVariable long userId) {
+        // Check if userId is valid (getUser throws an exception otherwise)
+        User user = userService.getUser(userId);
+
+        List<Task> tasks = taskService.getTasksToReportForUser(userId);
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+        for (Task task : tasks) {
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
+    }
+
+
 
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
@@ -117,21 +153,21 @@ public class TaskController {
     /**
      * Type: PUT
      * URL: /tasks/{taskId}
-     * Body: username, name*, email, password
+     * Body: task details
      * Protection: check if request is coming from the client (check for special token)
-     * @return User
+     * @return Task
      */
     @PutMapping("/tasks/{taskId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public TaskGetDTO updateTask(@RequestBody TaskPostDTO taskPostDTO,
-                                 @PathVariable long taskId,
-                                 @RequestParam(required = false) String updateStatus) {
-        Task changesTask = DTOMapper.INSTANCE.convertTaskPostDTOtoEntity(taskPostDTO);
-        Task updatedTask = taskService.updateTask(taskId, changesTask, updateStatus);
+    public TaskGetDTO updateTask(@RequestBody TaskPutDTO taskPutDTO, @PathVariable long taskId) {
+        Task changesTask = DTOMapper.INSTANCE.convertTaskPutDTOtoEntity(taskPutDTO);
+        Task updatedTask = taskService.updateTask(taskId, changesTask);
         return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(updatedTask);
-
     }
+
+
+
     /*------------------------------------- DELETE requests --------------------------------------------------------*/
 
     /**
@@ -144,9 +180,8 @@ public class TaskController {
     @DeleteMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<Long> deleteTask(@PathVariable long taskId) {
-        taskService.deleteTask(taskId);
-
-        return new ResponseEntity<>(taskId, HttpStatus.OK);
+    public TaskGetDTO deleteTask(@PathVariable long taskId) {
+        Task deleted = taskService.deleteTask(taskId);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(deleted);
     }
 }

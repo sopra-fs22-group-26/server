@@ -5,7 +5,6 @@ import ch.uzh.ifi.group26.scrumblebee.entity.Role;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.repository.RoleRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
-import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +92,7 @@ public class UserService {
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
+
     }
 
     /**
@@ -120,6 +120,9 @@ public class UserService {
         }
         if (inputUser.getEmailAddress() != null){
             userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+        }
+        if (inputUser.getScore() > 0) {
+            userToUpdate.addScore(inputUser.getScore());
         }
 
         updateRepository(userToUpdate);
@@ -168,18 +171,18 @@ public class UserService {
     private void checkIfUserExists(User userToBeCreated) {
 
         Optional<User> userByUsername = this.userRepository.findByUsername(userToBeCreated.getUsername());
-        User userByEmailAddress = this.userRepository.findByEmailAddress(userToBeCreated.getEmailAddress());
+        Optional<User> userByEmailAddress = this.userRepository.findByEmailAddress(userToBeCreated.getEmailAddress());
 
         String baseErrorMessage = "The %s provided %s already used!";
 
-        if (userByUsername.isPresent() && userByEmailAddress != null) {
+        if (userByUsername.isPresent() && userByEmailAddress.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
             String.format(baseErrorMessage, "username and the email address", "are"));
         }
         else if (userByUsername.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
         }
-        else if (userByEmailAddress != null) {
+        else if (userByEmailAddress.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "email address", "is"));
         }
 

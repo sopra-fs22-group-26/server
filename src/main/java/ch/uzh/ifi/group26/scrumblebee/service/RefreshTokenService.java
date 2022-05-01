@@ -48,6 +48,7 @@ public class RefreshTokenService {
         return token;
     }
 
+    /*
     @Transactional
     public int deleteByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -58,4 +59,6 @@ public class RefreshTokenService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token for user was not found");
         }
     }
+
+     */
 }
