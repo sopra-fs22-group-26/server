@@ -29,12 +29,16 @@ public class TaskService {
 
     private final Logger log = LoggerFactory.getLogger(TaskService.class);
 
-    private final TaskRepository taskRepository;
+    @Autowired
+    TaskRepository taskRepository;
 
+    /*
     @Autowired
     public TaskService(@Qualifier("taskRepository") TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
+
+     */
 
     // Get all tasks, completed or not
     public List<Task> getTasks() {
