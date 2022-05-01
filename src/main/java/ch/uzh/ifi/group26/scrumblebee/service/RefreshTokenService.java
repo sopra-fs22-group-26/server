@@ -30,14 +30,17 @@ public class RefreshTokenService {
     }
 
     public RefreshToken createRefreshToken(Long userId) {
-        RefreshToken refreshToken = new RefreshToken();
         if (userRepository.findById(userId).isPresent()) {
+            RefreshToken refreshToken = new RefreshToken();
             refreshToken.setUser(userRepository.findById(userId).get());
+            refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationsMS*2));
+            refreshToken.setToken(UUID.randomUUID().toString());
+            refreshToken = refreshTokenRepository.save(refreshToken);
+            return refreshToken;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "createRefreshToken: User does not exist");
         }
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationsMS*2));
-        refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken = refreshTokenRepository.save(refreshToken);
-        return refreshToken;
+
     }
 
     public RefreshToken verifyExpiration(RefreshToken token) {
