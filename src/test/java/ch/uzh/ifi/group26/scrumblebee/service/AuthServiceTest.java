@@ -45,8 +45,8 @@ public class AuthServiceTest {
 
     @BeforeEach
     public void setup() throws ParseException {
-        MockitoAnnotations.openMocks(this);
 
+        MockitoAnnotations.openMocks(this);
 
         user1.setId(1L);
         user1.setName("name1");
