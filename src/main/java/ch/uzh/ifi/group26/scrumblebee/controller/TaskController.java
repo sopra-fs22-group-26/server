@@ -8,8 +8,8 @@ import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPutDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,14 +27,11 @@ import java.util.Optional;
 @RestController
 public class TaskController {
 
-    private final TaskService taskService;
-    private final UserService userService;
+    @Autowired
+    TaskService taskService;
 
-    TaskController(TaskService taskService, UserService userService) {
-        this.taskService = taskService;
-        this.userService = userService;
-    }
-
+    @Autowired
+    UserService userService;
 
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/

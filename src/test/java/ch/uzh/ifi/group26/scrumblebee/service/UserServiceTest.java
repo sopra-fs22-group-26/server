@@ -55,7 +55,7 @@ public class UserServiceTest {
 
         // when -> any object is being save in the userRepository -> return the dummy
         // testUser
-      when(userRepository.save(any())).thenReturn(testUser);
+        when(userRepository.save(any())).thenReturn(testUser);
     }
 
 

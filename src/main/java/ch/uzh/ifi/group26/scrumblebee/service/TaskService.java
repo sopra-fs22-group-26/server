@@ -32,14 +32,6 @@ public class TaskService {
     @Autowired
     TaskRepository taskRepository;
 
-    /*
-    @Autowired
-    public TaskService(@Qualifier("taskRepository") TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
-
-     */
-
     // Get all tasks, completed or not
     public List<Task> getTasks() {
         return this.taskRepository.findAll();
@@ -92,13 +84,6 @@ public class TaskService {
     public Task createTask(Task newTask) {
 
         newTask.setStatus(TaskStatus.ACTIVE);
-
-        log.debug(newTask.getDueDate().toString());
-        log.debug(newTask.getTitle());
-        log.debug(newTask.getDescription());
-        log.debug(newTask.getEstimate().toString());
-        log.debug(newTask.getPriority().toString());
-        log.debug(newTask.getStatus().toString());
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
