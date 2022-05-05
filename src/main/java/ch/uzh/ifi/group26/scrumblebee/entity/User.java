@@ -2,6 +2,7 @@ package ch.uzh.ifi.group26.scrumblebee.entity;
 
 
 import ch.uzh.ifi.group26.scrumblebee.constant.RoleType;
+import org.apache.tomcat.jni.Poll;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -60,6 +61,17 @@ public class User implements Serializable {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany(mappedBy = "invitees")
+    private Set<PollMeeting> meeting_invitations = new HashSet<>();
+
+    @ManyToMany(mappedBy = "participants")
+    private Set<PollMeeting> meeting_participations = new HashSet<>();
+
+
+    /**
+     * Getter & setter methods
+     */
+
     public void setId(Long id) { this.id = id; }
 
     public Long getId() { return id; }
@@ -101,5 +113,21 @@ public class User implements Serializable {
     public Set<Role> getRoles() { return roles; }
 
     public void addScore(int additionalScore) { this.score += additionalScore; }
+
+    public void setMeeting_invitations(Set<PollMeeting> meeting_invitations) {
+        this.meeting_invitations = meeting_invitations;
+    }
+
+    public Set<PollMeeting> getMeeting_invitations() {
+        return meeting_invitations;
+    }
+
+    public void setMeeting_participations(Set<PollMeeting> meeting_participations) {
+        this.meeting_participations = meeting_participations;
+    }
+
+    public Set<PollMeeting> getMeeting_participations() {
+        return meeting_participations;
+    }
 
 }

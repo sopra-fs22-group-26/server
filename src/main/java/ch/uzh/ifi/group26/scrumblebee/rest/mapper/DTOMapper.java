@@ -1,10 +1,12 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.mapper;
 
+import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+import org.springframework.security.core.parameters.P;
 
 /**
  * DTOMapper
@@ -22,17 +24,20 @@ public interface DTOMapper {
 
   DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(source = "username", target = "username")
-    @Mapping(source = "password", target = "password")
-    @Mapping(source = "emailAddress", target = "emailAddress")
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "birthDate", target = "birthDate")
-    @Mapping(target = "creationDate", ignore = true)
-    @Mapping(target = "loggedIn", ignore = true)
-    @Mapping(target = "score", ignore = true)
-    @Mapping(target = "roles", ignore = true)
-    User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(source = "username", target = "username")
+  @Mapping(source = "password", target = "password")
+  @Mapping(source = "emailAddress", target = "emailAddress")
+  @Mapping(source = "name", target = "name")
+  @Mapping(target = "birthDate", ignore = true)
+  @Mapping(target = "creationDate", ignore = true)
+  @Mapping(target = "loggedIn", ignore = true)
+  @Mapping(target = "score", ignore = true)
+  @Mapping(target = "roles", ignore = true)
+  @Mapping(target = "meeting_invitations", ignore = true)
+  @Mapping(target = "meeting_participations", ignore = true)
+  User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
     // Helper to check credentials in case of password change
     @Mapping(source = "username", target = "username")
@@ -65,6 +70,7 @@ public interface DTOMapper {
     @Mapping(source = "score", target = "score")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
+
     @Mapping(target = "taskId", ignore = true)
     @Mapping(source = "dueDate", target = "dueDate")
     @Mapping(source = "title", target = "title")
@@ -77,6 +83,35 @@ public interface DTOMapper {
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
     Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
+
+  @Mapping(target = "meetingId", ignore = true)
+  @Mapping(source = "creatorId", target = "creatorId")
+  @Mapping(source = "estimateThreshold", target = "estimateThreshold")
+  @Mapping(target = "averageEstimate", ignore = true)
+  @Mapping(target = "votes", ignore = true)
+  @Mapping(target = "invitees", ignore = true)
+  @Mapping(target = "participants", ignore = true)
+  @Mapping(target = "status", ignore = true)
+  PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
+
+    @Mapping(source = "meetingId", target = "meetingId")
+    @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "estimateThreshold", target = "estimateThreshold")
+    @Mapping(source = "averageEstimate", target = "averageEstimate")
+    @Mapping(source = "votes", target = "votes")
+    @Mapping(source = "invitees", target = "invitees")
+    @Mapping(source = "participants", target = "participants")
+    @Mapping(source = "status", target = "status")
+  PollMeetingGetDTO convertEntityToPollMeetingGetDTO(PollMeeting pollMeeting);
+
+  @Mapping(source = "username", target = "username")
+  @Mapping(source = "name", target = "name")
+  @Mapping(source = "id", target = "id")
+  @Mapping(target = "token", ignore = true)
+  @Mapping(target = "refreshToken", ignore = true)
+  @Mapping(target = "type", ignore = true)
+  AuthGetDTO convertEntityToAuthGetDTO(User user);
+
 
     @Mapping(target = "taskId", ignore = true)
     @Mapping(source = "dueDate", target = "dueDate")
