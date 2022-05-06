@@ -43,8 +43,8 @@ public class CommentService {
      * Return a list of all comments.
      * @return List<Comment>
      */
-    public List<Comment> getComments() {
-        return this.commentRepository.findAll();
+    public List<Comment> getComments(Long id) {
+        return this.commentRepository.findAllByBelongingTask(id);
     }
 
 
@@ -77,6 +77,10 @@ public class CommentService {
 
         log.debug("Created Information for Task: {}", newComment);
         return newComment;
+    }
+
+    public void deleteComment(long commentId){
+        commentRepository.deleteByCommentId(commentId);
     }
 
 }

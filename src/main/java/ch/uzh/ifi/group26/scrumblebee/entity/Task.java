@@ -6,6 +6,7 @@ import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Internal Task representation
@@ -57,9 +58,6 @@ public class Task implements Serializable {
     @Column
     private long reporter;
 
-    //Comment entity not implemented yet
-    //@Column
-    //private list<Comment> comments;
 
     /**
      * Getter & setter methods 

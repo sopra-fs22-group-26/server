@@ -2,10 +2,12 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
+
 import org.mapstruct.Mapping;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 
 public class TaskGetDTO {
 

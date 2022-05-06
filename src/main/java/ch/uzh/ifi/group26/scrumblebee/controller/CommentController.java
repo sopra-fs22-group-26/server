@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 
 /**
  * Comment Controller
@@ -33,16 +35,16 @@ public class CommentController {
 
     /**
      * Type: GET
-     * URL: /tasks
+     * URL: /tasks/:taskId
      * Query parameter: show [active|completed] (optional)
      * Body: none
      * @return list<Task>
      */
-    @GetMapping("/comments")
+    @GetMapping("/comments/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<CommentGetDTO> getAllComments() {
-        List<Comment> comments = commentService.getComments();
+    public List<CommentGetDTO> getAllCommentsToATask(@PathVariable("taskId")Long taskId) {
+        List<Comment> comments = commentService.getComments(taskId);
         List<CommentGetDTO> commentGetDTOs = new ArrayList<>();
         for (Comment comment : comments) {
             commentGetDTOs.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
@@ -90,5 +92,11 @@ public class CommentController {
      * Protection: check if request is coming from the client (check for special token)
      * @return User
      */
+    @DeleteMapping("/comments/{commentId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void deleteComment(@PathVariable long commentId) {
+        commentService.deleteComment(commentId);
+    }
 
 }
