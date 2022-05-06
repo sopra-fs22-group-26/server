@@ -1,6 +1,7 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
+import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 
@@ -15,44 +16,47 @@ public class PollMeetingGetDTO {
     private Integer estimateThreshold;
     private Integer averageEstimate;
     private PollMeetingStatus status;
-    private List<Integer> votes;
     private List<UserGetDTO> invitees;
-    private List<UserGetDTO> participants;
-
-    public Long getMeetingId() {
-        return meetingId;
-    }
+    private List<PollParticipantGetDTO> participants;
 
     public void setMeetingId(Long meetingId) {
         this.meetingId = meetingId;
     }
 
-    public Long getCreatorId() {
-        return creatorId;
+    public Long getMeetingId() {
+        return meetingId;
     }
 
     public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
     }
 
-    public Integer getAverageEstimate() {
-        return averageEstimate;
+    public Long getCreatorId() {
+        return creatorId;
     }
 
     public void setAverageEstimate(Integer averageEstimate) {
         this.averageEstimate = averageEstimate;
     }
 
-    public Integer getEstimateThreshold() {
-        return estimateThreshold;
+    public Integer getAverageEstimate() {
+        return averageEstimate;
     }
 
     public void setEstimateThreshold(Integer estimateThreshold) {
         this.estimateThreshold = estimateThreshold;
     }
 
-    public List<UserGetDTO> getInvitees() {
-        return invitees;
+    public Integer getEstimateThreshold() {
+        return estimateThreshold;
+    }
+
+    public void setStatus(PollMeetingStatus status) {
+        this.status = status;
+    }
+
+    public PollMeetingStatus getStatus() {
+        return status;
     }
 
     public void setInvitees(Set<User> invitees) {
@@ -63,32 +67,20 @@ public class PollMeetingGetDTO {
         this.invitees = userGetDTOs;
     }
 
-    public List<UserGetDTO> getParticipants() {
+    public List<UserGetDTO> getInvitees() {
+        return invitees;
+    }
+
+    public void setParticipants(Set<PollParticipant> participants) {
+        List<PollParticipantGetDTO> participantGetDTOs = new ArrayList<>();
+        for (PollParticipant participant : participants) {
+            participantGetDTOs.add(DTOMapper.INSTANCE.convertEntityToPollParticipantGetDTO(participant));
+        }
+        this.participants = participantGetDTOs;
+    }
+    public List<PollParticipantGetDTO> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(Set<User> participants) {
-        List<UserGetDTO> userGetDTOs = new ArrayList<>();
-        for (User user : participants) {
-            userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
-        }
-        this.participants = userGetDTOs;
-    }
-
-    public List<Integer> getVotes() {
-        return votes;
-    }
-
-    public void setVotes(List<Integer> votes) {
-        this.votes = votes;
-    }
-
-    public PollMeetingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PollMeetingStatus status) {
-        this.status = status;
-    }
 
 }

@@ -67,79 +67,20 @@ public class PollMeetingService {
     // Add invitee to set and update repository
     public PollMeeting addInvitee(PollMeeting pollMeeting, User user) {
         pollMeeting.addInvitee(user);
-        pollMeeting =  pollMeetingRepository.save(pollMeeting);
+        pollMeeting = pollMeetingRepository.save(pollMeeting);
         pollMeetingRepository.flush();
         return pollMeeting;
     }
 
-    // Add participant to set and update repository
-    public PollMeeting addParticipant(PollMeeting pollMeeting, User user) {
+    // Add participant to set and update repository (implicitly)
+    public void addParticipant(PollMeeting pollMeeting, User user) {
         pollMeeting.addParticipant(user);
-        pollMeeting =  pollMeetingRepository.save(pollMeeting);
-        pollMeetingRepository.flush();
-        return pollMeeting;
     }
 
-
-//
-//    /**
-//     * Used by: PUT /tasks/{taskId}
-//     * @param meetingId
-//     * @param changesPollMeeting
-//     * @return the created user
-//     */
-//    public PollMeeting updatePollMeeting(long meetingId, PollMeeting changesPollMeeting, String updateStatus) {
-//        PollMeeting pollMeetingById = checkIfTaskIdExist(meetingId);
-//
-//        // Update status if one was provided in the query
-//        if(updateStatus != null) {
-//            switch (updateStatus) {
-//                case "active":
-//                    pollMeetingById.setStatus(TaskStatus.ACTIVE);
-//                    break;
-//                case "completed":
-//                    pollMeetingById.setStatus(TaskStatus.COMPLETED);
-//                    break;
-//                case "reported":
-//                    pollMeetingById.setStatus(TaskStatus.REPORTED);
-//                    break;
-//                case "archived":
-//                    pollMeetingById.setStatus(TaskStatus.ARCHIVED);
-//            }
-//        }
-//        else {
-//
-//            if (changesPollMeeting.getTitle() != null) {
-//                pollMeetingById.setTitle(changesTask.getTitle());
-//            }
-//            if (changesPollMeeting.getDescription() != null) {
-//                pollMeetingById.setDescription(changesTask.getDescription());
-//            }
-//            if (changesPollMeeting.getDueDate() != null) {
-//                pollMeetingById.setDueDate(changesTask.getDueDate());
-//            }
-//            if (changesPollMeeting.getPriority() != null) {
-//                pollMeetingById.setPriority(changesTask.getPriority());
-//            }
-//            if (changesPollMeeting.getEstimate() != null) {
-//                pollMeetingById.setEstimate(changesTask.getEstimate());
-//            }
-//            if (changesPollMeeting.getLocation() != null) {
-//                pollMeetingById.setLocation(changesTask.getLocation());
-//            }
-//
-//            pollMeetingById.setAssignee(changesTask.getAssignee());
-//            pollMeetingById.setReporter(changesTask.getReporter());
-//        }
-//
-//        // saves the given entity but data is only persisted in the database once
-//        // flush() is called
-//        pollMeetingById = pollMeetingRepository.save(pollMeetingById);
-//        pollMeetingRepository.flush();
-//
-//        log.debug("Edited Information for Task: {}", pollMeetingById);
-//        return pollMeetingById;
-//    }
+    // Update a vote for a user in this meeting (if present)
+    public void castVote(PollMeeting pollMeeting, User user, int vote) {
+        pollMeeting.updateVote(user, vote);
+    }
 
 
     /**
@@ -153,7 +94,7 @@ public class PollMeetingService {
         pollMeetingRepository.delete(pollMeetingById);
     }
 
-    //check is task exist by id
+    //check if task exists by id
     private PollMeeting checkIfTaskIdExist(long meetingId) {
         PollMeeting pollMeetingById = pollMeetingRepository.findByMeetingId(meetingId);
 

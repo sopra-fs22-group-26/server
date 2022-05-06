@@ -1,6 +1,7 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.mapper;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
+import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
@@ -118,9 +119,7 @@ public interface DTOMapper {
     @Mapping(source = "creatorId", target = "creatorId")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(target = "averageEstimate", ignore = true)
-    @Mapping(target = "votes", ignore = true)
     @Mapping(target = "invitees", ignore = true)
-    @Mapping(target = "participants", ignore = true)
     @Mapping(target = "status", ignore = true)
     PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
 
@@ -128,12 +127,14 @@ public interface DTOMapper {
     @Mapping(source = "creatorId", target = "creatorId")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(source = "averageEstimate", target = "averageEstimate")
-    @Mapping(source = "votes", target = "votes")
     @Mapping(source = "invitees", target = "invitees")
     @Mapping(source = "participants", target = "participants")
     @Mapping(source = "status", target = "status")
     PollMeetingGetDTO convertEntityToPollMeetingGetDTO(PollMeeting pollMeeting);
 
+    @Mapping(source = "user", target = "user")
+    @Mapping(source = "vote", target = "vote")
+    PollParticipantGetDTO convertEntityToPollParticipantGetDTO(PollParticipant pollParticipant);
 
     /**
      * Auth

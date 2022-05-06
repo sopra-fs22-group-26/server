@@ -2,6 +2,7 @@ package ch.uzh.ifi.group26.scrumblebee.controller;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPutDTO;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import ch.uzh.ifi.group26.scrumblebee.service.PollMeetingService;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingGetDTO;
@@ -102,26 +103,65 @@ public class PollMeetingController {
     }
 
 
-//    /*------------------------------------- PUT requests -----------------------------------------------------------*/
-//
-//    /**
-//     * Type: PUT
-//     * URL: /poll-meetings/{meetingId}
-//     * Body: username, name*, email, password
-//     * Protection: check if request is coming from the client (check for special token)
-//     * @return User
-//     */
-//    @PutMapping("/poll-meetings/{meetingId}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @ResponseBody
-//    public PollMeetingGetDTO updatePollMeeting(@RequestBody PollMeetingPostDTO pollMeetingPostDTO,
-//                                 @PathVariable long meetingId,
-//                                 @RequestParam(required = false) String updateStatus) {
-//        PollMeeting changesPollMeeting = DTOMapper.INSTANCE.convertPollMeetingPostDTOtoEntity(pollMeetingPostDTO);
-//        PollMeeting updatedPollMeeting = pollMeetingService.updatePollMeeting(meetingId, changesPollMeeting, updateStatus);
-//        return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(updatedPollMeeting);
-//
-//    }
+    /*------------------------------------- PUT requests -----------------------------------------------------------*/
+
+    /**
+     * Type: PUT
+     * URL: /poll-meetings/{meetingId}
+     * URL-Parameter: action [join, decline, start, vote, end]
+     * Body: userId, vote, estimateThreshold
+     * @return PollMeeting
+     */
+    @PutMapping("/poll-meetings/{meetingId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public PollMeetingGetDTO updatePollMeeting(@RequestBody PollMeetingPutDTO pollMeetingPutDTO,
+                                               @PathVariable long meetingId,
+                                               @RequestParam(required = false) String action){
+        // Get meeting with provided meetingId from repository
+        PollMeeting pollMeeting = pollMeetingService.getPollMeeting(meetingId);
+        User participant;
+
+        if (action != null) {
+            switch (action) {
+                case "join":
+                    // A user joins the session.
+                    // Get user with provided userID from repository (getUser throws an exception for invalid userId)
+                    participant = userService.getUser(pollMeetingPutDTO.getUserId());
+                    pollMeetingService.addParticipant(pollMeeting, participant);
+                    break;
+
+                case "decline":
+                    // A user declines the invitation
+                    // => Update status of invitee to "DECLINED"
+                    break;
+
+                case "start":
+                    // The voting process is started
+                    // => Update status of PollMeeting to "VOTING"
+                    break;
+
+                case "vote":
+                    // A user casts a vote.
+                    // Get user with provided userID from repository (getUser throws an exception for invalid userId)
+                    participant = userService.getUser(pollMeetingPutDTO.getUserId());
+                    pollMeetingService.castVote(pollMeeting, participant, pollMeetingPutDTO.getVote());
+                    break;
+
+                case "end":
+                    // The voting process is ended
+                    // => Update status of PollMeeting to "ENDED"
+                    break;
+
+                default:
+                    // Do nothing
+            }
+        }
+
+        return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(pollMeeting);
+    }
+
+
     /*------------------------------------- DELETE requests --------------------------------------------------------*/
 
     /**
