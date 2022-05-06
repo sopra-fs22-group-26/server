@@ -26,6 +26,9 @@ public class PollMeeting implements Serializable {
     private Long creatorId;
 
     @Column(nullable = false)
+    private Long taskId;
+
+    @Column(nullable = false)
     private Integer estimateThreshold;
 
     @Column
@@ -128,6 +131,16 @@ public class PollMeeting implements Serializable {
     public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
 
     public Long getCreatorId() { return creatorId; }
+
+    /***/
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
 
     /***/
 

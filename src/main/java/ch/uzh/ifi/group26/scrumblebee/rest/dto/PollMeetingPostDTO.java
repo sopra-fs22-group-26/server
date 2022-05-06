@@ -4,18 +4,18 @@ import java.util.List;
 
 public class PollMeetingPostDTO {
 
-    private Long meetingId;
-    private long creatorId;
+    private Long creatorId;
+    private Long taskId;
     private Integer estimateThreshold;
     private Integer averageEstimate;
     private List<Long> invitees;
 
-    public Long getMeetingId() {
-        return meetingId;
+    public Long getTaskId() {
+        return taskId;
     }
 
-    public void setMeetingId(Long meetingId) {
-        this.meetingId = meetingId;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
     public Long getCreatorId() {

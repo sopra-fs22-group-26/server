@@ -117,6 +117,7 @@ public interface DTOMapper {
      */
     @Mapping(target = "meetingId", ignore = true)
     @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "taskId", target = "taskId")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(target = "averageEstimate", ignore = true)
     @Mapping(target = "invitees", ignore = true)
@@ -125,6 +126,7 @@ public interface DTOMapper {
 
     @Mapping(source = "meetingId", target = "meetingId")
     @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "taskId", target = "taskId")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(source = "averageEstimate", target = "averageEstimate")
     @Mapping(source = "invitees", target = "invitees")

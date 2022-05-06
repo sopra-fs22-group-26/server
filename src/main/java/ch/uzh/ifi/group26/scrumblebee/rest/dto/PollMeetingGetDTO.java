@@ -12,7 +12,8 @@ import java.util.Set;
 public class PollMeetingGetDTO {
 
     private Long meetingId;
-    private long creatorId;
+    private Long creatorId;
+    private Long taskId;
     private Integer estimateThreshold;
     private Integer averageEstimate;
     private PollMeetingStatus status;
@@ -33,6 +34,14 @@ public class PollMeetingGetDTO {
 
     public Long getCreatorId() {
         return creatorId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    public Long getTaskId() {
+        return taskId;
     }
 
     public void setAverageEstimate(Integer averageEstimate) {
