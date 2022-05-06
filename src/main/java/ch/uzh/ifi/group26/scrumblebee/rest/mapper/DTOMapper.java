@@ -2,6 +2,7 @@ package ch.uzh.ifi.group26.scrumblebee.rest.mapper;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -117,6 +118,19 @@ public interface DTOMapper {
     @Mapping(target = "token", ignore = true)
     @Mapping(target = "refreshToken", ignore = true)
     RefreshGetDTO convertEntityToRefreshGetDTO(User user);
+
+    @Mapping(source = "commentId", target = "commentId")
+    @Mapping(source = "content", target = "content")
+    @Mapping(source = "authorId", target = "authorId")
+    @Mapping(source = "belongingTask", target = "belongingTask")
+    Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
+
+
+    @Mapping(source = "commentId", target = "commentId")
+    @Mapping(source = "content", target = "content")
+    @Mapping(source = "authorId", target = "authorId")
+    @Mapping(source = "belongingTask", target = "belongingTask")
+    CommentGetDTO convertEntityToCommentGetDTO(Comment comment);
 
 }
 
