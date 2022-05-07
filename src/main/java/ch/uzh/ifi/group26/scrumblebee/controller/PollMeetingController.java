@@ -133,7 +133,9 @@ public class PollMeetingController {
 
                 case "decline":
                     // A user declines the invitation
-                    // => Update status of invitee to "DECLINED"
+                    // Get user with provided userID from repository (getUser throws an exception for invalid userId)
+                    participant = userService.getUser(pollMeetingPutDTO.getUserId());
+                    pollMeetingService.declineInvitation(pollMeeting, participant);
                     break;
 
                 case "start":

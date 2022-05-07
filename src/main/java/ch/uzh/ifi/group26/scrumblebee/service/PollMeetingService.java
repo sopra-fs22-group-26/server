@@ -98,6 +98,15 @@ public class PollMeetingService {
         }
     }
 
+    // User declines an invitation
+    public void declineInvitation(PollMeeting pollMeeting, User user) {
+        PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
+        Optional<PollParticipant> pollParticipant = pollParticipantRepository.findById(idToCheck);
+        if (pollParticipant.isPresent() && pollParticipant.get().getStatus() == PollParticipantStatus.INVITED) {
+            pollParticipant.get().setStatus(PollParticipantStatus.DECLINED);
+        }
+    }
+
     // Remove participant if they exist and update repository (implicitly)
     public void removeParticipant(PollMeeting pollMeeting, User user) {
         PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
