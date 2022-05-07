@@ -51,63 +51,29 @@ public class PollMeeting implements Serializable {
     private Set<PollParticipant> participants = new HashSet<>();
 
     /**
-     * Add and remove participants
+     * Manipulate participants
      */
     public void addParticipant(User user) {
-        if (findPollParticipant(user) == null) {
-            PollParticipant pollParticipant = new PollParticipant(this, user);
-            participants.add(pollParticipant);
-            user.getPollMeetings().add(pollParticipant);
-        }
+        // New version
+        PollParticipant pollParticipant = new PollParticipant(this, user);
+        participants.add(pollParticipant);
+        user.getPollMeetings().add(pollParticipant);
     }
 
-    public void removeParticipant(User user) {
-        PollParticipant pollParticipant = findPollParticipant(user);
-        if (pollParticipant != null) {
-            participants.remove(pollParticipant);
-            pollParticipant.getUser().getPollMeetings().remove(pollParticipant);
-            pollParticipant.setPollMeeting(null);
-            pollParticipant.setUser(null);
-        }
-
-        /*
-        for (Iterator<PollParticipant> iterator = participants.iterator(); iterator.hasNext(); ) {
-            PollParticipant pollParticipant = iterator.next();
-            if (pollParticipant.getPollMeeting().equals(this) && pollParticipant.getUser().equals(user)) {
-                iterator.remove();
-                pollParticipant.getUser().getPollMeetings().remove(pollParticipant);
-                pollParticipant.setPollMeeting(null);
-                pollParticipant.setUser(null);
-            }
-         */
+    public void removeParticipant(PollParticipant pollParticipant) {
+        participants.remove(pollParticipant);
+        pollParticipant.getUser().getPollMeetings().remove(pollParticipant);
+        pollParticipant.setPollMeeting(null);
+        pollParticipant.setUser(null);
     }
 
-    // Update a user's vote if the user is in the session. Ignore otherwise.
-    public void updateVote(User user, int vote) {
-        PollParticipant pollParticipant = findPollParticipant(user);
-        if (pollParticipant != null) {
-            pollParticipant.setVote(vote);
-        }
+    // Update a user's vote
+    public void updateVote(PollParticipant pollParticipant, int vote) {
+        pollParticipant.setVote(vote);
     }
 
     /**
-     * Helper function for participants
-     */
-    // Check if user is in the participants set.
-    // Return found PollParticipant of null if user is not in set.
-    private PollParticipant findPollParticipant(User user) {
-        for (Iterator<PollParticipant> iterator = participants.iterator(); iterator.hasNext(); ) {
-            PollParticipant pollParticipant = iterator.next();
-            if (pollParticipant.getPollMeeting().equals(this) && pollParticipant.getUser().equals(user)) {
-                return pollParticipant;
-            }
-        }
-        // Not found in participants
-        return null;
-    }
-
-    /**
-     * Add and remove invitees
+     * Manipulate invitees
      */
     public void addInvitee(User user) {
         invitees.add(user);
@@ -117,6 +83,7 @@ public class PollMeeting implements Serializable {
         invitees.remove(user);
         user.getMeeting_invitations().remove(this);
     }
+
 
     /**
      * Getter & setter methods

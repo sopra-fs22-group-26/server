@@ -2,8 +2,11 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
+import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
+import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipantKey;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollMeetingRepository;
+import ch.uzh.ifi.group26.scrumblebee.repository.PollParticipantRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * PollMeeting Service
@@ -27,6 +31,9 @@ public class PollMeetingService {
     private final Logger log = LoggerFactory.getLogger(PollMeetingService.class);
 
     private final PollMeetingRepository pollMeetingRepository;
+
+    @Autowired
+    PollParticipantRepository pollParticipantRepository;
 
     @Autowired
     public PollMeetingService(@Qualifier("pollMeetingRepository") PollMeetingRepository pollMeetingRepository) {
@@ -72,14 +79,34 @@ public class PollMeetingService {
         return pollMeeting;
     }
 
-    // Add participant to set and update repository (implicitly)
+    /**
+     * Participant functions
+     */
+
+    // Add participant - if they are not already participating - and update repository (implicitly)
     public void addParticipant(PollMeeting pollMeeting, User user) {
-        pollMeeting.addParticipant(user);
+        PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
+        if (!pollParticipantRepository.findById(idToCheck).isPresent()) {
+            pollMeeting.addParticipant(user);
+        }
+    }
+
+    // Remove participant if they exist and update repository (implicitly)
+    public void removeParticipant(PollMeeting pollMeeting, User user) {
+        PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
+        Optional<PollParticipant> pollParticipant = pollParticipantRepository.findById(idToCheck);
+        if (pollParticipant.isPresent()) {
+            pollMeeting.removeParticipant(pollParticipant.get());
+        }
     }
 
     // Update a vote for a user in this meeting (if present)
     public void castVote(PollMeeting pollMeeting, User user, int vote) {
-        pollMeeting.updateVote(user, vote);
+        PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
+        Optional<PollParticipant> pollParticipant = pollParticipantRepository.findById(idToCheck);
+        if (pollParticipant.isPresent()) {
+            pollMeeting.updateVote(pollParticipant.get(), vote);
+        }
     }
 
 
