@@ -1,5 +1,7 @@
 package ch.uzh.ifi.group26.scrumblebee.entity;
 
+import ch.uzh.ifi.group26.scrumblebee.constant.PollParticipantStatus;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,6 +23,9 @@ public class PollParticipant {
 
     // Vote of user for poll-session
     private int vote;
+
+    // Status of participation [invited, joined, declined];
+    private PollParticipantStatus status;
 
     /**
      * Constructors
@@ -74,5 +79,15 @@ public class PollParticipant {
 
     public int getVote() {
         return vote;
+    }
+
+    /***/
+
+    public void setStatus(PollParticipantStatus status) {
+        this.status = status;
+    }
+
+    public PollParticipantStatus getStatus() {
+        return status;
     }
 }

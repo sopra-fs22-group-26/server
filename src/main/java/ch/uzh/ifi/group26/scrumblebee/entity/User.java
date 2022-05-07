@@ -59,9 +59,6 @@ public class User implements Serializable {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(mappedBy = "invitees")
-    private Set<PollMeeting> meeting_invitations = new HashSet<>();
-
     // Relation for participants of a poll meeting, together with their votes
     @OneToMany(mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -112,14 +109,6 @@ public class User implements Serializable {
     public void setRoles(Set<Role> roles) { this.roles = roles; }
 
     public Set<Role> getRoles() { return roles; }
-
-    public void setMeeting_invitations(Set<PollMeeting> meeting_invitations) {
-        this.meeting_invitations = meeting_invitations;
-    }
-
-    public Set<PollMeeting> getMeeting_invitations() {
-        return meeting_invitations;
-    }
 
     public void setPollMeetings(Set<PollParticipant> pollMeetings) {
         this.pollMeetings = pollMeetings;

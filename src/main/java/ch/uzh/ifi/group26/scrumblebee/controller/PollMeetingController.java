@@ -94,7 +94,7 @@ public class PollMeetingController {
         for (long userId : pollMeetingPostDTO.getInvitees()) {
             User invitee = userService.getUser(userId);
             if (invitee != null) {
-                createdPollMeeting = pollMeetingService.addInvitee(createdPollMeeting, invitee);
+                pollMeetingService.addInvitee(createdPollMeeting, invitee);
             }
         }
 

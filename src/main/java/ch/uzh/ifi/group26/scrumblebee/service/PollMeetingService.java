@@ -1,6 +1,7 @@
 package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
+import ch.uzh.ifi.group26.scrumblebee.constant.PollParticipantStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipantKey;
@@ -60,7 +61,6 @@ public class PollMeetingService {
 
         log.debug(newPollMeeting.getCreatorId().toString());
         log.debug(newPollMeeting.getEstimateThreshold().toString());
-        log.debug(newPollMeeting.getInvitees().toString());
         log.debug(newPollMeeting.getStatus().toString());
 
         // saves the given entity but data is only persisted in the database once
@@ -71,12 +71,13 @@ public class PollMeetingService {
         return newPollMeeting;
     }
 
-    // Add invitee to set and update repository
-    public PollMeeting addInvitee(PollMeeting pollMeeting, User user) {
-        pollMeeting.addInvitee(user);
-        pollMeeting = pollMeetingRepository.save(pollMeeting);
-        pollMeetingRepository.flush();
-        return pollMeeting;
+    // Add invitee to set of participants with status "INVITED" and update repository
+    public void addInvitee(PollMeeting pollMeeting, User user) {
+        PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
+        if (!pollParticipantRepository.findById(idToCheck).isPresent()) {
+            PollParticipant pollParticipant = pollMeeting.addParticipant(user);
+            pollParticipant.setStatus(PollParticipantStatus.INVITED);
+        }
     }
 
     /**
@@ -86,7 +87,13 @@ public class PollMeetingService {
     // Add participant - if they are not already participating - and update repository (implicitly)
     public void addParticipant(PollMeeting pollMeeting, User user) {
         PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
-        if (!pollParticipantRepository.findById(idToCheck).isPresent()) {
+        Optional<PollParticipant> pollParticipant = pollParticipantRepository.findById(idToCheck);
+        if (pollParticipant.isPresent()) {
+            // User is already a participant (invited, declined or joined) => change status to "JOINED"
+            pollParticipant.get().setStatus(PollParticipantStatus.JOINED);
+        }
+        else {
+            // User is not in session => add them
             pollMeeting.addParticipant(user);
         }
     }
@@ -105,7 +112,8 @@ public class PollMeetingService {
         PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
         Optional<PollParticipant> pollParticipant = pollParticipantRepository.findById(idToCheck);
         if (pollParticipant.isPresent()) {
-            pollMeeting.updateVote(pollParticipant.get(), vote);
+            //pollMeeting.updateParticipantVote(pollParticipant.get(), vote);
+            pollParticipant.get().setVote(vote);
         }
     }
 

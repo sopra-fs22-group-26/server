@@ -120,7 +120,6 @@ public interface DTOMapper {
     @Mapping(source = "taskId", target = "taskId")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(target = "averageEstimate", ignore = true)
-    @Mapping(target = "invitees", ignore = true)
     @Mapping(target = "status", ignore = true)
     PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
 
@@ -129,13 +128,13 @@ public interface DTOMapper {
     @Mapping(source = "taskId", target = "taskId")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(source = "averageEstimate", target = "averageEstimate")
-    @Mapping(source = "invitees", target = "invitees")
     @Mapping(source = "participants", target = "participants")
     @Mapping(source = "status", target = "status")
     PollMeetingGetDTO convertEntityToPollMeetingGetDTO(PollMeeting pollMeeting);
 
     @Mapping(source = "user", target = "user")
     @Mapping(source = "vote", target = "vote")
+    @Mapping(source = "status", target = "status")
     PollParticipantGetDTO convertEntityToPollParticipantGetDTO(PollParticipant pollParticipant);
 
     /**

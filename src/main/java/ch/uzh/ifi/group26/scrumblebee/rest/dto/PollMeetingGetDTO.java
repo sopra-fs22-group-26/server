@@ -2,7 +2,6 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
-import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ public class PollMeetingGetDTO {
     private Integer estimateThreshold;
     private Integer averageEstimate;
     private PollMeetingStatus status;
-    private List<UserGetDTO> invitees;
     private List<PollParticipantGetDTO> participants;
 
     public void setMeetingId(Long meetingId) {
@@ -66,18 +64,6 @@ public class PollMeetingGetDTO {
 
     public PollMeetingStatus getStatus() {
         return status;
-    }
-
-    public void setInvitees(Set<User> invitees) {
-        List<UserGetDTO> userGetDTOs = new ArrayList<>();
-        for (User user : invitees) {
-            userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
-        }
-        this.invitees = userGetDTOs;
-    }
-
-    public List<UserGetDTO> getInvitees() {
-        return invitees;
     }
 
     public void setParticipants(Set<PollParticipant> participants) {
