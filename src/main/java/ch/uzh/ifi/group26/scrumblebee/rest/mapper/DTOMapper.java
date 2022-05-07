@@ -119,7 +119,6 @@ public interface DTOMapper {
     @Mapping(source = "creatorId", target = "creatorId")
     @Mapping(source = "taskId", target = "taskId")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
-    @Mapping(target = "averageEstimate", ignore = true)
     @Mapping(target = "status", ignore = true)
     PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
 

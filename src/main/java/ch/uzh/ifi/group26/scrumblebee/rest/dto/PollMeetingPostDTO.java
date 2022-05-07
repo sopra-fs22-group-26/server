@@ -7,7 +7,6 @@ public class PollMeetingPostDTO {
     private Long creatorId;
     private Long taskId;
     private Integer estimateThreshold;
-    private Integer averageEstimate;
     private List<Long> invitees;
 
     public Long getTaskId() {
@@ -24,14 +23,6 @@ public class PollMeetingPostDTO {
 
     public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
-    }
-
-    public Integer getAverageEstimate() {
-        return averageEstimate;
-    }
-
-    public void setAverageEstimate(Integer averageEstimate) {
-        this.averageEstimate = averageEstimate;
     }
 
     public Integer getEstimateThreshold() {

@@ -30,9 +30,6 @@ public class PollMeeting implements Serializable {
     @Column(nullable = false)
     private Integer estimateThreshold;
 
-    @Column
-    private Integer averageEstimate;
-
     @Column(nullable = false)
     private PollMeetingStatus status;
 
@@ -61,9 +58,33 @@ public class PollMeeting implements Serializable {
         pollParticipant.setUser(null);
     }
 
+    /***/
+
+    // This is a special case
+    // We want to calculate the average estimate each time
+    public int getAverageEstimate() {
+        int voters = 0;
+        int voteSum = 0;
+        int estimate = 0;
+
+        // Collect votes
+        for (PollParticipant pollParticipant : participants) {
+            if (pollParticipant.getVote() > 0) {
+                voters++;
+                voteSum += pollParticipant.getVote();
+            }
+        }
+
+        // Calculate average
+        // Attention: We want the result to be rounded-up to the next integer, and we are dividing integers
+        if (voters > 0) {
+            estimate = voteSum / voters + ((voteSum % voters == 0) ? 0 : 1);
+        }
+        return estimate;
+    }
 
     /**
-     * Getter & setter methods
+     * Standard getter & setter methods
      */
 
     public void setMeetingId(Long meetingId) { this.meetingId = meetingId; }
@@ -85,12 +106,6 @@ public class PollMeeting implements Serializable {
     public Long getTaskId() {
         return taskId;
     }
-
-    /***/
-
-    public void setAverageEstimate(Integer averageEstimate) { this.averageEstimate = averageEstimate; }
-
-    public Integer getAverageEstimate() { return averageEstimate; }
 
     /***/
 
