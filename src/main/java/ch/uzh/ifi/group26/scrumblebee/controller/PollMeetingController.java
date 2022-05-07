@@ -110,8 +110,8 @@ public class PollMeetingController {
     /**
      * Type: PUT
      * URL: /poll-meetings/{meetingId}
-     * URL-Parameter: action [join, decline, start, vote, end]
-     * Body: userId, vote, estimateThreshold
+     * URL-Parameter: action [join, decline, vote]
+     * Body: userId, vote, estimateThreshold, status
      * @return PollMeeting
      */
     @PutMapping("/poll-meetings/{meetingId}")
@@ -122,9 +122,16 @@ public class PollMeetingController {
                                                @RequestParam(required = false) String action){
         // Get meeting with provided meetingId from repository
         PollMeeting pollMeeting = pollMeetingService.getPollMeeting(meetingId);
-        User participant;
 
+        // Set PollMeeting status if one was provided in request body
+        if (pollMeetingPutDTO.getStatus() != null) {
+            pollMeetingService.changeStatus(pollMeeting, pollMeetingPutDTO.getStatus());
+        }
+
+        // Perform action if response url contained an "action" parameter
         if (action != null) {
+            User participant;
+
             switch (action) {
                 case "join":
                     // A user joins the session.
@@ -140,21 +147,11 @@ public class PollMeetingController {
                     pollMeetingService.declineInvitation(pollMeeting, participant);
                     break;
 
-                case "start":
-                    // The voting process is started
-                    // => Update status of PollMeeting to "VOTING"
-                    break;
-
                 case "vote":
                     // A user casts a vote.
                     // Get user with provided userID from repository (getUser throws an exception for invalid userId)
                     participant = userService.getUser(pollMeetingPutDTO.getUserId());
                     pollMeetingService.castVote(pollMeeting, participant, pollMeetingPutDTO.getVote());
-                    break;
-
-                case "end":
-                    // The voting process is ended
-                    // => Update status of PollMeeting to "ENDED"
                     break;
 
                 default:

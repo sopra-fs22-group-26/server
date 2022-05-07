@@ -81,10 +81,19 @@ public class PollMeetingService {
     }
 
     /**
+     * Change meeting status
+     */
+    public void changeStatus(PollMeeting pollMeeting, PollMeetingStatus status) {
+        pollMeeting.setStatus(status);
+    }
+
+
+    /**
      * Participant functions
      */
 
-    // Add participant - if they are not already participating - and update repository (implicitly)
+    // Add participant - if they are not already participating - and update repository (implicitly).
+    // This function is also called if an invited user joins the session
     public void addParticipant(PollMeeting pollMeeting, User user) {
         PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
         Optional<PollParticipant> pollParticipant = pollParticipantRepository.findById(idToCheck);
