@@ -90,12 +90,14 @@ public class PollMeetingController {
         // create task
         PollMeeting createdPollMeeting = pollMeetingService.createPollMeeting(input);
 
+        // Add creator of the session to the participants
+        User creator = userService.getUser(createdPollMeeting.getCreatorId());
+        pollMeetingService.addParticipant(createdPollMeeting, creator);
+
         // add invitees to meeting
         for (long userId : pollMeetingPostDTO.getInvitees()) {
             User invitee = userService.getUser(userId);
-            if (invitee != null) {
-                pollMeetingService.addInvitee(createdPollMeeting, invitee);
-            }
+            pollMeetingService.addInvitee(createdPollMeeting, invitee);
         }
 
         //convert internal representation of task back to API

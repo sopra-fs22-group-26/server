@@ -88,14 +88,11 @@ public class PollMeetingService {
     public void addParticipant(PollMeeting pollMeeting, User user) {
         PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
         Optional<PollParticipant> pollParticipant = pollParticipantRepository.findById(idToCheck);
-        if (pollParticipant.isPresent()) {
-            // User is already a participant (invited, declined or joined) => change status to "JOINED"
-            pollParticipant.get().setStatus(PollParticipantStatus.JOINED);
-        }
-        else {
+        if (!pollParticipant.isPresent()) {
             // User is not in session => add them
-            pollMeeting.addParticipant(user);
+            pollParticipant = Optional.of(pollMeeting.addParticipant(user));
         }
+        pollParticipant.get().setStatus(PollParticipantStatus.JOINED);
     }
 
     // User declines an invitation
