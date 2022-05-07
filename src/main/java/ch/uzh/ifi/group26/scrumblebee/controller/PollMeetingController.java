@@ -9,7 +9,6 @@ import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -130,32 +129,19 @@ public class PollMeetingController {
 
         // Perform action if response url contained an "action" parameter
         if (action != null) {
-            User participant;
+            // Get user with provided userID from repository (getUser throws an exception for invalid userId)
+            User participant = userService.getUser(pollMeetingPutDTO.getUserId());
 
             switch (action) {
-                case "join":
-                    // A user joins the session.
-                    // Get user with provided userID from repository (getUser throws an exception for invalid userId)
-                    participant = userService.getUser(pollMeetingPutDTO.getUserId());
-                    pollMeetingService.addParticipant(pollMeeting, participant);
-                    break;
-
-                case "decline":
-                    // A user declines the invitation
-                    // Get user with provided userID from repository (getUser throws an exception for invalid userId)
-                    participant = userService.getUser(pollMeetingPutDTO.getUserId());
-                    pollMeetingService.declineInvitation(pollMeeting, participant);
-                    break;
-
-                case "vote":
-                    // A user casts a vote.
-                    // Get user with provided userID from repository (getUser throws an exception for invalid userId)
-                    participant = userService.getUser(pollMeetingPutDTO.getUserId());
-                    pollMeetingService.castVote(pollMeeting, participant, pollMeetingPutDTO.getVote());
-                    break;
-
-                default:
-                    // Do nothing
+                case "join" ->
+                        // A user joins the session.
+                        pollMeetingService.addParticipant(pollMeeting, participant);
+                case "decline" ->
+                        // A user declines the invitation
+                        pollMeetingService.declineInvitation(pollMeeting, participant);
+                case "vote" ->
+                        // A user casts a vote.
+                        pollMeetingService.castVote(pollMeeting, participant, pollMeetingPutDTO.getVote());
             }
         }
 
@@ -168,16 +154,17 @@ public class PollMeetingController {
     /**
      * Type: DELETE
      * URL: /poll-meetings/{meetingId}
-     * Body: username, name*, email, password
+     * Body: -
      * Protection: check if request is coming from the client (check for special token)
      * @return User
      */
     @DeleteMapping("/poll-meetings/{meetingId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<Long> deletePollMeeting(@PathVariable long meetingId) {
+    public PollMeetingGetDTO deletePollMeeting(@PathVariable long meetingId) {
+        // Get meeting with provided meetingId from repository
+        PollMeeting pollMeeting = pollMeetingService.getPollMeeting(meetingId);
         pollMeetingService.deletePollMeeting(meetingId);
-
-        return new ResponseEntity<>(meetingId, HttpStatus.OK);
+        return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(pollMeeting);
     }
 }
