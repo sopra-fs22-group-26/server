@@ -1,7 +1,6 @@
 package ch.uzh.ifi.group26.scrumblebee.entity;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -25,9 +24,6 @@ public class PollMeeting implements Serializable {
     private Long creatorId;
 
     @Column(nullable = false)
-    private Long taskId;
-
-    @Column(nullable = false)
     private Integer estimateThreshold;
 
     @Column(nullable = false)
@@ -39,6 +35,11 @@ public class PollMeeting implements Serializable {
             orphanRemoval = true
     )
     private Set<PollParticipant> participants = new HashSet<>();
+
+    // Relation for affected task
+    @OneToOne
+    @JoinColumn(name = "pm_task")
+    private Task task;
 
     /**
      * Manipulate participants
@@ -58,14 +59,20 @@ public class PollMeeting implements Serializable {
         pollParticipant.setUser(null);
     }
 
-    /***/
+    /**************
+     * Special functions for information output:
+     * - Calculate average of all voted estimates
+     * - Collect information about affected task (title, description)
+     **************/
 
-    // This is a special case
-    // We want to calculate the average estimate each time
+    /**
+     * Calculate the average estimate each time
+     * @return averageEstimate [integer]
+     */
     public int getAverageEstimate() {
         int voters = 0;
         int voteSum = 0;
-        int estimate = 0;
+        int averageEstimate = 0;
 
         // Collect votes
         for (PollParticipant pollParticipant : participants) {
@@ -78,14 +85,15 @@ public class PollMeeting implements Serializable {
         // Calculate average
         // Attention: We want the result to be rounded-up to the next integer, and we are dividing integers
         if (voters > 0) {
-            estimate = voteSum / voters + ((voteSum % voters == 0) ? 0 : 1);
+            averageEstimate = voteSum / voters + ((voteSum % voters == 0) ? 0 : 1);
         }
-        return estimate;
+        return averageEstimate;
     }
 
-    /**
+
+    /**************
      * Standard getter & setter methods
-     */
+     **************/
 
     public void setMeetingId(Long meetingId) { this.meetingId = meetingId; }
 
@@ -96,16 +104,6 @@ public class PollMeeting implements Serializable {
     public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
 
     public Long getCreatorId() { return creatorId; }
-
-    /***/
-
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
-    }
-
-    public Long getTaskId() {
-        return taskId;
-    }
 
     /***/
 
@@ -131,4 +129,13 @@ public class PollMeeting implements Serializable {
         return participants;
     }
 
+    /***/
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public Task getTask() {
+        return task;
+    }
 }

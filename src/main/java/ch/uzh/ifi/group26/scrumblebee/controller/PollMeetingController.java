@@ -1,8 +1,10 @@
 package ch.uzh.ifi.group26.scrumblebee.controller;
 
+import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPutDTO;
+import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import ch.uzh.ifi.group26.scrumblebee.service.PollMeetingService;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingGetDTO;
@@ -25,13 +27,14 @@ import java.util.List;
 public class PollMeetingController {
 
     private final PollMeetingService pollMeetingService;
-
     private final UserService userService;
+    private final TaskService taskService;
 
 
-    PollMeetingController(PollMeetingService pollMeetingService, UserService userService) {
+    PollMeetingController(PollMeetingService pollMeetingService, UserService userService, TaskService taskService) {
         this.pollMeetingService = pollMeetingService;
         this.userService = userService;
+        this.taskService = taskService;
     }
 
 
@@ -75,22 +78,26 @@ public class PollMeetingController {
     /**
      * Type: POST
      * URL: /poll-meetings
-     * Body: dueDate, title, description, estimate, priority, status
-     * Protection: check if request is coming from the client (check for special token)
+     * Body: creatorId, taskId, estimateThreshold, invitees[]
      * @return PollMeeting
      */
     @PostMapping("/poll-meetings")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public PollMeetingGetDTO createPollMeeting(@RequestBody PollMeetingPostDTO pollMeetingPostDTO){
-        // convert API task to internal representation
+        // convert request to internal representation
         PollMeeting input = DTOMapper.INSTANCE.convertPollMeetingPostDTOtoEntity(pollMeetingPostDTO);
 
-        // create task
-        PollMeeting createdPollMeeting = pollMeetingService.createPollMeeting(input);
+        // Collect creator and task of the session
+        // => Throws an error if one of both does not exist
+        User creator = userService.getUser(pollMeetingPostDTO.getCreatorId());
+        Task task = taskService.getTask(pollMeetingPostDTO.getTaskId()).get();
+
+        // Create pollMeeting and assign task, if task is not already assigned.
+        // createPollMeeting will throw an error otherwise.
+        PollMeeting createdPollMeeting = pollMeetingService.createPollMeeting(input, task);
 
         // Add creator of the session to the participants
-        User creator = userService.getUser(createdPollMeeting.getCreatorId());
         pollMeetingService.addParticipant(createdPollMeeting, creator);
 
         // add invitees to meeting
