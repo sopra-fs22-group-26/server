@@ -117,14 +117,13 @@ public interface DTOMapper {
      */
     @Mapping(target = "meetingId", ignore = true)
     @Mapping(source = "creatorId", target = "creatorId")
-    @Mapping(source = "taskId", target = "taskId")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(target = "status", ignore = true)
     PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
 
     @Mapping(source = "meetingId", target = "meetingId")
     @Mapping(source = "creatorId", target = "creatorId")
-    @Mapping(source = "taskId", target = "taskId")
+    @Mapping(source = "task", target = "task")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(source = "averageEstimate", target = "averageEstimate")
     @Mapping(source = "participants", target = "participants")

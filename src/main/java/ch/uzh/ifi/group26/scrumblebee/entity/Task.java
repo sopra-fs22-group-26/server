@@ -57,6 +57,11 @@ public class Task implements Serializable {
     @Column
     private long reporter;
 
+    // Relation to poll-meeting, if task is affected by it
+    @OneToOne(mappedBy = "task", cascade = CascadeType.REMOVE)
+    private PollMeeting pollMeeting;
+
+
     //Comment entity not implemented yet
     //@Column
     //private list<Comment> comments;
@@ -127,12 +132,23 @@ public class Task implements Serializable {
     }
 
     /***/
+
     public long getReporter() {
         return reporter;
     }
 
     public void setReporter(long reporter) {
         this.reporter = reporter;
+    }
+
+    /***/
+
+    public void setPollMeeting(PollMeeting pollMeeting) {
+        this.pollMeeting = pollMeeting;
+    }
+
+    public PollMeeting getPollMeeting() {
+        return pollMeeting;
     }
 
     /**

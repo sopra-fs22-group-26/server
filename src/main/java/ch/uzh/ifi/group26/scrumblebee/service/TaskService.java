@@ -73,7 +73,9 @@ public class TaskService {
 
 
     public Optional<Task> getTask(long taskId) {
-        return this.taskRepository.findByTaskId(taskId);
+        String baseErrorMessage = "Error: No task found with id %d!";
+        return Optional.ofNullable(taskRepository.findById(taskId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId))));
     }
 
     /**

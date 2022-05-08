@@ -2,10 +2,7 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.constant.PollParticipantStatus;
-import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
-import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
-import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipantKey;
-import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.entity.*;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollMeetingRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollParticipantRepository;
 import org.slf4j.Logger;
@@ -52,10 +49,17 @@ public class PollMeetingService {
 
     /**
      * Used by: POST /poll-meetings
-     * @param newPollMeeting
+     * Checks if task has not already been assigned to another meeting.
+     * If everyhting is ok => store meeting to database.
+     * @param newPollMeeting, task
      * @return the created meeting
      */
-    public PollMeeting createPollMeeting(PollMeeting newPollMeeting) {
+    public PollMeeting createPollMeeting(PollMeeting newPollMeeting, Task task) {
+
+        // Check if task is already assigned => throws error in that case
+        checkIfTaskIsAlreadyAssigned(task);
+        // Assign task to pollMeeting
+        assignTask(newPollMeeting, task);
 
         newPollMeeting.setStatus(PollMeetingStatus.OPEN);
 
@@ -71,7 +75,20 @@ public class PollMeetingService {
         return newPollMeeting;
     }
 
-    // Add invitee to set of participants with status "INVITED" and update repository
+    /**
+     * Used by: POST /poll-meetings
+     * Assign task to PollMeeting.
+     * @param pollMeeting, task
+     */
+    public void assignTask(PollMeeting pollMeeting, Task task) {
+        pollMeeting.setTask(task);
+    }
+
+    /**
+     * Used by: POST /poll-meetings
+     * Add invitee to set of participants with status "INVITED" and update repository.
+     * @param pollMeeting, user
+     */
     public void addInvitee(PollMeeting pollMeeting, User user) {
         PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
         if (!pollParticipantRepository.findById(idToCheck).isPresent()) {
@@ -144,14 +161,22 @@ public class PollMeetingService {
         pollMeetingRepository.delete(pollMeetingById);
     }
 
-    //check if task exists by id
+    //check if pollMeeting exists by id
     private PollMeeting checkIfTaskIdExist(long meetingId) {
         PollMeeting pollMeetingById = pollMeetingRepository.findByMeetingId(meetingId);
 
-        String baseErrorMessage = "The task with id: %s not found!";
+        String baseErrorMessage = "The pollMeeting with id: %s not found!";
         if (pollMeetingById == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, meetingId));
         }
         return pollMeetingById;
+    }
+
+    // Check if task is already assigned to a pollMeeting
+    private void checkIfTaskIsAlreadyAssigned(Task task) {
+        String baseErrorMessage = "The task with id %s is already assigned to a Poll-Session!";
+        if (task.getPollMeeting() != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, task.getTaskId()));
+        }
     }
 }
