@@ -1,5 +1,7 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.mapper;
 
+import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
+import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
@@ -21,8 +23,11 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface DTOMapper {
 
-  DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
+    DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
+    /**
+     * User
+     */
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
@@ -66,6 +71,9 @@ public interface DTOMapper {
     @Mapping(source = "score", target = "score")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
+    /**
+     * Task
+     */
     @Mapping(target = "taskId", ignore = true)
     @Mapping(source = "dueDate", target = "dueDate")
     @Mapping(source = "title", target = "title")
@@ -74,7 +82,7 @@ public interface DTOMapper {
     @Mapping(source = "priority", target = "priority")
     @Mapping(source = "location", target = "location")
     @Mapping(source = "status", target = "status")
-    @Mapping(target = "score", ignore = true)                 // changed from " source target" to "target ignore=true"
+    @Mapping(target = "score", ignore = true)
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
     Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
@@ -87,7 +95,7 @@ public interface DTOMapper {
     @Mapping(source = "priority", target = "priority")
     @Mapping(source = "location", target = "location")
     @Mapping(source = "status", target = "status")
-    @Mapping(target = "score", ignore = true)
+    @Mapping(source = "score", target = "score")
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
     Task convertTaskPutDTOtoEntity(TaskPutDTO taskPutDTO);
@@ -106,6 +114,32 @@ public interface DTOMapper {
     @Mapping(source = "comments", target = "comments")
     TaskGetDTO convertEntityToTaskGetDTO(Task task);
 
+    /**
+     *  PollMeeting
+     */
+    @Mapping(target = "meetingId", ignore = true)
+    @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "estimateThreshold", target = "estimateThreshold")
+    @Mapping(target = "status", ignore = true)
+    PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
+
+    @Mapping(source = "meetingId", target = "meetingId")
+    @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "task", target = "task")
+    @Mapping(source = "estimateThreshold", target = "estimateThreshold")
+    @Mapping(source = "averageEstimate", target = "averageEstimate")
+    @Mapping(source = "participants", target = "participants")
+    @Mapping(source = "status", target = "status")
+    PollMeetingGetDTO convertEntityToPollMeetingGetDTO(PollMeeting pollMeeting);
+
+    @Mapping(source = "user", target = "user")
+    @Mapping(source = "vote", target = "vote")
+    @Mapping(source = "status", target = "status")
+    PollParticipantGetDTO convertEntityToPollParticipantGetDTO(PollParticipant pollParticipant);
+
+    /**
+     * Auth
+     */
     @Mapping(source = "username", target = "username")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "id", target = "id")

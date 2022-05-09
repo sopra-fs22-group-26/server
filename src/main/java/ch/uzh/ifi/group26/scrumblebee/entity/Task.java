@@ -35,7 +35,7 @@ public class Task implements Serializable {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
@@ -59,9 +59,14 @@ public class Task implements Serializable {
     @Column
     private long reporter;
 
+
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
+
+    // Relation to poll-meeting, if task is affected by it
+    @OneToOne(mappedBy = "task", cascade = CascadeType.REMOVE)
+    private PollMeeting pollMeeting;
 
     /**
      * Getter & setter methods 
@@ -129,12 +134,23 @@ public class Task implements Serializable {
     }
 
     /***/
+
     public long getReporter() {
         return reporter;
     }
 
     public void setReporter(long reporter) {
         this.reporter = reporter;
+    }
+
+    /***/
+
+    public void setPollMeeting(PollMeeting pollMeeting) {
+        this.pollMeeting = pollMeeting;
+    }
+
+    public PollMeeting getPollMeeting() {
+        return pollMeeting;
     }
 
     /**

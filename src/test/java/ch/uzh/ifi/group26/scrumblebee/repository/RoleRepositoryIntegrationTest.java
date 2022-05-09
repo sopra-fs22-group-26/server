@@ -77,7 +77,7 @@ public class RoleRepositoryIntegrationTest {
         entityManager.persist(role);
         entityManager.flush();
 
-        Optional<Role> found = roleRepository.findByRoleName(RoleType.WRONG);
+        Optional<Role> found = roleRepository.findByRoleName(RoleType.NONE);
 
         assertTrue(found.isEmpty());
 

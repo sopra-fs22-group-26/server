@@ -30,12 +30,8 @@ public class TaskService {
 
     private final Logger log = LoggerFactory.getLogger(TaskService.class);
 
-    private final TaskRepository taskRepository;
-
     @Autowired
-    public TaskService(@Qualifier("taskRepository") TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+    TaskRepository taskRepository;
 
     // Get all tasks, completed or not
     public List<Task> getTasks() {
@@ -78,7 +74,9 @@ public class TaskService {
 
 
     public Optional<Task> getTask(long taskId) {
-        return this.taskRepository.findByTaskId(taskId);
+        String baseErrorMessage = "Error: No task found with id %d!";
+        return Optional.ofNullable(taskRepository.findById(taskId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId))));
     }
 
     /**
@@ -89,13 +87,6 @@ public class TaskService {
     public Task createTask(Task newTask) {
 
         newTask.setStatus(TaskStatus.ACTIVE);
-
-        log.debug(newTask.getDueDate().toString());
-        log.debug(newTask.getTitle());
-        log.debug(newTask.getDescription());
-        log.debug(newTask.getEstimate().toString());
-        log.debug(newTask.getPriority().toString());
-        log.debug(newTask.getStatus().toString());
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called

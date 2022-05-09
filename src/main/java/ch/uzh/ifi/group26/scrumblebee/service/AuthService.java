@@ -22,18 +22,11 @@ public class AuthService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    private final UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
     @Autowired
     PasswordEncoder encoder;
 
     @Autowired
-    public AuthService(@Qualifier("userRepository") UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    UserRepository userRepository;
 
     /**
      * Handles login procedure

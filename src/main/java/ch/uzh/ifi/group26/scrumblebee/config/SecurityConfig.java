@@ -31,11 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final boolean dev = true;
 
-//    @Bean
-//    public AuthTokenFilter authenticationTokenFilter() {
-//        return new AuthTokenFilter();
-//    }
-
     @Autowired
     AuthTokenFilter authTokenFilter;
 
@@ -52,12 +47,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         if (dev) {
             http.cors().and().csrf().disable()
                     .authorizeRequests().antMatchers("/**").permitAll()
+                    .antMatchers("/").permitAll()
                     .anyRequest().authenticated().and()
                     .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         } else {
             http.cors().and().csrf().disable()
-                    .authorizeRequests().antMatchers("/register**").permitAll()
+                    .authorizeRequests().antMatchers("/").permitAll()
+                    .antMatchers("/register**").permitAll()
                     .antMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated().and()
                     .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()

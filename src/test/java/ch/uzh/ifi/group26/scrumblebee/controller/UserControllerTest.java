@@ -341,7 +341,7 @@ public class UserControllerTest {
         UserPutDTO userPutDTO = new UserPutDTO();
         userPutDTO.setUsername("any@username");
 
-        given(userService.getUserByIDNum(anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        given(userService.getUser(anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder putRequest = MockMvcRequestBuilders.put("/users/9999")

@@ -1,6 +1,5 @@
 package ch.uzh.ifi.group26.scrumblebee.entity;
 
-
 import ch.uzh.ifi.group26.scrumblebee.constant.RoleType;
 
 import javax.persistence.*;
@@ -60,6 +59,17 @@ public class User implements Serializable {
     )
     private Set<Role> roles = new HashSet<>();
 
+    // Relation for participants of a poll meeting, together with their votes
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<PollParticipant> pollMeetings = new HashSet<>();
+
+    /**
+     * Getter & setter methods
+     */
+
     public void setId(Long id) { this.id = id; }
 
     public Long getId() { return id; }
@@ -99,6 +109,18 @@ public class User implements Serializable {
     public void setRoles(Set<Role> roles) { this.roles = roles; }
 
     public Set<Role> getRoles() { return roles; }
+
+    public void setPollMeetings(Set<PollParticipant> pollMeetings) {
+        this.pollMeetings = pollMeetings;
+    }
+
+    public Set<PollParticipant> getPollMeetings() {
+        return pollMeetings;
+    }
+
+    /**
+     * Additional functions to manipulate data
+     */
 
     public void addScore(int additionalScore) { this.score += additionalScore; }
 
