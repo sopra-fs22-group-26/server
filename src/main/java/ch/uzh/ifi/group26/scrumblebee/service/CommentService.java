@@ -1,10 +1,8 @@
 package ch.uzh.ifi.group26.scrumblebee.service;
 
-import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
-import ch.uzh.ifi.group26.scrumblebee.entity.Task;
-import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.repository.CommentRepository;
+import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,10 +75,6 @@ public class CommentService {
 
         log.debug("Created Information for Task: {}", newComment);
         return newComment;
-    }
-
-    public void deleteComment(long commentId){
-        commentRepository.deleteByCommentId(commentId);
     }
 
 }

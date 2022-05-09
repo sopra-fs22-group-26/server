@@ -3,7 +3,7 @@ package ch.uzh.ifi.group26.scrumblebee.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+
 
 /**
  * Internal Comment representation
@@ -34,6 +34,7 @@ public class Comment implements Serializable {
     @Column(nullable = false)
     private Long belongingTask;
 
+
     /**
      * Getter & setter methods
      */
@@ -53,7 +54,5 @@ public class Comment implements Serializable {
     public void setBelongingTask(Long belongingTask) {this.belongingTask = belongingTask; }
 
     public Long getBelongingTask() {return belongingTask;}
-
-
 
 }

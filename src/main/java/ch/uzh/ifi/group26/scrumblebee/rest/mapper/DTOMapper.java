@@ -103,6 +103,7 @@ public interface DTOMapper {
     @Mapping(source = "score", target = "score")
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
+    @Mapping(source = "comments", target = "comments")
     TaskGetDTO convertEntityToTaskGetDTO(Task task);
 
     @Mapping(source = "username", target = "username")

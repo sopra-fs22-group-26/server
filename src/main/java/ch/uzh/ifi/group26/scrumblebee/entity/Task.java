@@ -6,7 +6,8 @@ import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Internal Task representation
@@ -57,6 +58,9 @@ public class Task implements Serializable {
 
     @Column
     private long reporter;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Comment> comments = new HashSet<>();
 
 
     /**
@@ -136,5 +140,15 @@ public class Task implements Serializable {
     /**
      * Add Getter and setter for comment list here.
     */
+    public void setComments(Set<Comment> comments) {this.comments = comments;}
 
+    public Set<Comment> getComments(){return comments;}
+
+    public void addComment(Comment aComment){
+        comments.add(aComment);
+    }
+
+    public void removeComment(Comment aComment){
+        comments.remove(aComment);
+    }
 }

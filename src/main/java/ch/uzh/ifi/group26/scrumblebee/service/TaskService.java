@@ -1,5 +1,6 @@
 package ch.uzh.ifi.group26.scrumblebee.service;
 
+import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
@@ -176,6 +177,44 @@ public class TaskService {
         }
         return taskById.get();
     }
+    /**
+     * Used by: DELETE /comments/{commentId}
+     * @param aComment
+     * @return Task
+     */
+    public Task deleteComment(Comment aComment){
 
+        Optional<Task> aTask = taskRepository.findByTaskId(aComment.getBelongingTask());
+        String baseErrorMessage = "The task with id: %s not found!";
+        if (aTask.isPresent()){
+            Task task = aTask.get();
+            task.removeComment(aComment);
+            taskRepository.save(task);
+            taskRepository.flush();
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, aComment.getBelongingTask()));
+        }
+        return aTask.get();
+    }
+
+    /**
+     * Used by: POST /comments
+     * @param aComment
+     * @return Task
+     */
+    public Task assignCommentToTask(Comment aComment){
+
+        Optional<Task> aTask = taskRepository.findByTaskId(aComment.getBelongingTask());
+        String baseErrorMessage = "The task with id: %s not found!";
+        if (aTask.isPresent()){
+            Task task = aTask.get();
+            task.addComment(aComment);
+            taskRepository.save(task);
+            taskRepository.flush();
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, aComment.getBelongingTask()));
+        }
+        return aTask.get();
+    }
 
 }
