@@ -2,10 +2,13 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
+import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
 import org.mapstruct.Mapping;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
 
 public class TaskGetDTO {
 
@@ -20,6 +23,7 @@ public class TaskGetDTO {
     private int score;
     private long assignee;
     private long reporter;
+    private List<Comment> comments;
 
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
@@ -97,4 +101,8 @@ public class TaskGetDTO {
     public long getReporter() {
         return reporter;
     }
+
+    public void setComments(List<Comment> comments) {this.comments = comments;}
+
+    public List<Comment> getComments() {return comments; }
 }
