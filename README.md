@@ -1,6 +1,5 @@
-# SoPra RESTful Service Template FS22
-
-Lol
+# SoPra FS22 - Group 26
+## ScrumbleBee
 
 ## Getting started with Spring Boot
 
