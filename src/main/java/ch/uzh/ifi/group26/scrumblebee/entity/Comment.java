@@ -3,6 +3,7 @@ package ch.uzh.ifi.group26.scrumblebee.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -34,7 +35,11 @@ public class Comment implements Serializable {
     @Column(nullable = false)
     private Long belongingTask;
 
+    @Column(nullable = false)
+    private java.util.Date creationDate;
 
+    @Column(nullable = false)
+    private String authorName;
     /**
      * Getter & setter methods
      */
@@ -55,4 +60,11 @@ public class Comment implements Serializable {
 
     public Long getBelongingTask() {return belongingTask;}
 
+    public void setCreationDate(java.util.Date creationDate) { this.creationDate = creationDate; }
+
+    public java.util.Date getCreationDate() { return creationDate; }
+
+    public void setAuthorName(String authorName) {this.authorName = authorName; }
+
+    public String getAuthorName(){ return authorName;}
 }
