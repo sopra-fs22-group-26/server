@@ -30,12 +30,8 @@ public class CommentService {
 
     private final Logger log = LoggerFactory.getLogger(TaskService.class);
 
-    private final CommentRepository commentRepository;
-
     @Autowired
-    public CommentService(@Qualifier("commentRepository") CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    private CommentRepository commentRepository;
 
     /**
      * Return a list of all comments.
