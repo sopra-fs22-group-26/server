@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.module.ResolutionException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -196,9 +198,9 @@ public class TaskServiceIntegrationTest {
         taskRepository.save(task2);
         taskRepository.save(task3);
 
-        Optional<Task> foundTask = taskService.getTask(99999L);
-
-        assertTrue(foundTask.isEmpty());
+        assertThrows(ResponseStatusException.class, ()->{
+            taskService.getTask(99999L);
+        });
 
     }
 

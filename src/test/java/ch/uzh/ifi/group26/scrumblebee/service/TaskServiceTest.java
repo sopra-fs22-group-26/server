@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -298,11 +300,11 @@ public class TaskServiceTest {
     public void getTask_withId_success() throws ParseException {
 
         // STUBBING
-        given(taskRepository.findByTaskId(anyLong())).willReturn(Optional.ofNullable(task1));
+        given(taskRepository.findById(anyLong())).willReturn(Optional.ofNullable(task1));
 
         Optional<Task> foundTask = taskService.getTask(task1.getTaskId());
 
-        Mockito.verify(taskRepository, Mockito.times(1)).findByTaskId(anyLong());
+        Mockito.verify(taskRepository, Mockito.times(1)).findById(anyLong());
         assertTrue(foundTask.isPresent());
         // verify task 1
         assertEquals(task1.getTaskId(), foundTask.get().getTaskId());
@@ -317,7 +319,6 @@ public class TaskServiceTest {
         assertEquals(task1.getReporter(), foundTask.get().getReporter());
 
     }
-
 
     /**
      * METHOD TESTED: createTask()

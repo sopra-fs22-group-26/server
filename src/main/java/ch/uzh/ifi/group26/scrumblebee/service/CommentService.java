@@ -64,10 +64,6 @@ public class CommentService {
      */
     public Comment createComment(Comment newComment) {
 
-        log.debug(newComment.getContent());
-        log.debug(newComment.getAuthorId().toString());
-        log.debug(newComment.getBelongingTask().toString());
-
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newComment = commentRepository.save(newComment);
