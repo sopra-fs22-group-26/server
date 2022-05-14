@@ -2,7 +2,6 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
 import ch.uzh.ifi.group26.scrumblebee.repository.CommentRepository;
-import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +58,14 @@ public class CommentService {
      * @return the created Comment
      */
     public Comment createComment(Comment newComment) {
+
+        log.debug(newComment.getContent());
+        log.debug(newComment.getAuthorId().toString());
+        log.debug(newComment.getBelongingTask().toString());
+        log.debug(newComment.getAuthorName());
+
+        java.util.Date creationDate = java.util.Calendar.getInstance().getTime();
+        newComment.setCreationDate(creationDate);
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called

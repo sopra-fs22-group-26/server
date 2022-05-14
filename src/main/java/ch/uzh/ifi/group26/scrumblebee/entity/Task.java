@@ -61,6 +61,7 @@ public class Task implements Serializable {
 
 
     @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy("creationDate")
     private Set<Comment> comments = new HashSet<>();
 
 
