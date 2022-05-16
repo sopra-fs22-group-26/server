@@ -215,7 +215,7 @@ public class AuthControllerTest {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user1);
         refreshToken.setToken(token);
-        refreshToken.setExpiryDate(Instant.now().plusMillis(2000000));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(200000));
 
         given(refreshTokenService.findByToken(anyString())).willReturn(Optional.of(refreshToken));
         given(refreshTokenService.verifyExpiration(any(RefreshToken.class))).willReturn(refreshToken);

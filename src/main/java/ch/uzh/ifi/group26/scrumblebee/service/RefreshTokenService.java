@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service
 public class RefreshTokenService {
 
-    private final Long refreshTokenDurationsMS = Long.valueOf(900000);
+    private final Long refreshTokenDurationsMS = 600000L;
 
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
@@ -33,9 +33,10 @@ public class RefreshTokenService {
         if (userRepository.findById(userId).isPresent()) {
             RefreshToken refreshToken = new RefreshToken();
             refreshToken.setUser(userRepository.findById(userId).get());
-            refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationsMS*2));
+            refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationsMS));
             refreshToken.setToken(UUID.randomUUID().toString());
             refreshToken = refreshTokenRepository.save(refreshToken);
+            refreshTokenRepository.flush();
             return refreshToken;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "createRefreshToken: User does not exist");
@@ -51,7 +52,7 @@ public class RefreshTokenService {
         return token;
     }
 
-    /*
+
     @Transactional
     public int deleteByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -63,5 +64,4 @@ public class RefreshTokenService {
         }
     }
 
-     */
 }
