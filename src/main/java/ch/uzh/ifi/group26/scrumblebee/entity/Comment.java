@@ -38,6 +38,7 @@ public class Comment implements Serializable {
     @Column(nullable = false)
     private java.util.Date creationDate;
 
+    @Column()
     private String authorName;
     /**
      * Getter & setter methods

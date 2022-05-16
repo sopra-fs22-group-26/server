@@ -154,17 +154,21 @@ public interface DTOMapper {
     @Mapping(target = "refreshToken", ignore = true)
     RefreshGetDTO convertEntityToRefreshGetDTO(User user);
 
+    /**
+     * Comment
+     */
     @Mapping(source = "commentId", target = "commentId")
     @Mapping(source = "content", target = "content")
     @Mapping(source = "authorId", target = "authorId")
     @Mapping(source = "belongingTask", target = "belongingTask")
+    @Mapping(target = "authorName", ignore = true)
     Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
 
-
     @Mapping(source = "commentId", target = "commentId")
     @Mapping(source = "content", target = "content")
     @Mapping(source = "authorId", target = "authorId")
     @Mapping(source = "belongingTask", target = "belongingTask")
+    @Mapping(source = "authorName", target = "authorName")
     CommentGetDTO convertEntityToCommentGetDTO(Comment comment);
 
 }

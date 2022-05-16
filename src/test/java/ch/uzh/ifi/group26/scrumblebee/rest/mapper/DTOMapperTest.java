@@ -3,11 +3,13 @@ package ch.uzh.ifi.group26.scrumblebee.rest.mapper;
 import ch.uzh.ifi.group26.scrumblebee.constant.RoleType;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
+import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
 import ch.uzh.ifi.group26.scrumblebee.entity.Role;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.Mapping;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -272,6 +274,44 @@ public class DTOMapperTest {
 
         assertEquals(user.getId(), refreshGetDTO.getId());
 
+    }
+
+    /**
+     * CommentPostDTO ==> Comment
+     */
+    @Test
+    public void createComment_fromCommentPostDTO_success() {
+        // PREPARE
+        CommentPostDTO commentPostDTO = new CommentPostDTO();
+        commentPostDTO.setBelongingTask(1L);
+        commentPostDTO.setAuthorId(2L);
+        commentPostDTO.setContent("This is a test");
+        // EXERCISE
+        Comment convertedComment = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(commentPostDTO);
+        // ASSERTIONS
+        assertEquals(commentPostDTO.getBelongingTask(), convertedComment.getBelongingTask());
+        assertEquals(commentPostDTO.getAuthorId(), convertedComment.getAuthorId());
+        assertEquals(commentPostDTO.getContent(), convertedComment.getContent());
+    }
+
+    /**
+     * Comment ==> CommentGetDTO
+     */
+    @Test
+    public void createCommentGetDTO_fromComment_success() {
+        // PREPARE
+        Comment comment = new Comment();
+        comment.setBelongingTask(1L);
+        comment.setAuthorId(2L);
+        comment.setContent("This is a test");
+        comment.setAuthorName("Charles");
+        // EXERCISE
+        CommentGetDTO commentGetDTO = DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment);
+        // ASSERTIONS
+        assertEquals(comment.getBelongingTask(), commentGetDTO.getBelongingTask());
+        assertEquals(comment.getAuthorId(), commentGetDTO.getAuthorId());
+        assertEquals(comment.getContent(), commentGetDTO.getContent());
+        assertEquals(comment.getAuthorName(), commentGetDTO.getAuthorName());
     }
 
 }
