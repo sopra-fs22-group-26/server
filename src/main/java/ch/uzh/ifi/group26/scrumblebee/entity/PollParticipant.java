@@ -1,8 +1,10 @@
 package ch.uzh.ifi.group26.scrumblebee.entity;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollParticipantStatus;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sb_poll_participant")
@@ -26,6 +28,10 @@ public class PollParticipant {
 
     // Status of participation [invited, joined, declined];
     private PollParticipantStatus status;
+
+    // Save creation timestamp to keep order of participants
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
 
     /**
      * Constructors
@@ -90,4 +96,11 @@ public class PollParticipant {
     public PollParticipantStatus getStatus() {
         return status;
     }
+
+    /***/
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
 }

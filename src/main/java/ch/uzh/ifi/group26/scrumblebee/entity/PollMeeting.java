@@ -1,8 +1,11 @@
 package ch.uzh.ifi.group26.scrumblebee.entity;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +31,10 @@ public class PollMeeting implements Serializable {
 
     @Column(nullable = false)
     private PollMeetingStatus status;
+
+    // Save creation timestamp to keep sorting of all sessions consistent
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
 
     // Relation for participants of a poll meeting, together with their votes
     @OneToMany(mappedBy = "pollMeeting",
@@ -137,5 +144,11 @@ public class PollMeeting implements Serializable {
 
     public Task getTask() {
         return task;
+    }
+
+    /***/
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
     }
 }
