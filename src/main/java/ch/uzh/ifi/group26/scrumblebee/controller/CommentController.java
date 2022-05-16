@@ -37,30 +37,6 @@ public class CommentController {
     private UserService userService;
 
 
-    /*------------------------------------- GET requests -----------------------------------------------------------*/
-
-    /**
-     * Type: GET
-     * URL: /comments/:taskId
-     * Body: commentId
-     * @return list<Comment>
-     */
-    @GetMapping("/comments/{taskId}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public List<CommentGetDTO> getAllCommentsToATask(@PathVariable("taskId")Long taskId) {
-        Optional<Task> taskIdExistCheck = taskService.getTask(taskId);
-        if (taskIdExistCheck.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task ID does not exist");
-        }
-        List<Comment> comments = commentService.getComments(taskId);
-        List<CommentGetDTO> commentGetDTOs = new ArrayList<>();
-        for (Comment comment : comments) {
-            commentGetDTOs.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
-        }
-        return commentGetDTOs;
-    }
-
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
     /**

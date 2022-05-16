@@ -32,14 +32,6 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
-    /**
-     * Return a list of all comments.
-     * @return List<Comment>
-     */
-    public List<Comment> getComments(Long id) {
-        return this.commentRepository.findAllByBelongingTask(id);
-    }
-
 
     /**
      * Return a single comment by ID if this comment exists, null otherwise.

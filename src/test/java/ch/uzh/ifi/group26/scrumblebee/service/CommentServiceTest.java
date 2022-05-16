@@ -9,9 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,85 +37,8 @@ public class CommentServiceTest {
         comment1.setAuthorId(2L);
         comment1.setBelongingTask(1L);
 
-        comment2.setCommentId(2L);
-        comment2.setContent("Bliblablub and I wrote a comment to this task.");
-        comment2.setAuthorId(1L);
-        comment2.setBelongingTask(1L);
-
-        comment3.setCommentId(3L);
-        comment3.setContent("I am trying to contribute interesting information to this task");
-        comment3.setAuthorId(3L);
-        comment3.setBelongingTask(1L);
-
     }
 
-    /**
-     * METHOD TESTED: getComments()
-     * INPUT: valid
-     * EXPECTED RESULT: no comments should be returned
-     */
-    @Test
-    public void getComments_zeroComments_success() {
-
-        // STUBBING
-        List<Comment> allComments = new ArrayList<>();
-        when(commentRepository.findAllByBelongingTask(anyLong())).thenReturn(allComments);
-
-        // EXERCISE
-        List<Comment> foundComments = commentService.getComments(anyLong());
-
-        // ASSERTIONS
-        verify(commentRepository, times(1)).findAllByBelongingTask(anyLong());
-        assertTrue(foundComments.isEmpty());
-
-    }
-
-    /**
-     * METHOD TESTED: getComments()
-     * INPUT: valid
-     * EXPECTED RESULT: one comment should be returned
-     */
-    @Test
-    public void getComments_oneComment_success() {
-
-        // STUBBING
-        List<Comment> allComments = new ArrayList<>();
-        allComments.add(comment1);
-        when(commentRepository.findAllByBelongingTask(anyLong())).thenReturn(allComments);
-
-        // EXERCISE
-        List<Comment> foundComments = commentService.getComments(anyLong());
-
-        // ASSERTIONS
-        verify(commentRepository, times(1)).findAllByBelongingTask(anyLong());
-        assertEquals(1, foundComments.size());
-        assertEquals(allComments, foundComments);
-
-    }
-
-    /**
-     * METHOD TESTED: getComments()
-     * INPUT: valid
-     * EXPECTED RESULT: multiple comments should be returned
-     */
-    @Test
-    public void getComments_multipleComments_success() {
-
-        // STUBBING
-        List<Comment> allComments = new ArrayList<>();
-        allComments.add(comment1);
-        allComments.add(comment2);
-        allComments.add(comment3);
-        when(commentRepository.findAllByBelongingTask(anyLong())).thenReturn(allComments);
-
-        // EXERCISE
-        List<Comment> foundComments = commentService.getComments(anyLong());
-
-        // ASSERTIONS
-        verify(commentRepository, times(1)).findAllByBelongingTask(anyLong());
-        assertEquals(allComments, foundComments);
-
-    }
 
     /**
      * METHOD TESTED: getComment()
@@ -172,7 +92,7 @@ public class CommentServiceTest {
         when(commentRepository.save(any())).thenReturn(comment1);
 
         // EXERCISE
-        Comment createdComment = commentService.createComment(any());
+        Comment createdComment = commentService.createComment(comment1);
 
         // ASSERTIONS
         verify(commentRepository, times(1)).save(any());

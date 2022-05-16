@@ -22,4 +22,5 @@ public class CommentGetDTO {
     public void setBelongingTask(Long belongingTask) {this.belongingTask = belongingTask; }
 
     public Long getBelongingTask() {return belongingTask;}
+
 }
