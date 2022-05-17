@@ -1,5 +1,6 @@
 package ch.uzh.ifi.group26.scrumblebee.controller;
 
+import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
@@ -144,6 +145,10 @@ public class PollMeetingController {
         // Set PollMeeting status if one was provided in request body
         if (pollMeetingPutDTO.getStatus() != null) {
             pollMeetingService.changeStatus(pollMeeting, pollMeetingPutDTO.getStatus());
+            if (pollMeetingPutDTO.getStatus() == PollMeetingStatus.ENDED) {
+                // Assign estimate average to task
+                pollMeeting.getTask().setEstimate(pollMeeting.getAverageEstimate());
+            }
         }
 
         // Perform action if response url contained an "action" parameter
