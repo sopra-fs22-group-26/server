@@ -125,6 +125,7 @@ public interface DTOMapper {
 
     @Mapping(source = "meetingId", target = "meetingId")
     @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "creatorName", target = "creatorName")
     @Mapping(source = "task", target = "task")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(source = "averageEstimate", target = "averageEstimate")

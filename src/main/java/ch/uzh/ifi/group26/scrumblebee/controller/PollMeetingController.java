@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Poll Meeting Controller
@@ -54,6 +55,10 @@ public class PollMeetingController {
         List<PollMeeting> pollMeetings = pollMeetingService.getPollMeetings();
         List<PollMeetingGetDTO> pollMeetingGetDTOs = new ArrayList<>();
         for (PollMeeting pollMeeting : pollMeetings) {
+            // Get creator's name
+            User creator = userService.getUser(pollMeeting.getCreatorId());
+            pollMeeting.setCreatorName(creator.getName() != null ? creator.getName() : creator.getUsername());
+
             pollMeetingGetDTOs.add(DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(pollMeeting));
         }
         return pollMeetingGetDTOs;
@@ -70,6 +75,10 @@ public class PollMeetingController {
     @ResponseBody
     public PollMeetingGetDTO getPollMeeting(@PathVariable long meetingId) {
         PollMeeting pollMeeting = pollMeetingService.getPollMeeting(meetingId);
+        // Get creator's name
+        User creator = userService.getUser(pollMeeting.getCreatorId());
+        pollMeeting.setCreatorName(creator.getName() != null ? creator.getName() : creator.getUsername());
+
         return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(pollMeeting);
     }
 
@@ -105,6 +114,9 @@ public class PollMeetingController {
             User invitee = userService.getUser(userId);
             pollMeetingService.addInvitee(createdPollMeeting, invitee);
         }
+
+        // Add creator's name to return object
+        createdPollMeeting.setCreatorName(creator.getName() != null ? creator.getName() : creator.getUsername());
 
         //convert internal representation of task back to API
         return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(createdPollMeeting);
@@ -151,6 +163,10 @@ public class PollMeetingController {
                         pollMeetingService.castVote(pollMeeting, participant, pollMeetingPutDTO.getVote());
             }
         }
+
+        // Get creator's name
+        User creator = userService.getUser(pollMeeting.getCreatorId());
+        pollMeeting.setCreatorName(creator.getName() != null ? creator.getName() : creator.getUsername());
 
         return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(pollMeeting);
     }

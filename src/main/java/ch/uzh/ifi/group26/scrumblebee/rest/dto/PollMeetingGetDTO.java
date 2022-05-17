@@ -6,16 +6,14 @@ import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PollMeetingGetDTO {
 
     private Long meetingId;
     private Long creatorId;
+    private String creatorName;
     private TaskGetDTO task;
     private Integer estimateThreshold;
     private Integer averageEstimate;
@@ -39,6 +37,16 @@ public class PollMeetingGetDTO {
 
     public Long getCreatorId() {
         return creatorId;
+    }
+
+    /***/
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
     }
 
     /***/

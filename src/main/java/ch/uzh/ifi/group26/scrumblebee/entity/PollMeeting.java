@@ -48,6 +48,9 @@ public class PollMeeting implements Serializable {
     @JoinColumn(name = "pm_task")
     private Task task;
 
+    // Additional information for REST requests
+    private String creatorName;
+
     /**
      * Manipulate participants
      */
@@ -150,5 +153,15 @@ public class PollMeeting implements Serializable {
 
     public LocalDateTime getCreateDateTime() {
         return createDateTime;
+    }
+
+    /***/
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
     }
 }
