@@ -125,16 +125,19 @@ public interface DTOMapper {
 
     @Mapping(source = "meetingId", target = "meetingId")
     @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "creatorName", target = "creatorName")
     @Mapping(source = "task", target = "task")
     @Mapping(source = "estimateThreshold", target = "estimateThreshold")
     @Mapping(source = "averageEstimate", target = "averageEstimate")
     @Mapping(source = "participants", target = "participants")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "createDateTime", target = "createDateTime")
     PollMeetingGetDTO convertEntityToPollMeetingGetDTO(PollMeeting pollMeeting);
 
     @Mapping(source = "user", target = "user")
     @Mapping(source = "vote", target = "vote")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "createDateTime", target = "createDateTime")
     PollParticipantGetDTO convertEntityToPollParticipantGetDTO(PollParticipant pollParticipant);
 
     /**

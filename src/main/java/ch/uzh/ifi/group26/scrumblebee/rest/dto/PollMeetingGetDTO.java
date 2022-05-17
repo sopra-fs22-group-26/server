@@ -5,18 +5,20 @@ import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PollMeetingGetDTO {
 
     private Long meetingId;
     private Long creatorId;
+    private String creatorName;
     private TaskGetDTO task;
     private Integer estimateThreshold;
     private Integer averageEstimate;
     private PollMeetingStatus status;
+    private LocalDateTime createDateTime;
     private List<PollParticipantGetDTO> participants;
 
     public void setMeetingId(Long meetingId) {
@@ -35,6 +37,16 @@ public class PollMeetingGetDTO {
 
     public Long getCreatorId() {
         return creatorId;
+    }
+
+    /***/
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
     }
 
     /***/
@@ -79,9 +91,24 @@ public class PollMeetingGetDTO {
 
     /***/
 
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    /***/
+
     public void setParticipants(Set<PollParticipant> participants) {
+        // Sort participants by the time they joined the session
+        List<PollParticipant> sortedParticipants = participants.stream()
+                .sorted(Comparator.comparing(PollParticipant::getCreateDateTime))
+                .collect(Collectors.toList());
+        // Convert to a GetDTO
         List<PollParticipantGetDTO> participantGetDTOs = new ArrayList<>();
-        for (PollParticipant participant : participants) {
+        for (PollParticipant participant : sortedParticipants) {
             participantGetDTOs.add(DTOMapper.INSTANCE.convertEntityToPollParticipantGetDTO(participant));
         }
         this.participants = participantGetDTOs;
