@@ -85,6 +85,7 @@ public interface DTOMapper {
     @Mapping(target = "score", ignore = true)
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
+    @Mapping(source = "privateFlag", target = "privateFlag")
     Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
 
     @Mapping(target = "taskId", ignore = true)
@@ -98,6 +99,7 @@ public interface DTOMapper {
     @Mapping(source = "score", target = "score")
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
+    @Mapping(target = "privateFlag", ignore = true)
     Task convertTaskPutDTOtoEntity(TaskPutDTO taskPutDTO);
 
     @Mapping(source = "taskId", target = "taskId")
@@ -112,6 +114,7 @@ public interface DTOMapper {
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
     @Mapping(source = "comments", target = "comments")
+    @Mapping(source = "privateFlag", target = "privateFlag")
     TaskGetDTO convertEntityToTaskGetDTO(Task task);
 
     /**

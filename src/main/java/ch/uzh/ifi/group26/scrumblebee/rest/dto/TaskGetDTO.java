@@ -23,6 +23,7 @@ public class TaskGetDTO {
     private int score;
     private long assignee;
     private long reporter;
+    private boolean privateFlag;
     private List<Comment> comments;
 
     private static final SimpleDateFormat dateFormat
@@ -103,6 +104,14 @@ public class TaskGetDTO {
     }
 
     public void setComments(List<Comment> comments) {this.comments = comments;}
+
+    public void setPrivateFlag(boolean privateFlag) {
+        this.privateFlag = privateFlag;
+    }
+
+    public boolean getPrivateFlag() {
+        return privateFlag;
+    }
 
     public List<Comment> getComments() {return comments; }
 }

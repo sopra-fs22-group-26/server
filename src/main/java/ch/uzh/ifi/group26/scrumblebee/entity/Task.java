@@ -59,6 +59,9 @@ public class Task implements Serializable {
     @Column
     private long reporter;
 
+    @Column(nullable = false)
+    private boolean privateFlag;
+
 
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy("creationDate")
@@ -153,6 +156,17 @@ public class Task implements Serializable {
     public PollMeeting getPollMeeting() {
         return pollMeeting;
     }
+
+    /***/
+
+    public void setPrivateFlag(boolean privateFlag) {
+        this.privateFlag = privateFlag;
+    }
+
+    public boolean getPrivateFlag() {
+        return privateFlag;
+    }
+
 
     /**
      * Add Getter and setter for comment list here.
