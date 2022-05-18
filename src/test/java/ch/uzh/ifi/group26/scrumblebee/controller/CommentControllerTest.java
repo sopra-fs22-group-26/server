@@ -103,7 +103,6 @@ public class CommentControllerTest {
         // PERFORM AND ASSERT
         mockMvc.perform(postRequest).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.authorId").value(input.getAuthorId().intValue()))
-                .andExpect(jsonPath("$.belongingTask").value(input.getBelongingTask().intValue()))
                 .andExpect(jsonPath("$.commentId").value(input.getCommentId().intValue()))
                 .andExpect(jsonPath("$.content").value(input.getContent()));
 

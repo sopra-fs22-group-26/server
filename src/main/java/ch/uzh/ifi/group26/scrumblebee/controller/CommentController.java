@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Comment Controller
@@ -35,6 +36,33 @@ public class CommentController {
 
     @Autowired
     private UserService userService;
+
+    /*------------------------------------- GET requests -----------------------------------------------------------*/
+
+    /**
+     * Type: GET
+     * URL: /comments/{taskId}
+     * Body: none
+     * @return Comments
+     */
+    @GetMapping("/comments/{taskId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<CommentGetDTO> getCommentsForTask(@PathVariable long taskId) {
+        // Check if taskId is valid (getTask throws an exception otherwise)
+        Optional<Task> task = taskService.getTask(taskId);
+
+        Set<Comment> comments = task.get().getComments();
+        List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
+        for (Comment comment : comments) {
+            // Get creator's name
+            User creator = userService.getUser(comment.getAuthorId());
+            comment.setAuthorName(creator.getName() != null ? creator.getName() : creator.getUsername());
+
+            commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
+        }
+        return commentGetDTOS;
+    }
 
 
     /*------------------------------------- POST requests ----------------------------------------------------------*/

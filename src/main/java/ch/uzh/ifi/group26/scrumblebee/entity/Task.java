@@ -72,6 +72,19 @@ public class Task implements Serializable {
     @OneToOne(mappedBy = "task", cascade = CascadeType.REMOVE)
     private PollMeeting pollMeeting;
 
+
+    /**
+     * Add or remove comments
+     */
+
+    public void addComment(Comment aComment){
+        comments.add(aComment);
+    }
+
+    public void removeComment(Comment aComment){
+        comments.remove(aComment);
+    }
+
     /**
      * Getter & setter methods 
      */
@@ -167,19 +180,10 @@ public class Task implements Serializable {
         return privateFlag;
     }
 
+    /***/
 
-    /**
-     * Add Getter and setter for comment list here.
-    */
     public void setComments(Set<Comment> comments) {this.comments = comments;}
 
     public Set<Comment> getComments(){return comments;}
 
-    public void addComment(Comment aComment){
-        comments.add(aComment);
-    }
-
-    public void removeComment(Comment aComment){
-        comments.remove(aComment);
-    }
 }

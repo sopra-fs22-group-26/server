@@ -3,11 +3,10 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
-import org.mapstruct.Mapping;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 
 public class TaskGetDTO {
@@ -24,10 +23,10 @@ public class TaskGetDTO {
     private long assignee;
     private long reporter;
     private boolean privateFlag;
-    private List<Comment> comments;
+    private int nofComments;
 
-    private static final SimpleDateFormat dateFormat
-            = new SimpleDateFormat("yyyy-MM-dd");
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public void setTaskId(Long taskId) {
         this.taskId = taskId;
@@ -37,23 +36,41 @@ public class TaskGetDTO {
         return taskId;
     }
 
-    public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
 
-    public String getDueDate() { return dateFormat.format(dueDate); }
+    public String getDueDate() {
+        return dateFormat.format(dueDate);
+    }
 
-    public void setTitle(String title) { this.title = title; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public String getTitle() { return title; }
+    public String getTitle() {
+        return title;
+    }
 
-    public void setDescription(String description) { this.description = description; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setEstimate(Integer estimate) { this.estimate = estimate; }
+    public void setEstimate(Integer estimate) {
+        this.estimate = estimate;
+    }
 
-    public Integer getEstimate() { return estimate; }
+    public Integer getEstimate() {
+        return estimate;
+    }
 
-    public void setPriority(TaskPriority priority) { this.priority = priority; }
+    public void setPriority(TaskPriority priority) {
+        this.priority = priority;
+    }
 
     public String getPriority() {
         String returnPriority = "";
@@ -66,11 +83,17 @@ public class TaskGetDTO {
         return returnPriority;
     }
 
-    public void setLocation(String location) { this.location = location; }
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-    public String getLocation() { return location; }
+    public String getLocation() {
+        return location;
+    }
 
-    public void setStatus(TaskStatus status) { this.status = status; }
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
 
     public String getStatus() {
         String returnStatus = "";
@@ -83,9 +106,13 @@ public class TaskGetDTO {
         return returnStatus;
     }
 
-    public void setScore(int score) { this.score = score; }
+    public void setScore(int score) {
+        this.score = score;
+    }
 
-    public int getScore() { return score; }
+    public int getScore() {
+        return score;
+    }
 
     public void setAssignee(long assignee) {
         this.assignee = assignee;
@@ -103,8 +130,6 @@ public class TaskGetDTO {
         return reporter;
     }
 
-    public void setComments(List<Comment> comments) {this.comments = comments;}
-
     public void setPrivateFlag(boolean privateFlag) {
         this.privateFlag = privateFlag;
     }
@@ -113,5 +138,11 @@ public class TaskGetDTO {
         return privateFlag;
     }
 
-    public List<Comment> getComments() {return comments; }
+    public void setNofComments(Set<Comment> comments) {
+        this.nofComments = comments != null ? comments.size() : 0;
+    }
+
+    public int getNofComments() {
+        return nofComments;
+    }
 }

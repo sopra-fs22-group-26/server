@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Poll Meeting Controller
@@ -38,7 +37,6 @@ public class PollMeetingController {
         this.userService = userService;
         this.taskService = taskService;
     }
-
 
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/
