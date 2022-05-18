@@ -308,7 +308,6 @@ public class DTOMapperTest {
         // EXERCISE
         CommentGetDTO commentGetDTO = DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment);
         // ASSERTIONS
-        assertEquals(comment.getBelongingTask(), commentGetDTO.getBelongingTask());
         assertEquals(comment.getAuthorId(), commentGetDTO.getAuthorId());
         assertEquals(comment.getContent(), commentGetDTO.getContent());
         assertEquals(comment.getAuthorName(), commentGetDTO.getAuthorName());

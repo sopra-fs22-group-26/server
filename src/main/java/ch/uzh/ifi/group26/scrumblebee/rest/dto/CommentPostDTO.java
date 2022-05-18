@@ -6,7 +6,6 @@ public class CommentPostDTO {
     private String content;
     private Long authorId;
     private Long belongingTask;
-    private String authorName;
 
     public void setCommentId(Long commentId) {this.commentId = commentId;}
 
@@ -24,7 +23,4 @@ public class CommentPostDTO {
 
     public Long getBelongingTask() {return belongingTask;}
 
-    public void setAuthorName(String authorName) {this.authorName = authorName; }
-
-    public String getAuthorName(){return authorName;}
 }

@@ -1,10 +1,7 @@
 package ch.uzh.ifi.group26.scrumblebee.entity;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-
 
 /**
  * Internal Comment representation
@@ -38,7 +35,7 @@ public class Comment implements Serializable {
     @Column(nullable = false)
     private java.util.Date creationDate;
 
-    @Column()
+    // Additional information for REST requests
     private String authorName;
     /**
      * Getter & setter methods
