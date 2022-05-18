@@ -1,5 +1,7 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.mapper;
 
+import ch.uzh.ifi.group26.scrumblebee.entity.PollMeeting;
+import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
@@ -21,7 +23,11 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface DTOMapper {
 
-  DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
+    DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
+
+    /**
+     * User
+     */
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "username", target = "username")
@@ -33,6 +39,7 @@ public interface DTOMapper {
     @Mapping(target = "loggedIn", ignore = true)
     @Mapping(target = "score", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "pollMeetings", ignore = true)
     User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
     // Helper to check credentials in case of password change
@@ -42,6 +49,7 @@ public interface DTOMapper {
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "loggedIn", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "pollMeetings", ignore = true)
     User convertUserPutDTOtoTempEntity(UserPutDTO userPutDTO);
 
     @Mapping(source = "name", target = "name")
@@ -54,6 +62,7 @@ public interface DTOMapper {
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "loggedIn", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "pollMeetings", ignore = true)
     User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
 
     @Mapping(source = "id", target = "id")
@@ -66,6 +75,10 @@ public interface DTOMapper {
     @Mapping(source = "score", target = "score")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
+    /**
+     * Task
+     */
+
     @Mapping(target = "taskId", ignore = true)
     @Mapping(source = "dueDate", target = "dueDate")
     @Mapping(source = "title", target = "title")
@@ -77,6 +90,9 @@ public interface DTOMapper {
     @Mapping(target = "score", ignore = true)
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
+    @Mapping(source = "privateFlag", target = "privateFlag")
+    @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "pollMeeting", ignore = true)
     Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
 
     @Mapping(target = "taskId", ignore = true)
@@ -90,6 +106,9 @@ public interface DTOMapper {
     @Mapping(source = "score", target = "score")
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
+    @Mapping(target = "privateFlag", ignore = true)
+    @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "pollMeeting", ignore = true)
     Task convertTaskPutDTOtoEntity(TaskPutDTO taskPutDTO);
 
     @Mapping(source = "taskId", target = "taskId")
@@ -103,8 +122,43 @@ public interface DTOMapper {
     @Mapping(source = "score", target = "score")
     @Mapping(source = "assignee", target = "assignee")
     @Mapping(source = "reporter", target = "reporter")
-    @Mapping(source = "comments", target = "comments")
+    @Mapping(source = "privateFlag", target = "privateFlag")
+    @Mapping(source = "comments", target = "nofComments")
     TaskGetDTO convertEntityToTaskGetDTO(Task task);
+
+    /**
+     *  PollMeeting
+     */
+
+    @Mapping(target = "meetingId", ignore = true)
+    @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "estimateThreshold", target = "estimateThreshold")
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "participants", ignore = true)
+    @Mapping(target = "task", ignore = true)
+    @Mapping(target = "creatorName", ignore = true)
+    PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
+
+    @Mapping(source = "meetingId", target = "meetingId")
+    @Mapping(source = "creatorId", target = "creatorId")
+    @Mapping(source = "creatorName", target = "creatorName")
+    @Mapping(source = "task", target = "task")
+    @Mapping(source = "estimateThreshold", target = "estimateThreshold")
+    @Mapping(source = "averageEstimate", target = "averageEstimate")
+    @Mapping(source = "participants", target = "participants")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "createDateTime", target = "createDateTime")
+    PollMeetingGetDTO convertEntityToPollMeetingGetDTO(PollMeeting pollMeeting);
+
+    @Mapping(source = "user", target = "user")
+    @Mapping(source = "vote", target = "vote")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "createDateTime", target = "createDateTime")
+    PollParticipantGetDTO convertEntityToPollParticipantGetDTO(PollParticipant pollParticipant);
+
+    /**
+     * Auth
+     */
 
     @Mapping(source = "username", target = "username")
     @Mapping(source = "name", target = "name")
@@ -120,17 +174,22 @@ public interface DTOMapper {
     @Mapping(target = "refreshToken", ignore = true)
     RefreshGetDTO convertEntityToRefreshGetDTO(User user);
 
+    /**
+     * Comment
+     */
+
     @Mapping(source = "commentId", target = "commentId")
     @Mapping(source = "content", target = "content")
     @Mapping(source = "authorId", target = "authorId")
     @Mapping(source = "belongingTask", target = "belongingTask")
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "authorName", ignore = true)
     Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
 
-
     @Mapping(source = "commentId", target = "commentId")
     @Mapping(source = "content", target = "content")
     @Mapping(source = "authorId", target = "authorId")
-    @Mapping(source = "belongingTask", target = "belongingTask")
+    @Mapping(source = "authorName", target = "authorName")
     CommentGetDTO convertEntityToCommentGetDTO(Comment comment);
 
 }

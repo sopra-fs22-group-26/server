@@ -5,6 +5,7 @@ plugins {
     id 'idea'
     id 'jacoco'
     id "org.sonarqube" version "3.1.1"
+    id 'info.solidsoft.pitest' version '1.7.4'
 }
 
 group 'ch.uzh.ifi.group26'
@@ -62,6 +63,8 @@ dependencies {
 
 }
 
+apply plugin: "info.solidsoft.pitest"
+
 bootJar {
     archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
@@ -70,7 +73,9 @@ test {
     useJUnitPlatform()
     testLogging.showStandardStreams = true
     maxParallelForks = 1
-    finalizedBy jacocoTestReport
+    finalizedBy {
+        jacocoTestReport
+    }
 }
 
 jacocoTestReport {
@@ -108,6 +113,11 @@ sonarqube {
         property "sonar.coverage.jacoco.xmlReportPaths", ["$buildDir/jacocoReportDir/test/jacocoTestReport.xml"]
         property "sonar.cpd.exclusions", "**/entity/*.java,**/rest/dto/*.java"
     }
+}
+
+pitest {
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
 }
 
 project.tasks["sonarqube"].dependsOn {

@@ -2,6 +2,7 @@ package ch.uzh.ifi.group26.scrumblebee.controller;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.RefreshToken;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
@@ -20,9 +21,10 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class AuthController {
 
-    private final AuthService authService;
-
     private final Logger log = LoggerFactory.getLogger(AuthController.class);
+
+    @Autowired
+    AuthService authService;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -36,7 +38,8 @@ public class AuthController {
     @Autowired
     RefreshTokenService refreshTokenService;
 
-    AuthController(AuthService authService) { this.authService = authService; }
+    @Autowired
+    UserRepository userRepository;
 
     /**
      * Handles the logout process. User is identified by their username.

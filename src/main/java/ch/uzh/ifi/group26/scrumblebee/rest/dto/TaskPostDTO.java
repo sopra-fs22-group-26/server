@@ -19,6 +19,7 @@ public class TaskPostDTO {
     private int score;
     private long assignee;
     private long reporter;
+    private boolean privateFlag;
 
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
@@ -93,4 +94,11 @@ public class TaskPostDTO {
         return reporter;
     }
 
+    public void setPrivateFlag(boolean privateFlag) {
+        this.privateFlag = privateFlag;
+    }
+
+    public boolean getPrivateFlag() {
+        return privateFlag;
+    }
 }

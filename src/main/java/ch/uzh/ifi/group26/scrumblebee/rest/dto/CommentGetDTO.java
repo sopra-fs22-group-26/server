@@ -5,21 +5,38 @@ public class CommentGetDTO {
     private Long commentId;
     private String content;
     private Long authorId;
-    private Long belongingTask;
+    private String authorName;
 
-    public void setCommentId(Long commentId) {this.commentId = commentId;}
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
+    }
 
-    public Long getCommentId() { return commentId; }
+    public Long getCommentId() {
+        return commentId;
+    }
 
-    public void setContent(String content) { this.content = content;  }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-    public String getContent() { return content; }
+    public String getContent() {
+        return content;
+    }
 
-    public void setAuthorId(Long authorId) {this.authorId = authorId; }
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
 
-    public Long getAuthorId() {return authorId; }
+    public Long getAuthorId() {
+        return authorId;
+    }
 
-    public void setBelongingTask(Long belongingTask) {this.belongingTask = belongingTask; }
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 
-    public Long getBelongingTask() {return belongingTask;}
+    public String getAuthorName() {
+        return authorName;
+    }
+
 }

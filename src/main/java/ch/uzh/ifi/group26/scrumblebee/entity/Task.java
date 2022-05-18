@@ -35,7 +35,7 @@ public class Task implements Serializable {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
@@ -59,9 +59,31 @@ public class Task implements Serializable {
     @Column
     private long reporter;
 
+    @Column(nullable = false)
+    private boolean privateFlag;
+
+
     @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy("creationDate")
     private Set<Comment> comments = new HashSet<>();
 
+
+    // Relation to poll-meeting, if task is affected by it
+    @OneToOne(mappedBy = "task", cascade = CascadeType.REMOVE)
+    private PollMeeting pollMeeting;
+
+
+    /**
+     * Add or remove comments
+     */
+
+    public void addComment(Comment aComment){
+        comments.add(aComment);
+    }
+
+    public void removeComment(Comment aComment){
+        comments.remove(aComment);
+    }
 
     /**
      * Getter & setter methods 
@@ -129,6 +151,7 @@ public class Task implements Serializable {
     }
 
     /***/
+
     public long getReporter() {
         return reporter;
     }
@@ -137,18 +160,30 @@ public class Task implements Serializable {
         this.reporter = reporter;
     }
 
-    /**
-     * Add Getter and setter for comment list here.
-    */
+    /***/
+
+    public void setPollMeeting(PollMeeting pollMeeting) {
+        this.pollMeeting = pollMeeting;
+    }
+
+    public PollMeeting getPollMeeting() {
+        return pollMeeting;
+    }
+
+    /***/
+
+    public void setPrivateFlag(boolean privateFlag) {
+        this.privateFlag = privateFlag;
+    }
+
+    public boolean getPrivateFlag() {
+        return privateFlag;
+    }
+
+    /***/
+
     public void setComments(Set<Comment> comments) {this.comments = comments;}
 
     public Set<Comment> getComments(){return comments;}
 
-    public void addComment(Comment aComment){
-        comments.add(aComment);
-    }
-
-    public void removeComment(Comment aComment){
-        comments.remove(aComment);
-    }
 }

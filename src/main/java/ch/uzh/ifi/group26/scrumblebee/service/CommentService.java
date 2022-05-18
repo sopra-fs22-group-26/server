@@ -2,19 +2,13 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
 import ch.uzh.ifi.group26.scrumblebee.repository.CommentRepository;
-import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 
 /**
@@ -30,20 +24,8 @@ public class CommentService {
 
     private final Logger log = LoggerFactory.getLogger(TaskService.class);
 
-    private final CommentRepository commentRepository;
-
     @Autowired
-    public CommentService(@Qualifier("commentRepository") CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
-
-    /**
-     * Return a list of all comments.
-     * @return List<Comment>
-     */
-    public List<Comment> getComments(Long id) {
-        return this.commentRepository.findAllByBelongingTask(id);
-    }
+    private CommentRepository commentRepository;
 
 
     /**
@@ -52,7 +34,7 @@ public class CommentService {
      * @return
      */
     public Comment getComment(long commentID) {
-        String baseErrorMessage = "Error: No user found with userID %d!";
+        String baseErrorMessage = "Error: No comment found with commentID %d!";
         return commentRepository.findById(commentID).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, commentID)));
     }
@@ -67,6 +49,10 @@ public class CommentService {
         log.debug(newComment.getContent());
         log.debug(newComment.getAuthorId().toString());
         log.debug(newComment.getBelongingTask().toString());
+        log.debug(newComment.getAuthorName());
+
+        java.util.Date creationDate = java.util.Calendar.getInstance().getTime();
+        newComment.setCreationDate(creationDate);
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called

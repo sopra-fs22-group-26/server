@@ -7,7 +7,6 @@ import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,7 +73,9 @@ public class TaskService {
 
 
     public Optional<Task> getTask(long taskId) {
-        return this.taskRepository.findByTaskId(taskId);
+        String baseErrorMessage = "Error: No task found with id %d!";
+        return Optional.ofNullable(taskRepository.findById(taskId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId))));
     }
 
     /**

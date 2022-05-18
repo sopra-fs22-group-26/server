@@ -1,15 +1,22 @@
 package ch.uzh.ifi.group26.scrumblebee.controller;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
+import ch.uzh.ifi.group26.scrumblebee.entity.Task;
+import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.CommentService;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
+import ch.uzh.ifi.group26.scrumblebee.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Comment Controller
@@ -21,36 +28,42 @@ import java.util.List;
 @RestController
 public class CommentController {
 
-    private final CommentService commentService;
+    @Autowired
+    private CommentService commentService;
 
-    private final TaskService taskService;
+    @Autowired
+    private TaskService taskService;
 
-    CommentController(CommentService commentService, TaskService taskService) {
-        this.commentService = commentService;
-        this.taskService = taskService;
-    }
-
-
+    @Autowired
+    private UserService userService;
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/
 
     /**
      * Type: GET
-     * URL: /comments/:taskId
-     * Body: commentId
-     * @return list<Comment>
+     * URL: /comments/{taskId}
+     * Body: none
+     * @return Comments
      */
     @GetMapping("/comments/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<CommentGetDTO> getAllCommentsToATask(@PathVariable("taskId")Long taskId) {
-        List<Comment> comments = commentService.getComments(taskId);
-        List<CommentGetDTO> commentGetDTOs = new ArrayList<>();
+    public List<CommentGetDTO> getCommentsForTask(@PathVariable long taskId) {
+        // Check if taskId is valid (getTask throws an exception otherwise)
+        Optional<Task> task = taskService.getTask(taskId);
+
+        Set<Comment> comments = task.get().getComments();
+        List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
         for (Comment comment : comments) {
-            commentGetDTOs.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
+            // Get creator's name
+            User creator = userService.getUser(comment.getAuthorId());
+            comment.setAuthorName(creator.getName() != null ? creator.getName() : creator.getUsername());
+
+            commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
         }
-        return commentGetDTOs;
+        return commentGetDTOS;
     }
+
 
     /*------------------------------------- POST requests ----------------------------------------------------------*/
 
@@ -66,6 +79,12 @@ public class CommentController {
     @ResponseBody
     public CommentGetDTO createComment(@RequestBody CommentPostDTO commentPostDTO) {
         Comment commentInput = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(commentPostDTO);
+        // check if the id's exist
+        Optional<Task> foundTask = taskService.getTask(commentInput.getBelongingTask());
+        Optional<User> foundUser = Optional.ofNullable(userService.getUser(commentInput.getAuthorId()));
+        if ( foundTask.isEmpty() || foundUser.isEmpty() ) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User or Task ID do not exist.");
+        }
         //create comment
         Comment createdComment = commentService.createComment(commentInput);
         //add comment to the comments List in the right task
@@ -86,7 +105,7 @@ public class CommentController {
      * @return void
      */
     @DeleteMapping("/comments/{commentId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void deleteComment(@PathVariable long commentId) {
         //get comment from ID
