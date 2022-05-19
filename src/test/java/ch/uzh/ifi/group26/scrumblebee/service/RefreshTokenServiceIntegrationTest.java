@@ -3,6 +3,7 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 import ch.uzh.ifi.group26.scrumblebee.entity.*;
 import ch.uzh.ifi.group26.scrumblebee.repository.RefreshTokenRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,6 +138,12 @@ public class RefreshTokenServiceIntegrationTest {
             // EXECUTE METHOD
             refreshTokenService.verifyExpiration(createdRefreshToken);
         });
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        refreshTokenRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 }
