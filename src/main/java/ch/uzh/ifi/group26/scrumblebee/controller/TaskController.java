@@ -2,9 +2,7 @@ package ch.uzh.ifi.group26.scrumblebee.controller;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
-import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskGetDTO;
-import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPostDTO;
-import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPutDTO;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
@@ -46,15 +44,19 @@ public class TaskController {
     @GetMapping("/tasks")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<TaskGetDTO> getAllTasks(@RequestParam(required = false) String show) {
+    public List<TaskGetDTO> getAllTasks(@RequestParam(required = false) String show,
+                                        @RequestParam(required = false) Long id) {
+        // Find user who made the request
+        Long userId = id != null ? id : 0L;
+
         // If parameter "show" was specified, get only active or completed tasks.
         // Otherwise get all tasks.
         List<Task> tasks;
         if (show != null) {
-            tasks = taskService.getTasks(show);
+            tasks = taskService.getTasks(show, userId);
         }
         else {
-            tasks = taskService.getTasks();
+            tasks = taskService.getTasks(userId);
         }
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
         for (Task task : tasks) {
@@ -72,8 +74,12 @@ public class TaskController {
     @GetMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public TaskGetDTO getTask(@PathVariable long taskId) {
-        Optional<Task> task = taskService.getTask(taskId);
+    public TaskGetDTO getTask(@PathVariable long taskId,
+                              @RequestParam(required = false) Long id) {
+        // Find user who made the request
+        Long userId = id != null ? id : 0L;
+
+        Optional<Task> task = taskService.getTask(taskId, userId);
         if (task.isPresent()) return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task.get());
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }

@@ -30,6 +30,9 @@ public class Task implements Serializable {
     private Long taskId;
 
     @Column(nullable = false)
+    private Long creatorId;
+
+    @Column(nullable = false)
     private Date dueDate;
 
     @Column(nullable = false)
@@ -92,6 +95,16 @@ public class Task implements Serializable {
     public Long getTaskId() { return taskId; }
 
     public void setTaskId(Long taskId) { this.taskId = taskId; }
+
+    /***/
+
+    public Long getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
+    }
 
     /***/
 
