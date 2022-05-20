@@ -42,6 +42,7 @@ public class TaskRepositoryIntegrationTest {
         task.setScore(111);
         task.setAssignee(1L);
         task.setReporter(2L);
+        task.setCreatorId(1L);
 
     }
 
