@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,9 +38,31 @@ public class TaskService {
         return this.taskRepository.findAll();
     }
 
+    // NEW VERSION (private tasks)
+    // Get all tasks, completed or not
+    public List<Task> getTasks(Long creatorId) {
+        return this.taskRepository.findAll().stream().
+                filter(task -> !task.getPrivateFlag() || Objects.equals(task.getCreatorId(), creatorId)).
+                collect(Collectors.toList());
+    }
+
     // Return only either active or completed (= not active) tasks
     public List<Task> getTasks(String status) {
         List<Task> allTasks = getTasks();
+        switch (status) {
+            case "active":
+                allTasks = allTasks.stream().filter(task -> task.getStatus() == TaskStatus.ACTIVE).collect(Collectors.toList());
+                break;
+            case "completed":
+                allTasks = allTasks.stream().filter(task -> task.getStatus() != TaskStatus.ACTIVE).collect(Collectors.toList());
+        }
+        return allTasks;
+    }
+
+    // NEW VERSION (private tasks)
+    // Return only either active or completed (= not active) tasks
+    public List<Task> getTasks(String status, Long creatorId) {
+        List<Task> allTasks = getTasks(creatorId);
         switch (status) {
             case "active":
                 allTasks = allTasks.stream().filter(task -> task.getStatus() == TaskStatus.ACTIVE).collect(Collectors.toList());
@@ -56,7 +79,7 @@ public class TaskService {
      * @return all active tasks for which user with userId is assigned
      */
     public List<Task> getTasksForUser(long userId) {
-        List<Task> allTasks = getTasks();
+        List<Task> allTasks = getTasks(userId);
         return allTasks.stream().filter(task -> (task.getStatus() == TaskStatus.ACTIVE) && (task.getAssignee() == userId)).collect(Collectors.toList());
     }
 
@@ -67,7 +90,7 @@ public class TaskService {
      * @return all tasks (active and completed) for which user with userId is the reporter
      */
     public List<Task> getTasksToReportForUser(long userId) {
-        List<Task> allTasks = getTasks();
+        List<Task> allTasks = getTasks(userId);
         return allTasks.stream().filter(task -> (task.getReporter() == userId)).collect(Collectors.toList());
     }
 
@@ -78,6 +101,15 @@ public class TaskService {
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId))));
     }
 
+    // NEW VERSION (private tasks)
+    public Optional<Task> getTask(long taskId, Long creatorId) {
+        String baseErrorMessage = "Error: No task found with id %d!";
+        Task task = taskRepository.findById(taskId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId)));
+        return Optional.ofNullable(!task.getPrivateFlag() || task.getCreatorId() == creatorId ? task : null);
+    }
+
+
     /**
      * Used by: POST /tasks
      * @param newTask
@@ -86,6 +118,9 @@ public class TaskService {
     public Task createTask(Task newTask) {
 
         newTask.setStatus(TaskStatus.ACTIVE);
+        if (newTask.getCreatorId() == null) {
+            newTask.setCreatorId(0L);
+        }
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called

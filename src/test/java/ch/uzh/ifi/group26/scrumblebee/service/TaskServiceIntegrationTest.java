@@ -56,6 +56,7 @@ public class TaskServiceIntegrationTest {
         task1.setScore(200);
         task1.setAssignee(3L);
         task1.setReporter(2L);
+        task1.setCreatorId(1L);
 
         // init task2
         task2.setDueDate(dateFormat.parse("2011-6-19"));
@@ -69,6 +70,7 @@ public class TaskServiceIntegrationTest {
         task2.setScore(200);
         task2.setAssignee(1L);
         task2.setReporter(2L);
+        task2.setCreatorId(1L);
 
         // init task3
         task3.setDueDate(dateFormat.parse("2011-2-19"));
@@ -80,6 +82,7 @@ public class TaskServiceIntegrationTest {
         task3.setScore(200);
         task3.setAssignee(2L);
         task3.setReporter(1L);
+        task3.setCreatorId(1L);
 
     }
 

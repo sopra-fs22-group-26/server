@@ -8,6 +8,7 @@ import java.util.Date;
 
 public class TaskPutDTO {
     private Long taskId;
+    private Long creatorId;
     private java.util.Date dueDate;
     private String title;
     private String description;
@@ -28,6 +29,14 @@ public class TaskPutDTO {
 
     public Long getTaskId() {
         return taskId;
+    }
+
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public Long getCreatorId() {
+        return creatorId;
     }
 
     public void setDueDate(Date dueDate) { this.dueDate = dueDate; }

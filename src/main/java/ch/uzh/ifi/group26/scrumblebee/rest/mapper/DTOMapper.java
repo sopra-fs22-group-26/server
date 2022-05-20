@@ -80,6 +80,7 @@ public interface DTOMapper {
      */
 
     @Mapping(target = "taskId", ignore = true)
+    @Mapping(source = "creatorId", target = "creatorId")
     @Mapping(source = "dueDate", target = "dueDate")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "description", target = "description")
@@ -96,6 +97,7 @@ public interface DTOMapper {
     Task convertTaskPostDTOtoEntity(TaskPostDTO taskPostDTO);
 
     @Mapping(target = "taskId", ignore = true)
+    @Mapping(source = "creatorId", target = "creatorId")
     @Mapping(source = "dueDate", target = "dueDate")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "description", target = "description")
@@ -112,6 +114,7 @@ public interface DTOMapper {
     Task convertTaskPutDTOtoEntity(TaskPutDTO taskPutDTO);
 
     @Mapping(source = "taskId", target = "taskId")
+    @Mapping(source = "creatorId", target = "creatorId")
     @Mapping(source = "dueDate", target = "dueDate")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "description", target = "description")
