@@ -60,6 +60,7 @@ public class RefreshTokenServiceIntegrationTest {
         assertTrue(userRepository.findAll().isEmpty());
         //  create user and token
         User savedUser = userRepository.save(testUser);
+        userRepository.flush();
         RefreshToken tokenToSave = new RefreshToken();
         tokenToSave.setUser(savedUser);
         tokenToSave.setToken("token");
@@ -88,6 +89,7 @@ public class RefreshTokenServiceIntegrationTest {
         assertTrue(refreshTokenRepository.findAll().isEmpty());
         assertTrue(userRepository.findAll().isEmpty());
         User savedUser = userRepository.save(testUser);
+        userRepository.flush();
         // EXECUTE METHOD
         RefreshToken createdRefreshToken = refreshTokenService.createRefreshToken(savedUser.getId());
         // ASSERTIONS
@@ -109,6 +111,7 @@ public class RefreshTokenServiceIntegrationTest {
         assertTrue(refreshTokenRepository.findAll().isEmpty());
         assertTrue(userRepository.findAll().isEmpty());
         User savedUser = userRepository.save(testUser);
+        userRepository.flush();
         RefreshToken createdRefreshToken = refreshTokenService.createRefreshToken(savedUser.getId());
         Thread.sleep(2000);
         // ASSERTIONS
@@ -131,6 +134,7 @@ public class RefreshTokenServiceIntegrationTest {
         assertTrue(refreshTokenRepository.findAll().isEmpty());
         assertTrue(userRepository.findAll().isEmpty());
         User savedUser = userRepository.save(testUser);
+        userRepository.flush();
         RefreshToken createdRefreshToken = refreshTokenService.createRefreshToken(savedUser.getId());
         createdRefreshToken.setExpiryDate(Instant.now().minusMillis(1000));
         // ASSERTIONS
