@@ -34,8 +34,8 @@ public class SecurityUserDetails implements UserDetails {
 
     /**
      * this method builds a UserDetails object from a User object
-     * @param user
-     * @return
+     * @param user to authenticate
+     * @return SecurityUserDetails
      */
     public static SecurityUserDetails build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(
@@ -90,4 +90,8 @@ public class SecurityUserDetails implements UserDetails {
         return Objects.equals(id, user.id);
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

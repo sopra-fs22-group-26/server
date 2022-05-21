@@ -3,7 +3,6 @@ package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TaskPostDTO {
@@ -21,9 +20,6 @@ public class TaskPostDTO {
     private long assignee;
     private long reporter;
     private boolean privateFlag;
-
-    private static final SimpleDateFormat dateFormat
-            = new SimpleDateFormat("yyyy-MM-dd");
 
     public void setTaskId(Long taskId) {
         this.taskId = taskId;
@@ -59,10 +55,20 @@ public class TaskPostDTO {
 
     public void setPriority(String priority) {
         switch (priority) {
-            case "NONE" -> this.priority = TaskPriority.NONE;
-            case "LOW"  -> this.priority = TaskPriority.LOW;
-            case "MEDIUM"  -> this.priority = TaskPriority.MEDIUM;
-            case "HIGH"  -> this.priority = TaskPriority.HIGH;
+            case "NONE":
+                this.priority = TaskPriority.NONE;
+                break;
+            case "LOW":
+                this.priority = TaskPriority.LOW;
+                break;
+            case "MEDIUM":
+                this.priority = TaskPriority.MEDIUM;
+                break;
+            case "HIGH":
+                this.priority = TaskPriority.HIGH;
+                break;
+            default:
+                this.priority = TaskPriority.NONE;
         }
     }
 
@@ -74,10 +80,20 @@ public class TaskPostDTO {
 
     public void setStatus(String status) {
         switch (status) {
-            case "ACTIVE" -> this.status = TaskStatus.ACTIVE;
-            case "ARCHIVED" -> this.status = TaskStatus.ARCHIVED;
-            case "REPORTED" -> this.status = TaskStatus.REPORTED;
-            case "COMPLETED" -> this.status = TaskStatus.COMPLETED;
+            case "ACTIVE":
+                this.status = TaskStatus.ACTIVE;
+                break;
+            case "ARCHIVED":
+                this.status = TaskStatus.ARCHIVED;
+                break;
+            case "REPORTED":
+                this.status = TaskStatus.REPORTED;
+                break;
+            case "COMPLETED":
+                this.status = TaskStatus.COMPLETED;
+                break;
+            default:
+                this.status = TaskStatus.ACTIVE;
         }
     }
 
