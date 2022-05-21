@@ -8,7 +8,6 @@ import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,8 +50,8 @@ public class UserService {
 
     /**
      * Return a single user by ID if this user exists, null otherwise.
-     * @param userID
-     * @return
+     * @param userID of user
+     * @return found user or error, if now user is found with id
      */
     public User getUser(long userID) {
         String baseErrorMessage = "Error: No user found with userID %d!";
@@ -63,7 +62,7 @@ public class UserService {
 
     /**
      * Used by: POST /register
-     * @param newUser
+     * @param newUser to create
      * @return the created user
      */
     public User createUser(User newUser) {
@@ -104,7 +103,7 @@ public class UserService {
             if (encoder.matches(userCredentials.getPassword(),userToUpdate.getPassword())){
                 userToUpdate.setPassword(encoder.encode(inputUser.getPassword()));
             }
-            else { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Current password incorrect - try again")); }
+            else { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password incorrect - try again"); }
         }
 
         userToUpdate.setBirthDate(inputUser.getBirthDate());
@@ -130,7 +129,7 @@ public class UserService {
 
     /**
      * Used by: PUT /users/{id}
-     * @param aUser
+     * @param aUser to update
      * @return void
      */
     private User updateRepository(User aUser){
@@ -145,8 +144,8 @@ public class UserService {
     * defined in the User entity. The method will do nothing if the input is unique
     * and throw an error otherwise.
     *
-    * @param userToBeCreated
-    * @throws org.springframework.web.server.ResponseStatusException
+    * @param userToBeCreated must not exist
+    * @throws org.springframework.web.server.ResponseStatusException if user already exists
     * @see User
     */
     private void checkIfUserExists(User userToBeCreated) {

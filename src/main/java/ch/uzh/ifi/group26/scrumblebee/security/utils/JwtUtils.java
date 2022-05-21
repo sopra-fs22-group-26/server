@@ -2,8 +2,6 @@ package ch.uzh.ifi.group26.scrumblebee.security.utils;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +14,9 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
-
     private SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    private final Long refreshTokenDurationsMS = Long.valueOf(20000);
+    private final Long refreshTokenDurationsMS = 20000L;
 
     public String generateJwtToken(UserDetails userDetails) {
         return Jwts.builder()

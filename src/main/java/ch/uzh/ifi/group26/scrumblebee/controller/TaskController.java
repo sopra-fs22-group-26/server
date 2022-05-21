@@ -1,7 +1,6 @@
 package ch.uzh.ifi.group26.scrumblebee.controller;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
-import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
@@ -95,7 +94,7 @@ public class TaskController {
     @ResponseBody
     public List<TaskGetDTO> getTasksForUser(@PathVariable long userId) {
         // check if userId is valid (getUser throws an exception otherwise)
-        User user = userService.getUser(userId);
+        userService.getUser(userId);
 
         List<Task> tasks = taskService.getTasksForUser(userId);
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
@@ -116,7 +115,7 @@ public class TaskController {
     @ResponseBody
     public List<TaskGetDTO> getTasksToReportForUser(@PathVariable long userId) {
         // Check if userId is valid (getUser throws an exception otherwise)
-        User user = userService.getUser(userId);
+        userService.getUser(userId);
 
         List<Task> tasks = taskService.getTasksToReportForUser(userId);
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
