@@ -132,7 +132,7 @@ public class TaskControllerTest {
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
 
-        given(taskService.getTasks()).willReturn(allTasks);
+        given(taskService.getTasks(0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -163,7 +163,7 @@ public class TaskControllerTest {
         allTasks.add(task1);
         allTasks.add(task2);
 
-        given(taskService.getTasks()).willReturn(allTasks);
+        given(taskService.getTasks(0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -221,7 +221,7 @@ public class TaskControllerTest {
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
 
-        given(taskService.getTasks("active")).willReturn(allTasks);
+        given(taskService.getTasks("active", 0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks?show=active")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -252,7 +252,7 @@ public class TaskControllerTest {
         allTasks.add(task1);
         allTasks.add(task2);
 
-        given(taskService.getTasks("active")).willReturn(allTasks);
+        given(taskService.getTasks("active", 0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks?show=active")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -310,7 +310,7 @@ public class TaskControllerTest {
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
 
-        given(taskService.getTasks("completed")).willReturn(allTasks);
+        given(taskService.getTasks("completed", 0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks?show=completed")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -341,7 +341,7 @@ public class TaskControllerTest {
         allTasks.add(task1);
         allTasks.add(task2);
 
-        given(taskService.getTasks("completed")).willReturn(allTasks);
+        given(taskService.getTasks("completed", 0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks?show=completed")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -377,7 +377,7 @@ public class TaskControllerTest {
     @WithMockUser
     public void getTaskById_validInput_returnUserWithId() throws Exception {
 
-        given(taskService.getTask(task1.getTaskId())).willReturn(Optional.ofNullable(task1));
+        given(taskService.getTask(task1.getTaskId(),0L)).willReturn(Optional.ofNullable(task1));
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get(
                         "/tasks/{taskId}", task1.getTaskId())

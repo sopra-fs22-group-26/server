@@ -12,6 +12,7 @@ import java.util.Set;
 public class TaskGetDTO {
 
     private Long taskId;
+    private Long creatorId;
     private java.util.Date dueDate;
     private String title;
     private String description;
@@ -34,6 +35,14 @@ public class TaskGetDTO {
 
     public Long getTaskId() {
         return taskId;
+    }
+
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public Long getCreatorId() {
+        return creatorId;
     }
 
     public void setDueDate(Date dueDate) {
