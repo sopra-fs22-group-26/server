@@ -145,7 +145,6 @@ public class PollMeetingService {
         PollParticipantKey idToCheck = new PollParticipantKey(pollMeeting.getMeetingId(), user.getId());
         Optional<PollParticipant> pollParticipant = pollParticipantRepository.findById(idToCheck);
         if (pollParticipant.isPresent()) {
-            //pollMeeting.updateParticipantVote(pollParticipant.get(), vote);
             pollParticipant.get().setVote(vote);
         }
     }
@@ -153,8 +152,7 @@ public class PollMeetingService {
 
     /**
      * Used by: DELETE /poll-meetings/{meetingId}
-     * @param meetingId
-     * @return the created user
+     * @param meetingId of meeting to delete
      */
     public void deletePollMeeting(long meetingId) {
         PollMeeting pollMeetingById = checkIfTaskIdExist(meetingId);

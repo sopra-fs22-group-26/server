@@ -1,6 +1,5 @@
 package ch.uzh.ifi.group26.scrumblebee.security.filters;
 
-import ch.uzh.ifi.group26.scrumblebee.entity.SecurityUserDetails;
 import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
 import ch.uzh.ifi.group26.scrumblebee.service.SecurityUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +26,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private SecurityUserDetailsService securityUserDetailsService;
-
-    private static final Logger log = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
