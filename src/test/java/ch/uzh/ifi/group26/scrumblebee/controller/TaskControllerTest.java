@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -103,6 +104,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getAllTasks_zeroTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -124,6 +126,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getAllTasks_oneTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -153,6 +156,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getAllTasks_multipleTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -189,6 +193,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getActiveTasks_zeroTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -210,6 +215,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getActiveTasks_oneTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -239,6 +245,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getActiveTasks_multipleTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -275,6 +282,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getCompletedTasks_zeroTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -296,6 +304,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getCompletedTasks_oneTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -325,6 +334,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getCompletedTasks_multipleTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
@@ -364,6 +374,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getTaskById_validInput_returnUserWithId() throws Exception {
 
         given(taskService.getTask(task1.getTaskId())).willReturn(Optional.ofNullable(task1));
@@ -390,6 +401,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getTaskById_invalidInput_return404() throws Exception {
 
         given(taskService.getTask(999L)).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -412,6 +424,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void createTask_validInput_taskCreated() throws Exception {
 
         TaskPostDTO taskPostDTO = new TaskPostDTO();
@@ -460,6 +473,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void updateTask_validInput_taskUpdated() throws Exception {
 
         TaskPostDTO taskPostDTO = new TaskPostDTO();
@@ -546,6 +560,7 @@ public class TaskControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void deleteTask_validInput_returnDeletedTask() throws Exception {
 
         given(taskService.deleteTask(task1.getTaskId())).willReturn(task1);
@@ -576,6 +591,7 @@ public class TaskControllerTest {
      */
 
     @Test
+    @WithMockUser
     public void deleteTask_invalidInput_return404() throws Exception {
 
         when(taskService.deleteTask(anyLong()))

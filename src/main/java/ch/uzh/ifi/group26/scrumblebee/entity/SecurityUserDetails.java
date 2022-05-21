@@ -28,6 +28,10 @@ public class SecurityUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
+    public SecurityUserDetails() {
+
+    }
+
     /**
      * this method builds a UserDetails object from a User object
      * @param user

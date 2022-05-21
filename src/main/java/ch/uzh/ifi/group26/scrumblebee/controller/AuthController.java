@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @RestController
 public class AuthController {
 
@@ -75,7 +77,6 @@ public class AuthController {
         // Create a jwt token for the user
         UserDetails userDetails = securityUserDetailsService.loadUserByUsername(loggedInUser.getUsername());
         String token = jwtUtils.generateJwtToken(userDetails);
-        log.info(token);
         response.setToken(token);
 
         // Create a jwt refreshToken for the user
@@ -97,17 +98,19 @@ public class AuthController {
     @ResponseBody
     public RefreshGetDTO refreshToken(@RequestBody RefreshPostDTO refreshPostDTO) {
         String refreshToken = refreshPostDTO.getRefreshToken();
-        return refreshTokenService.findByToken(refreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    RefreshGetDTO response = new RefreshGetDTO();
-                    response.setId(user.getId());
-                    response.setRefreshToken(refreshToken);
-                    response.setToken(jwtUtils.generateTokenFromUsername(user.getUsername()));
-                    return response;
-                })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token is not valid!"));
+        Optional<RefreshToken> foundToken = refreshTokenService.findByToken(refreshToken);
+        if (foundToken.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token is not valid!");
+        } else {
+            refreshTokenService.verifyExpiration(foundToken.get());
+            UserDetails userDetails = securityUserDetailsService.loadUserByUsername(
+                    foundToken.get().getUser().getUsername());
+            RefreshGetDTO response = new RefreshGetDTO();
+            response.setId(foundToken.get().getUser().getId());
+            response.setRefreshToken(foundToken.get().getToken());
+            response.setToken(jwtUtils.generateJwtToken(userDetails));
+            return response;
+        }
     }
 
 }
