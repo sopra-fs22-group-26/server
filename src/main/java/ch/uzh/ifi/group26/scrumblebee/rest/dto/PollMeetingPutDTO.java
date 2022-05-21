@@ -34,9 +34,17 @@ public class PollMeetingPutDTO {
 
     public void setStatus(String status) {
         switch (status) {
-            case "OPEN" -> this.status = PollMeetingStatus.OPEN;
-            case "VOTING" -> this.status =PollMeetingStatus.VOTING;
-            case "ENDED" -> this.status = PollMeetingStatus.ENDED;
+            case "OPEN":
+                this.status = PollMeetingStatus.OPEN;
+                break;
+            case "VOTING":
+                this.status = PollMeetingStatus.VOTING;
+                break;
+            case "ENDED":
+                this.status = PollMeetingStatus.ENDED;
+                break;
+            default:
+                this.status = PollMeetingStatus.OPEN;
         }
     }
 

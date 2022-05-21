@@ -13,6 +13,7 @@ import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,9 +102,6 @@ public class PollMeetingController {
         // => Throws an error if one of both does not exist
         User creator = userService.getUser(pollMeetingPostDTO.getCreatorId());
         Optional<Task> optionalTask = taskService.getTask(pollMeetingPostDTO.getTaskId());
-        if (optionalTask.isEmpty()){
-            return null;
-        }
 
         if (optionalTask.isPresent()){
             Task task =  optionalTask.get();
@@ -175,6 +173,12 @@ public class PollMeetingController {
                 case "vote" ->
                         // A user casts a vote.
                         pollMeetingService.castVote(pollMeeting, participant, pollMeetingPutDTO.getVote());
+                default ->
+                        // Action is not specified
+                        {
+                            String baseErrorMessage = "The specified action is not a valid action!";
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, baseErrorMessage);
+                        }
             }
         }
 

@@ -7,7 +7,6 @@ import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
@@ -16,8 +15,6 @@ import java.util.UUID;
 
 @Service
 public class RefreshTokenService {
-
-    private final Long refreshTokenDurationsMS = 600000L;
 
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
@@ -32,11 +29,15 @@ public class RefreshTokenService {
     public RefreshToken createRefreshToken(Long userId) {
         if (userRepository.findById(userId).isPresent()) {
             RefreshToken refreshToken = new RefreshToken();
-            refreshToken.setUser(userRepository.findById(userId).get());
-            refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationsMS));
-            refreshToken.setToken(UUID.randomUUID().toString());
-            refreshToken = refreshTokenRepository.save(refreshToken);
-            refreshTokenRepository.flush();
+            Optional<User> optionalUser = userRepository.findById(userId);
+            if (optionalUser.isPresent()) {
+                refreshToken.setUser(optionalUser.get());
+                long refreshTokenDurationsMS = 600000L;
+                refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationsMS));
+                refreshToken.setToken(UUID.randomUUID().toString());
+                refreshToken = refreshTokenRepository.save(refreshToken);
+                refreshTokenRepository.flush();
+            }
             return refreshToken;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "createRefreshToken: User does not exist");
