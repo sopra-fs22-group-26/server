@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -94,6 +95,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getUsers_zeroUsers_thenReturnJsonArray() throws Exception {
 
         List<User> allUsers = new ArrayList<>();
@@ -115,6 +117,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getUsers_oneUser_thenReturnJsonArray() throws Exception {
 
         List<User> allUsers = Collections.singletonList(user1);
@@ -144,6 +147,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getUsers_multipleUsers_thenReturnJsonArray() throws Exception {
 
         User user2 = new User();
@@ -199,6 +203,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getUserById_validInput_returnUserWithId() throws Exception {
 
         given(userService.getUser(user1.getId())).willReturn(user1);
@@ -226,6 +231,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void getUserById_invalidInput_return404() throws Exception {
 
         given(userService.getUser(999L)).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -247,6 +253,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void createUser_validInput_userCreated() throws Exception {
 
         UserPostDTO userPostDTO = new UserPostDTO();
@@ -283,6 +290,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void createUser_invalidInput_return409() throws Exception {
 
         UserPostDTO userPostDTO = new UserPostDTO();
@@ -312,6 +320,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void updateUser_validInput_userUpdated() throws Exception {
 
         UserPutDTO userPutDTO = new UserPutDTO();
@@ -337,6 +346,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @Test
+    @WithMockUser
     public void updateUser_invalidInput_return404() throws Exception {
         UserPutDTO userPutDTO = new UserPutDTO();
         userPutDTO.setUsername("any@username");
