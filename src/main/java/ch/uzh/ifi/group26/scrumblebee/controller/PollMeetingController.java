@@ -101,9 +101,6 @@ public class PollMeetingController {
         // => Throws an error if one of both does not exist
         User creator = userService.getUser(pollMeetingPostDTO.getCreatorId());
         Optional<Task> optionalTask = taskService.getTask(pollMeetingPostDTO.getTaskId());
-        if (optionalTask.isEmpty()){
-            return null;
-        }
 
         if (optionalTask.isPresent()){
             Task task =  optionalTask.get();
