@@ -49,17 +49,19 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<CommentGetDTO> getCommentsForTask(@PathVariable long taskId) {
+        List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
+
         // Check if taskId is valid (getTask throws an exception otherwise)
         Optional<Task> task = taskService.getTask(taskId);
+        if (task.isPresent()) {
+            Set<Comment> comments = task.get().getComments();
+            for (Comment comment : comments) {
+                // Get creator's name
+                User creator = userService.getUser(comment.getAuthorId());
+                comment.setAuthorName(creator.getName() != null ? creator.getName() : creator.getUsername());
 
-        Set<Comment> comments = task.get().getComments();
-        List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
-        for (Comment comment : comments) {
-            // Get creator's name
-            User creator = userService.getUser(comment.getAuthorId());
-            comment.setAuthorName(creator.getName() != null ? creator.getName() : creator.getUsername());
-
-            commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
+                commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
+            }
         }
         return commentGetDTOS;
     }
@@ -102,7 +104,6 @@ public class CommentController {
      * URL: /comment/{commentId}
      * Body: commentId
      * Protection: check if request is coming from the client (check for special token)
-     * @return void
      */
     @DeleteMapping("/comments/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

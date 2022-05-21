@@ -26,9 +26,6 @@ public class TaskGetDTO {
     private boolean privateFlag;
     private int nofComments;
 
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     public void setTaskId(Long taskId) {
         this.taskId = taskId;
     }
@@ -50,6 +47,7 @@ public class TaskGetDTO {
     }
 
     public String getDueDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(dueDate);
     }
 
@@ -84,10 +82,20 @@ public class TaskGetDTO {
     public String getPriority() {
         String returnPriority = "";
         switch (priority) {
-            case NONE -> returnPriority = "NONE";
-            case LOW -> returnPriority = "LOW";
-            case MEDIUM -> returnPriority = "MEDIUM";
-            case HIGH -> returnPriority = "HIGH";
+            case NONE:
+                returnPriority = "NONE";
+                break;
+            case LOW:
+                returnPriority = "LOW";
+                break;
+            case MEDIUM:
+                returnPriority = "MEDIUM";
+                break;
+            case HIGH:
+                returnPriority = "HIGH";
+                break;
+            default:
+                returnPriority = "NONE";
         }
         return returnPriority;
     }
@@ -107,10 +115,20 @@ public class TaskGetDTO {
     public String getStatus() {
         String returnStatus = "";
         switch (status) {
-            case ACTIVE -> returnStatus = "ACTIVE";
-            case ARCHIVED -> returnStatus = "ARCHIVED";
-            case REPORTED -> returnStatus = "REPORTED";
-            case COMPLETED -> returnStatus = "COMPLETED";
+            case ACTIVE:
+                returnStatus = "ACTIVE";
+                break;
+            case ARCHIVED:
+                returnStatus = "ARCHIVED";
+                break;
+            case REPORTED:
+                returnStatus = "REPORTED";
+                break;
+            case COMPLETED:
+                returnStatus = "COMPLETED";
+                break;
+            default:
+                returnStatus = "ACTIVE";
         }
         return returnStatus;
     }

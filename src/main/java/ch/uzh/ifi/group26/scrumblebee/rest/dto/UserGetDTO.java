@@ -1,6 +1,5 @@
 package ch.uzh.ifi.group26.scrumblebee.rest.dto;
 
-
 import java.text.SimpleDateFormat;
 
 public class UserGetDTO {
@@ -13,9 +12,6 @@ public class UserGetDTO {
     private java.util.Date creationDate;
     private boolean loggedIn;
     private int score;
-
-    private static final SimpleDateFormat dateFormat
-            = new SimpleDateFormat("yyyy-MM-dd");
 
     public void setId(Long id) {
     this.id = id;
@@ -40,13 +36,17 @@ public class UserGetDTO {
     public void setBirthDate(java.util.Date birthDate) { this.birthDate = birthDate; }
 
     public String getBirthDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if ( birthDate == null ) { return null; }
         return dateFormat.format(birthDate);
     }
 
     public void setCreationDate(java.util.Date creationDate) { this.creationDate = creationDate; }
 
-    public String getCreationDate() { return dateFormat.format(creationDate); }
+    public String getCreationDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(creationDate);
+    }
 
     public void setLoggedIn(boolean loggedIn) { this.loggedIn = loggedIn; }
 
