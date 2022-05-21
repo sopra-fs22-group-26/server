@@ -80,7 +80,7 @@ public class TaskGetDTO {
     }
 
     public String getPriority() {
-        String returnPriority = "";
+        String returnPriority;
         switch (priority) {
             case NONE:
                 returnPriority = "NONE";
@@ -95,7 +95,7 @@ public class TaskGetDTO {
                 returnPriority = "HIGH";
                 break;
             default:
-                returnPriority = "NONE";
+                returnPriority = "";
         }
         return returnPriority;
     }
@@ -113,24 +113,12 @@ public class TaskGetDTO {
     }
 
     public String getStatus() {
-        String returnStatus = "";
-        switch (status) {
-            case ACTIVE:
-                returnStatus = "ACTIVE";
-                break;
-            case ARCHIVED:
-                returnStatus = "ARCHIVED";
-                break;
-            case REPORTED:
-                returnStatus = "REPORTED";
-                break;
-            case COMPLETED:
-                returnStatus = "COMPLETED";
-                break;
-            default:
-                returnStatus = "ACTIVE";
-        }
-        return returnStatus;
+        return switch (status) {
+            case ACTIVE -> "ACTIVE";
+            case ARCHIVED -> "ARCHIVED";
+            case REPORTED -> "REPORTED";
+            case COMPLETED -> "COMPLETED";
+        };
     }
 
     public void setScore(int score) {
