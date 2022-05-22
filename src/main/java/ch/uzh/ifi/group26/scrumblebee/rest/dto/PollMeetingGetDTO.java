@@ -4,6 +4,7 @@ import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.PollParticipant;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;

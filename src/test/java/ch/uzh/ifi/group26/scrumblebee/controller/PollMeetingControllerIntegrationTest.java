@@ -8,6 +8,7 @@ import ch.uzh.ifi.group26.scrumblebee.repository.PollParticipantRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPostDTO;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPutDTO;
 import ch.uzh.ifi.group26.scrumblebee.service.PollMeetingService;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
@@ -24,11 +25,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
@@ -82,6 +87,7 @@ public class PollMeetingControllerIntegrationTest {
     User user2 = new User();
 
     @BeforeEach
+    @Transactional
     public void setup() throws Exception {
         userRepository.deleteAll();
         taskRepository.deleteAll();
@@ -144,6 +150,9 @@ public class PollMeetingControllerIntegrationTest {
         testPollMeeting.setCreatorName(testUser.getName());
         testPollMeeting.setEstimateThreshold(4);
         testPollMeeting = pollMeetingService.createPollMeeting(testPollMeeting, testTask);
+        pollMeetingService.addParticipant(testPollMeeting, testUser);
+        pollMeetingService.addInvitee(testPollMeeting, user1);
+        pollMeetingService.addInvitee(testPollMeeting, user2);
     }
 
     /**
@@ -510,19 +519,29 @@ public class PollMeetingControllerIntegrationTest {
     @WithMockUser
     public void createPollMeeting_creatorWithUsername_success() throws Exception {
         // PRE-REQUISITES
-        assertTrue(userRepository.findById(testUser.getId()).isPresent());
-        assertTrue(userRepository.findById(user1.getId()).isPresent());
-        assertTrue(userRepository.findById(user2.getId()).isPresent());
-        assertTrue(taskRepository.findByTaskId(testTask.getTaskId()).isPresent());
+        userRepository.deleteById(testUser.getId());
         pollMeetingRepository.deleteAll();
         assertTrue(pollMeetingRepository.findAll().isEmpty());
         pollParticipantRepository.deleteAll();
         assertTrue(pollMeetingRepository.findAll().isEmpty());
-        testUser.setName(null);
-        userRepository.save(testUser);
+
+        User testUserNoName = new User();
+        testUserNoName.setUsername("testUser");
+        testUserNoName.setPassword("password");
+        testUserNoName.setEmailAddress("mail@test.com");
+        testUserNoName.setCreationDate(dateFormat.parse("1998-11-18"));
+        testUserNoName.setLoggedIn(true);
+        testUserNoName.setScore(0);
+        testUserNoName = userRepository.save(testUserNoName);
+
+        assertTrue(userRepository.findById(testUserNoName.getId()).isPresent());
+        assertTrue(userRepository.findById(user1.getId()).isPresent());
+        assertTrue(userRepository.findById(user2.getId()).isPresent());
+        assertTrue(taskRepository.findByTaskId(testTask.getTaskId()).isPresent());
+
         // BUILD THE REQUEST
         PollMeetingPostDTO requestBody = new PollMeetingPostDTO();
-        requestBody.setCreatorId(testUser.getId());
+        requestBody.setCreatorId(testUserNoName.getId());
         requestBody.setTaskId(testTask.getTaskId());
         requestBody.setEstimateThreshold(testPollMeeting.getEstimateThreshold());
         List<Long> invitees = new ArrayList<>();
@@ -534,7 +553,7 @@ public class PollMeetingControllerIntegrationTest {
                 .content(asJsonString(requestBody));
         mockMvc.perform(postRequest).andExpect(status().isCreated())
                 .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$.creatorName").value(testUser.getUsername()));
+                .andExpect(jsonPath("$.creatorName").value(testUserNoName.getUsername()));
 
     }
 
@@ -549,14 +568,35 @@ public class PollMeetingControllerIntegrationTest {
 //     */
 //    @Test
 //    @WithMockUser
-//    public void updatePollMeeting_join_success() {
+//    @Transactional
+//    public void updatePollMeeting_join_success() throws Exception {
 //        // PRE-REQUISITES
 //        assertTrue(userRepository.findById(testUser.getId()).isPresent());
 //        assertTrue(userRepository.findById(user1.getId()).isPresent());
 //        assertTrue(userRepository.findById(user2.getId()).isPresent());
 //        assertTrue(taskRepository.findByTaskId(testTask.getTaskId()).isPresent());
-//        //assertEquals(1, pollMeetingRepository.findByMeetingId(testPollMeeting.getMeetingId()).getParticipants().size());
-//        //System.out.println(pollMeetingRepository.findAll().get(0).getParticipants());
+//        assertEquals(3, pollMeetingRepository.findByMeetingId(testPollMeeting.getMeetingId()).getParticipants().size());
+//        // BUILD REQUEST
+//        User user3 = new User();
+//        user3.setUsername("user3");
+//        user3.setPassword("password");
+//        user3.setEmailAddress("mail@test.com");
+//        user3.setName("User 3");
+//        user3.setCreationDate(dateFormat.parse("1998-11-18"));
+//        user3.setLoggedIn(true);
+//        user3.setScore(0);
+//        user3 = userRepository.save(user3);
+//
+//        PollMeetingPutDTO requestBody = new PollMeetingPutDTO();
+//        //requestBody.setUserId(user3.getId());
+//        requestBody.setUserId(user3.getId());
+//
+//        MockHttpServletRequestBuilder putRequest =
+//                put("/poll-meetings/{meetingId}?action=join", testPollMeeting.getMeetingId().intValue())
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(asJsonString(requestBody));
+//
+//        mockMvc.perform(putRequest).andExpect(status().isOk());
 //    }
 //
 //    /**
@@ -759,17 +799,18 @@ public class PollMeetingControllerIntegrationTest {
     }
 
 
-    @AfterEach
-    public void cleanUp() {
-        userRepository.deleteAll();
-        taskRepository.deleteAll();
-        pollParticipantRepository.deleteAll();
-        pollMeetingRepository.deleteAll();
-        assertTrue(userRepository.findAll().isEmpty() &&
-                taskRepository.findAll().isEmpty() &&
-                pollMeetingRepository.findAll().isEmpty() &&
-                pollMeetingRepository.findAll().isEmpty()
-        );
-    }
+//    @AfterEach
+//    @Transactional
+//    public void cleanUp() {
+//        userRepository.deleteAll();
+//        taskRepository.deleteAll();
+//        pollParticipantRepository.deleteAll();
+//        pollMeetingRepository.deleteAll();
+//        assertTrue(userRepository.findAll().isEmpty() &&
+//                taskRepository.findAll().isEmpty() &&
+//                pollMeetingRepository.findAll().isEmpty() &&
+//                pollMeetingRepository.findAll().isEmpty()
+//        );
+//    }
 
 }

@@ -57,6 +57,7 @@ public class TaskServiceTest {
         testTask.setScore(200);
         testTask.setAssignee(1L);
         testTask.setReporter(2L);
+        testTask.setPrivateFlag(false);
 
         aComment.setAuthorName("Someone");
         aComment.setCommentId(1L);
@@ -84,6 +85,7 @@ public class TaskServiceTest {
         task1.setAssignee(1L);
         task1.setReporter(3L);
         task1.setStatus(TaskStatus.ACTIVE);
+        task1.setPrivateFlag(false);
 
 
         task2.setTaskId(2L);
@@ -100,6 +102,7 @@ public class TaskServiceTest {
         task2.setAssignee(3L);
         task2.setReporter(2L);
         task2.setStatus(TaskStatus.COMPLETED);
+        task2.setPrivateFlag(true);
 
         task3.setTaskId(3L);
         task3.setDueDate(dateFormat.parse("1992-11-19"));
@@ -115,6 +118,7 @@ public class TaskServiceTest {
         task3.setAssignee(1L);
         task3.setReporter(2L);
         task3.setStatus(TaskStatus.COMPLETED);
+        task3.setPrivateFlag(true);
     }
 
     /**
@@ -127,12 +131,14 @@ public class TaskServiceTest {
 
         // STUBBING
         List<Task> allTasks = new ArrayList<>();
+        task1.setPrivateFlag(false);
+        task2.setPrivateFlag(false);
         allTasks.add(task1);
         allTasks.add(task2);
 
         given(taskRepository.findAll()).willReturn(allTasks);
 
-        List<Task> foundTasks = taskService.getTasks();
+        List<Task> foundTasks = taskService.getTasks(9999L);
 
         Mockito.verify(taskRepository, Mockito.times(1)).findAll();
         // verify task 1
@@ -176,7 +182,7 @@ public class TaskServiceTest {
 
         given(taskRepository.findAll()).willReturn(allTasks);
 
-        List<Task> foundTasks = taskService.getTasks("active");
+        List<Task> foundTasks = taskService.getTasks("active", 9999L);
 
         Mockito.verify(taskRepository, Mockito.times(1)).findAll();
         assertEquals(1, foundTasks.size());
@@ -191,6 +197,52 @@ public class TaskServiceTest {
         assertEquals(task1.getScore(), foundTasks.get(0).getScore());
         assertEquals(task1.getAssignee(), foundTasks.get(0).getAssignee());
         assertEquals(task1.getReporter(), foundTasks.get(0).getReporter());
+
+    }
+
+    /**
+     * METHOD TESTED: getTasks(active)
+     * INPUT: valid
+     * EXPECTED RESULT: all tasks should be returned
+     */
+    @Test
+    public void getTasksActive_multipleTasks_withPrivate_success() throws ParseException {
+
+        // STUBBING
+        List<Task> allTasks = new ArrayList<>();
+        task3.setStatus(TaskStatus.ACTIVE);
+        allTasks.add(task3);
+
+        given(taskRepository.findAll()).willReturn(allTasks);
+
+        List<Task> foundTasks = taskService.getTasks("active", task3.getCreatorId());
+
+        Mockito.verify(taskRepository, Mockito.times(1)).findAll();
+        assertEquals(1, foundTasks.size());
+        assertEquals(task3, foundTasks.get(0));
+
+    }
+
+    /**
+     * METHOD TESTED: getTasks(completed)
+     * INPUT: valid
+     * EXPECTED RESULT: all tasks should be returned
+     */
+    @Test
+    public void getTasksCompleted_multipleTasks_withPrivate_success() throws ParseException {
+
+        // STUBBING
+        List<Task> allTasks = new ArrayList<>();
+        task3.setStatus(TaskStatus.COMPLETED);
+        allTasks.add(task3);
+
+        given(taskRepository.findAll()).willReturn(allTasks);
+
+        List<Task> foundTasks = taskService.getTasks("completed", task3.getCreatorId());
+
+        Mockito.verify(taskRepository, Mockito.times(1)).findAll();
+        assertEquals(1, foundTasks.size());
+        assertEquals(task3, foundTasks.get(0));
 
     }
 
@@ -211,7 +263,7 @@ public class TaskServiceTest {
 
         given(taskRepository.findAll()).willReturn(allTasks);
 
-        List<Task> foundTasks = taskService.getTasks("completed");
+        List<Task> foundTasks = taskService.getTasks("completed", 9999L);
 
         Mockito.verify(taskRepository, Mockito.times(1)).findAll();
         assertEquals(1, foundTasks.size());
@@ -310,7 +362,7 @@ public class TaskServiceTest {
         // STUBBING
         given(taskRepository.findById(anyLong())).willReturn(Optional.ofNullable(task1));
 
-        Optional<Task> foundTask = taskService.getTask(task1.getTaskId());
+        Optional<Task> foundTask = taskService.getTask(task1.getTaskId(), 9999L);
 
         Mockito.verify(taskRepository, Mockito.times(1)).findById(anyLong());
         assertTrue(foundTask.isPresent());

@@ -33,11 +33,6 @@ public class TaskService {
     @Autowired
     TaskRepository taskRepository;
 
-    // Get all tasks, completed or not
-    public List<Task> getTasks() {
-        return this.taskRepository.findAll();
-    }
-
     // NEW VERSION (private tasks)
     // Get all tasks, completed or not
     public List<Task> getTasks(Long creatorId) {
@@ -46,17 +41,6 @@ public class TaskService {
                 collect(Collectors.toList());
     }
 
-    // Return only either active or completed (= not active) tasks
-    public List<Task> getTasks(String status) {
-        List<Task> allTasks = getTasks();
-        if (status.equals("active")) {
-            allTasks = allTasks.stream().filter(task -> task.getStatus() == TaskStatus.ACTIVE).collect(Collectors.toList());
-        }
-        else if (status.equals("completed")) {
-            allTasks = allTasks.stream().filter(task -> task.getStatus() != TaskStatus.ACTIVE).collect(Collectors.toList());
-        }
-        return allTasks;
-    }
 
     // NEW VERSION (private tasks)
     // Return only either active or completed (= not active) tasks
@@ -92,12 +76,6 @@ public class TaskService {
         return allTasks.stream().filter(task -> (task.getReporter() == userId)).collect(Collectors.toList());
     }
 
-
-    public Optional<Task> getTask(long taskId) {
-        String baseErrorMessage = "Error: No task found with id %d!";
-        return Optional.ofNullable(taskRepository.findById(taskId).orElseThrow(()
-                -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId))));
-    }
 
     // NEW VERSION (private tasks)
     public Optional<Task> getTask(long taskId, Long creatorId) {
@@ -232,7 +210,7 @@ public class TaskService {
             task.addComment(aComment);
             taskRepository.save(task);
             taskRepository.flush();
-        }else{
+        } else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, aComment.getBelongingTask()));
         }
     }

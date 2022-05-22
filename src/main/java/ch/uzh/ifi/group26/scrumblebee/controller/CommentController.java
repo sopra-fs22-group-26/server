@@ -52,7 +52,7 @@ public class CommentController {
         List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
 
         // Check if taskId is valid (getTask throws an exception otherwise)
-        Optional<Task> task = taskService.getTask(taskId);
+        Optional<Task> task = taskService.getTask(taskId, 9999L);
         if (task.isPresent()) {
             Set<Comment> comments = task.get().getComments();
             for (Comment comment : comments) {
@@ -82,7 +82,7 @@ public class CommentController {
     public CommentGetDTO createComment(@RequestBody CommentPostDTO commentPostDTO) {
         Comment commentInput = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(commentPostDTO);
         // check if the id's exist
-        Optional<Task> foundTask = taskService.getTask(commentInput.getBelongingTask());
+        Optional<Task> foundTask = taskService.getTask(commentInput.getBelongingTask(), 9999L);
         Optional<User> foundUser = Optional.ofNullable(userService.getUser(commentInput.getAuthorId()));
         if ( foundTask.isEmpty() || foundUser.isEmpty() ) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User or Task ID do not exist.");

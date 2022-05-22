@@ -94,7 +94,7 @@ public class CommentControllerTest {
         foundTask.setTaskId(1L);
         User foundUser = new User();
         foundUser.setId(1L);
-        when(taskService.getTask(anyLong())).thenReturn(Optional.of(foundTask));
+        when(taskService.getTask(anyLong(), anyLong())).thenReturn(Optional.of(foundTask));
         when(userService.getUser(anyLong())).thenReturn(foundUser);
 
         // BUILD REQUEST
@@ -129,7 +129,7 @@ public class CommentControllerTest {
         when(commentService.createComment(Mockito.any(Comment.class))).thenReturn(comment1);
         Task foundTask = new Task();
         foundTask.setTaskId(9999L);
-        when(taskService.getTask(anyLong())).thenReturn(Optional.of(foundTask));
+        when(taskService.getTask(anyLong(), anyLong())).thenReturn(Optional.of(foundTask));
         when(userService.getUser(anyLong())).thenReturn(null);
 
         // BUILD REQUEST
@@ -161,7 +161,7 @@ public class CommentControllerTest {
         when(commentService.createComment(Mockito.any(Comment.class))).thenReturn(comment1);
         User foundUser = new User();
         foundUser.setId(9999L);
-        when(taskService.getTask(anyLong())).thenReturn(Optional.empty());
+        when(taskService.getTask(anyLong(), anyLong())).thenReturn(Optional.empty());
         when(userService.getUser(anyLong())).thenReturn(foundUser);
 
         // BUILD REQUEST
