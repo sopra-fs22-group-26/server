@@ -155,6 +155,8 @@ public class PollMeeting implements Serializable {
         return createDateTime;
     }
 
+    public void setCreateDateTime(LocalDateTime createDateTime) { this.createDateTime = createDateTime; }
+
     /***/
 
     public void setCreatorName(String creatorName) {

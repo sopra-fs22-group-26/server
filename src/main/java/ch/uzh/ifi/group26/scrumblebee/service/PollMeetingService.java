@@ -29,15 +29,12 @@ public class PollMeetingService {
 
     private final Logger log = LoggerFactory.getLogger(PollMeetingService.class);
 
-    private final PollMeetingRepository pollMeetingRepository;
+    @Autowired
+    PollMeetingRepository pollMeetingRepository;
 
     @Autowired
     PollParticipantRepository pollParticipantRepository;
 
-    @Autowired
-    public PollMeetingService(@Qualifier("pollMeetingRepository") PollMeetingRepository pollMeetingRepository) {
-        this.pollMeetingRepository = pollMeetingRepository;
-    }
 
     // Get all meetings, sorted by creation date
     public List<PollMeeting> getPollMeetings() {
@@ -63,10 +60,6 @@ public class PollMeetingService {
         assignTask(newPollMeeting, task);
 
         newPollMeeting.setStatus(PollMeetingStatus.OPEN);
-
-        log.debug(newPollMeeting.getCreatorId().toString());
-        log.debug(newPollMeeting.getEstimateThreshold().toString());
-        log.debug(newPollMeeting.getStatus().toString());
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
@@ -120,6 +113,7 @@ public class PollMeetingService {
             pollParticipant = Optional.of(pollMeeting.addParticipant(user));
         }
         pollParticipant.get().setStatus(PollParticipantStatus.JOINED);
+
     }
 
     // User declines an invitation

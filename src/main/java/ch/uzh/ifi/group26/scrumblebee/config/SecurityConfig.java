@@ -1,6 +1,6 @@
 package ch.uzh.ifi.group26.scrumblebee.config;
 
-import ch.uzh.ifi.group26.scrumblebee.security.Entrypoints.AuthEntryPointJwt;
+import ch.uzh.ifi.group26.scrumblebee.security.entrypoints.AuthEntryPointJwt;
 import ch.uzh.ifi.group26.scrumblebee.security.filters.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
-    private final boolean dev = false;
+    private final boolean dev = true;
 
     @Autowired
     AuthTokenFilter authTokenFilter;

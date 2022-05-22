@@ -103,4 +103,6 @@ public class PollParticipant {
         return createDateTime;
     }
 
+    public void setCreateDateTime(LocalDateTime createDateTime) { this.createDateTime = createDateTime; }
+
 }

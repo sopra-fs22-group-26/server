@@ -216,7 +216,7 @@ public class TaskService {
             task.removeComment(aComment);
             taskRepository.save(task);
             taskRepository.flush();
-        }else{
+        } else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, aComment.getBelongingTask()));
         }
         return aTask.get();
