@@ -5,7 +5,10 @@ import ch.uzh.ifi.group26.scrumblebee.constant.PollParticipantStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.*;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollMeetingRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollParticipantRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,11 +27,14 @@ import java.util.Optional;
 @Transactional
 public class PollMeetingService {
 
+    private final Logger log = LoggerFactory.getLogger(PollMeetingService.class);
+
     @Autowired
     PollMeetingRepository pollMeetingRepository;
 
     @Autowired
     PollParticipantRepository pollParticipantRepository;
+
 
     // Get all meetings, sorted by creation date
     public List<PollMeeting> getPollMeetings() {
@@ -107,6 +113,7 @@ public class PollMeetingService {
             pollParticipant = Optional.of(pollMeeting.addParticipant(user));
         }
         pollParticipant.get().setStatus(PollParticipantStatus.JOINED);
+
     }
 
     // User declines an invitation
