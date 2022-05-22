@@ -13,7 +13,7 @@ public class UserPutDTO {
     private String newPassword;
     private int score;
 
-    private final Logger log = LoggerFactory.getLogger(UserPostDTO.class);
+    private final Logger log = LoggerFactory.getLogger(UserPutDTO.class);
 
     // User parameters
     public void setName(String name) {
@@ -36,13 +36,15 @@ public class UserPutDTO {
 
     public String getEmailAddress() { return emailAddress; }
 
-    public void setBirthDate(String birthDate){ try {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        this.birthDate = formatter.parse(birthDate);
+    public void setBirthDate(String birthDate) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            this.birthDate = formatter.parse(birthDate);
+        }
+        catch(Exception e){
+            log.debug(e.getMessage());
+        }
     }
-    catch(Exception e){
-        log.debug(e.getMessage());
-    }}
 
     public Date getBirthDate(){ return birthDate; }
 

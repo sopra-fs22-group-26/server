@@ -1,13 +1,8 @@
 package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
-import ch.uzh.ifi.group26.scrumblebee.repository.RoleRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
-import org.apache.juli.logging.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,8 +14,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class AuthService {
-
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     PasswordEncoder encoder;
@@ -65,8 +58,6 @@ public class AuthService {
     private User checkCredentials(User userToCheck) {
         String providedUsername = userToCheck.getUsername();
         String providedPassword = userToCheck.getPassword();
-
-        log.info(providedPassword);
 
         Optional<User> userByUsername = userRepository.findByUsername(providedUsername);
         String errorMessage = "Error: The username/password combination did not match any user. Login failed.";

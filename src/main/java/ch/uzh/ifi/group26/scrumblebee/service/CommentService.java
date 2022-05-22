@@ -2,8 +2,6 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
 import ch.uzh.ifi.group26.scrumblebee.repository.CommentRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,8 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Transactional
 public class CommentService {
-
-    private final Logger log = LoggerFactory.getLogger(TaskService.class);
 
     @Autowired
     private CommentRepository commentRepository;
@@ -46,11 +42,6 @@ public class CommentService {
      */
     public Comment createComment(Comment newComment) {
 
-        log.debug(newComment.getContent());
-        log.debug(newComment.getAuthorId().toString());
-        log.debug(newComment.getBelongingTask().toString());
-        log.debug(newComment.getAuthorName());
-
         java.util.Date creationDate = java.util.Calendar.getInstance().getTime();
         newComment.setCreationDate(creationDate);
 
@@ -59,7 +50,6 @@ public class CommentService {
         newComment = commentRepository.save(newComment);
         commentRepository.flush();
 
-        log.debug("Created Information for Task: {}", newComment);
         return newComment;
     }
 

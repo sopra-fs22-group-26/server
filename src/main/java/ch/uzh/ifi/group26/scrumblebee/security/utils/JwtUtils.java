@@ -16,7 +16,7 @@ public class JwtUtils {
 
     private SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    private final Long refreshTokenDurationsMS = 20000L;
+    private static final Long refreshTokenDurationsMS = 20000L;
 
     public String generateJwtToken(UserDetails userDetails) {
         return Jwts.builder()
