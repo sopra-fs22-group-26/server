@@ -37,7 +37,12 @@ public class PollMeetingService {
     }
 
     public PollMeeting getPollMeeting(long meetingId) {
-        return this.pollMeetingRepository.findByMeetingId(meetingId);
+        PollMeeting meeting = pollMeetingRepository.findByMeetingId(meetingId);
+        if (meeting == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting not found");
+        } else {
+            return meeting;
+        }
     }
 
     /**

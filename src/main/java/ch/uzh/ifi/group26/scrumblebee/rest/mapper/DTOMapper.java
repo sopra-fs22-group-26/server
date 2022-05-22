@@ -140,6 +140,7 @@ public interface DTOMapper {
     @Mapping(target = "participants", ignore = true)
     @Mapping(target = "task", ignore = true)
     @Mapping(target = "creatorName", ignore = true)
+    @Mapping(target = "createDateTime", ignore = true)
     PollMeeting convertPollMeetingPostDTOtoEntity(PollMeetingPostDTO pollMeetingPostDTO);
 
     @Mapping(source = "meetingId", target = "meetingId")

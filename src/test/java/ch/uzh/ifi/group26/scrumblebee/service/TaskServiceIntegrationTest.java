@@ -3,6 +3,7 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
+import ch.uzh.ifi.group26.scrumblebee.repository.CommentRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.module.ResolutionException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -97,7 +97,7 @@ public class TaskServiceIntegrationTest {
 
         assertTrue(taskRepository.findAll().isEmpty());
 
-        List<Task> foundTasks = taskService.getTasks();
+        List<Task> foundTasks = taskService.getTasks(9999L);
 
         assertTrue(foundTasks.isEmpty());
 
@@ -118,7 +118,7 @@ public class TaskServiceIntegrationTest {
         taskRepository.save(task2);
         taskRepository.save(task3);
 
-        List<Task> foundTasks = taskService.getTasks();
+        List<Task> foundTasks = taskService.getTasks(9999L);
 
         // verify task 1
         assertNotNull(foundTasks.get(0).getTaskId());
@@ -170,7 +170,7 @@ public class TaskServiceIntegrationTest {
         assertTrue(taskRepository.findAll().isEmpty());
         Task saved = taskRepository.save(task2);
 
-        Optional<Task> foundTask = taskService.getTask(saved.getTaskId());
+        Optional<Task> foundTask = taskService.getTask(saved.getTaskId(), 9999L);
 
         assertTrue(foundTask.isPresent());
         // verify task 1
@@ -202,7 +202,7 @@ public class TaskServiceIntegrationTest {
         taskRepository.save(task3);
 
         assertThrows(ResponseStatusException.class, ()->{
-            taskService.getTask(99999L);
+            taskService.getTask(99999L, 9999L);
         });
 
     }

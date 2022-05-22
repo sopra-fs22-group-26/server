@@ -109,7 +109,7 @@ public class TaskControllerTest {
 
         List<Task> allTasks = new ArrayList<>();
 
-        given(taskService.getTasks()).willReturn(allTasks);
+        given(taskService.getTasks(9999L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/users")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -198,7 +198,7 @@ public class TaskControllerTest {
 
         List<Task> allTasks = new ArrayList<>();
 
-        given(taskService.getTasks("active")).willReturn(allTasks);
+        given(taskService.getTasks("active", 9999L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/users?show=active")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -287,7 +287,7 @@ public class TaskControllerTest {
 
         List<Task> allTasks = new ArrayList<>();
 
-        given(taskService.getTasks("completed")).willReturn(allTasks);
+        given(taskService.getTasks("completed", 9999L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/users?show=completed")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -404,7 +404,7 @@ public class TaskControllerTest {
     @WithMockUser
     public void getTaskById_invalidInput_return404() throws Exception {
 
-        given(taskService.getTask(999L)).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        given(taskService.getTask(anyLong(), anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get(
                         "/tasks/{taskId}", 999L)

@@ -103,7 +103,7 @@ public class PollMeetingController {
         // Collect creator and task of the session
         // => Throws an error if one of both does not exist
         User creator = userService.getUser(pollMeetingPostDTO.getCreatorId());
-        Optional<Task> optionalTask = taskService.getTask(pollMeetingPostDTO.getTaskId());
+        Optional<Task> optionalTask = taskService.getTask(pollMeetingPostDTO.getTaskId(), 9999L);
 
         if (optionalTask.isPresent()){
             Task task =  optionalTask.get();
