@@ -49,12 +49,11 @@ public class TaskService {
     // Return only either active or completed (= not active) tasks
     public List<Task> getTasks(String status) {
         List<Task> allTasks = getTasks();
-        switch (status) {
-            case "active":
-                allTasks = allTasks.stream().filter(task -> task.getStatus() == TaskStatus.ACTIVE).collect(Collectors.toList());
-                break;
-            case "completed":
-                allTasks = allTasks.stream().filter(task -> task.getStatus() != TaskStatus.ACTIVE).collect(Collectors.toList());
+        if (status.equals("active")) {
+            allTasks = allTasks.stream().filter(task -> task.getStatus() == TaskStatus.ACTIVE).collect(Collectors.toList());
+        }
+        else if (status.equals("completed")) {
+            allTasks = allTasks.stream().filter(task -> task.getStatus() != TaskStatus.ACTIVE).collect(Collectors.toList());
         }
         return allTasks;
     }
@@ -63,19 +62,18 @@ public class TaskService {
     // Return only either active or completed (= not active) tasks
     public List<Task> getTasks(String status, Long creatorId) {
         List<Task> allTasks = getTasks(creatorId);
-        switch (status) {
-            case "active":
-                allTasks = allTasks.stream().filter(task -> task.getStatus() == TaskStatus.ACTIVE).collect(Collectors.toList());
-                break;
-            case "completed":
-                allTasks = allTasks.stream().filter(task -> task.getStatus() != TaskStatus.ACTIVE).collect(Collectors.toList());
+        if (status.equals("active")) {
+            allTasks = allTasks.stream().filter(task -> task.getStatus() == TaskStatus.ACTIVE).collect(Collectors.toList());
+        }
+        else if (status.equals("completed")) {
+            allTasks = allTasks.stream().filter(task -> task.getStatus() != TaskStatus.ACTIVE).collect(Collectors.toList());
         }
         return allTasks;
     }
 
     /**
      * Used by: GET /tasks/assignee/{userId}
-     * @param userId
+     * @param userId of Assignee
      * @return all active tasks for which user with userId is assigned
      */
     public List<Task> getTasksForUser(long userId) {
@@ -86,7 +84,7 @@ public class TaskService {
 
     /**
      * Used by: GET /tasks/reporter/{userId}
-     * @param userId
+     * @param userId of Reporter
      * @return all tasks (active and completed) for which user with userId is the reporter
      */
     public List<Task> getTasksToReportForUser(long userId) {
@@ -106,13 +104,13 @@ public class TaskService {
         String baseErrorMessage = "Error: No task found with id %d!";
         Task task = taskRepository.findById(taskId).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId)));
-        return Optional.ofNullable(!task.getPrivateFlag() || task.getCreatorId() == creatorId ? task : null);
+        return Optional.ofNullable(!task.getPrivateFlag() || Objects.equals(task.getCreatorId(), creatorId) ? task : null);
     }
 
 
     /**
      * Used by: POST /tasks
-     * @param newTask
+     * @param newTask to create
      * @return the created task
      */
     public Task createTask(Task newTask) {
@@ -133,8 +131,8 @@ public class TaskService {
 
     /**
      * Used by: PUT /tasks/{taskId}
-     * @param taskId
-     * @param changesTask
+     * @param taskId of Task to update
+     * @param changesTask new values
      * @return the created user
      */
     public Task updateTask(long taskId, Task changesTask) {
@@ -181,7 +179,7 @@ public class TaskService {
 
     /**
      * Used by: DELETE /tasks/{taskId}
-     * @param taskId
+     * @param taskId of Task to delete
      * @return the created user
      */
     public Task deleteTask(long taskId) {
@@ -195,19 +193,18 @@ public class TaskService {
     //check is task exist by id
     private Task checkIfTaskIdExist(long taskId) {
         Optional<Task> taskById = taskRepository.findByTaskId(taskId);
-
         String baseErrorMessage = "The user with id: %s not found!";
-        if (!taskById.isPresent()) {
+
+        if (taskById.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, taskId));
         }
         return taskById.get();
     }
     /**
      * Used by: DELETE /comments/{commentId}
-     * @param aComment
-     * @return Task
+     * @param aComment, the comment which should be deleted
      */
-    public Task deleteComment(Comment aComment){
+    public void deleteComment(Comment aComment){
 
         Optional<Task> aTask = taskRepository.findByTaskId(aComment.getBelongingTask());
         String baseErrorMessage = "The task with id: %s not found!";
@@ -219,15 +216,13 @@ public class TaskService {
         } else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, aComment.getBelongingTask()));
         }
-        return aTask.get();
     }
 
     /**
      * Used by: POST /comments
-     * @param aComment
-     * @return Task
+     * @param aComment, new comment to add
      */
-    public Task assignCommentToTask(Comment aComment){
+    public void assignCommentToTask(Comment aComment){
 
         Optional<Task> aTask = taskRepository.findByTaskId(aComment.getBelongingTask());
         String baseErrorMessage = "The task with id: %s not found!";
@@ -239,7 +234,6 @@ public class TaskService {
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, aComment.getBelongingTask()));
         }
-        return aTask.get();
     }
 
 }

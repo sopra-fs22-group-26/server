@@ -15,8 +15,6 @@ public class UserPutDTO {
 
     private final Logger log = LoggerFactory.getLogger(UserPostDTO.class);
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
     // User parameters
     public void setName(String name) {
         this.name = name;
@@ -39,6 +37,7 @@ public class UserPutDTO {
     public String getEmailAddress() { return emailAddress; }
 
     public void setBirthDate(String birthDate){ try {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         this.birthDate = formatter.parse(birthDate);
     }
     catch(Exception e){

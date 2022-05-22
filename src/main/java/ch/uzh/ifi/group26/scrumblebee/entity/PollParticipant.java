@@ -26,7 +26,7 @@ public class PollParticipant {
     // Vote of user for poll-session
     private int vote;
 
-    // Status of participation [invited, joined, declined];
+    // Status of participation [invited, joined, declined]
     private PollParticipantStatus status;
 
     // Save creation timestamp to keep order of participants

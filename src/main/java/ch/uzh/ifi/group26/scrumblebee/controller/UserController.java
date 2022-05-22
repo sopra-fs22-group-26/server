@@ -6,10 +6,7 @@ import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPutDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
-import ch.uzh.ifi.group26.scrumblebee.service.AuthService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,8 +25,6 @@ import java.util.List;
  */
 @RestController
 public class UserController {
-
-    private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
 
@@ -72,7 +67,7 @@ public class UserController {
      * URL: /users/{id}
      * Body: none
      * Return a single user, identified by id in the url.
-     * @param id
+     * @param id of user
      * @return User
      */
     @GetMapping(value = "users/{id}")
@@ -113,7 +108,6 @@ public class UserController {
      * URL: /users/{id}
      * Body: username, name*, email, birthdate, password, newPassword
      * Protection: check if request is coming from the client (check for special token)
-     * @return User
      */
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

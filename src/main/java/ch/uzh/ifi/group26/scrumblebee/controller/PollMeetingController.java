@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Poll Meeting Controller
@@ -102,26 +103,33 @@ public class PollMeetingController {
         // Collect creator and task of the session
         // => Throws an error if one of both does not exist
         User creator = userService.getUser(pollMeetingPostDTO.getCreatorId());
-        Task task = taskService.getTask(pollMeetingPostDTO.getTaskId()).get();
+        Optional<Task> optionalTask = taskService.getTask(pollMeetingPostDTO.getTaskId());
 
-        // Create pollMeeting and assign task, if task is not already assigned.
-        // createPollMeeting will throw an error otherwise.
-        PollMeeting createdPollMeeting = pollMeetingService.createPollMeeting(input, task);
+        if (optionalTask.isPresent()){
+            Task task =  optionalTask.get();
 
-        // Add creator of the session to the participants
-        pollMeetingService.addParticipant(createdPollMeeting, creator);
+            // Create pollMeeting and assign task, if task is not already assigned.
+            // createPollMeeting will throw an error otherwise.
+            PollMeeting createdPollMeeting = pollMeetingService.createPollMeeting(input, task);
 
-        // add invitees to meeting
-        for (long userId : pollMeetingPostDTO.getInvitees()) {
-            User invitee = userService.getUser(userId);
-            pollMeetingService.addInvitee(createdPollMeeting, invitee);
+            // Add creator of the session to the participants
+            pollMeetingService.addParticipant(createdPollMeeting, creator);
+
+            // add invitees to meeting
+            for (long userId : pollMeetingPostDTO.getInvitees()) {
+                User invitee = userService.getUser(userId);
+                pollMeetingService.addInvitee(createdPollMeeting, invitee);
+            }
+
+            // Add creator's name to return object
+            createdPollMeeting.setCreatorName(creator.getName() != null ? creator.getName() : creator.getUsername());
+
+            //convert internal representation of task back to API
+            return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(createdPollMeeting);
         }
-
-        // Add creator's name to return object
-        createdPollMeeting.setCreatorName(creator.getName() != null ? creator.getName() : creator.getUsername());
-
-        //convert internal representation of task back to API
-        return DTOMapper.INSTANCE.convertEntityToPollMeetingGetDTO(createdPollMeeting);
+        else {
+            return null;
+        }
     }
 
 
@@ -167,6 +175,12 @@ public class PollMeetingController {
                 case "vote" ->
                         // A user casts a vote.
                         pollMeetingService.castVote(pollMeeting, participant, pollMeetingPutDTO.getVote());
+                default ->
+                        // Action is not specified
+                        {
+                            String baseErrorMessage = "The specified action is not a valid action!";
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, baseErrorMessage);
+                        }
             }
         }
 
