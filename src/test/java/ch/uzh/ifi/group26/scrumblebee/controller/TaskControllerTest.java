@@ -3,9 +3,14 @@ package ch.uzh.ifi.group26.scrumblebee.controller;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
+import ch.uzh.ifi.group26.scrumblebee.entity.User;
+import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPutDTO;
+import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
+import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +28,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -51,6 +60,9 @@ public class TaskControllerTest {
     @MockBean
     TaskService taskService;
 
+    @MockBean
+    UserService userService;
+
     @Autowired
     private WebApplicationContext context;
 
@@ -61,6 +73,7 @@ public class TaskControllerTest {
 
     Task task1 = new Task();
     Task task2 = new Task();
+    User testUser = new User();
 
     @BeforeEach
     public void setup() throws Exception {
@@ -589,7 +602,6 @@ public class TaskControllerTest {
      * INPUT: valid
      * @throws Exception
      */
-
     @Test
     @WithMockUser
     public void deleteTask_invalidInput_return404() throws Exception {
@@ -606,8 +618,105 @@ public class TaskControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * type: GET
+     * url: /tasks/assignee/{userId}
+     * INPUT: valid
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser
+    public void getTasksForUser_success() throws Exception {
 
+        when(userService.getUser(anyLong())).thenReturn(testUser);
+        List<Task> tasksFound = new ArrayList<>();
+        task1.setAssignee(1L);
+        tasksFound.add(task1);
+        task2.setAssignee(1L);
+        tasksFound.add(task2);
+        when(taskService.getTasksForUser(anyLong())).thenReturn(tasksFound);
 
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest =
+                MockMvcRequestBuilders.get("/tasks/assignee/{userId}", anyInt())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].assignee").value(1L))
+                .andExpect(jsonPath("$[1].assignee").value(1L));
+    }
+
+    /**
+     * type: GET
+     * url: /tasks/assignee/{userId}
+     * INPUT: invalid
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser
+    public void getTasksForUser_fail() throws Exception {
+
+        when(userService.getUser(anyLong())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest =
+                MockMvcRequestBuilders.get("/tasks/assignee/{userId}", anyInt())
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest).andExpect(status().isNotFound());
+    }
+
+    /**
+     * type: GET
+     * url: /tasks/reporter/{userId}
+     * INPUT: valid
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser
+    public void getTasksToReportForUser_success() throws Exception {
+
+        when(userService.getUser(anyLong())).thenReturn(testUser);
+        List<Task> tasksFound = new ArrayList<>();
+        task1.setReporter(1L);
+        tasksFound.add(task1);
+        task2.setReporter(1L);
+        tasksFound.add(task2);
+        when(taskService.getTasksToReportForUser(anyLong())).thenReturn(tasksFound);
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest =
+                MockMvcRequestBuilders.get("/tasks/reporter/{userId}", anyInt())
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].reporter").value(1L))
+                .andExpect(jsonPath("$[1].reporter").value(1L));
+    }
+
+    /**
+     * type: GET
+     * url: /tasks/reporter/{userId}
+     * INPUT: invalid
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser
+    public void getTasksToReportForUser_fail() throws Exception {
+
+        when(userService.getUser(anyLong())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder getRequest =
+                MockMvcRequestBuilders.get("/tasks/reporter/{userId}", anyInt())
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest).andExpect(status().isNotFound());
+    }
 
 
     /**
