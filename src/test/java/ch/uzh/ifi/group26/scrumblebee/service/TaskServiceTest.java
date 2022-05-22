@@ -2,6 +2,7 @@ package ch.uzh.ifi.group26.scrumblebee.service;
 
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
+import ch.uzh.ifi.group26.scrumblebee.entity.Comment;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,19 +11,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TaskServiceTest {
 
@@ -36,6 +34,7 @@ public class TaskServiceTest {
     Task task1 = new Task();
     Task task2 = new Task();
     Task task3 = new Task();
+    Comment aComment = new Comment();
 
     private SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
@@ -58,6 +57,15 @@ public class TaskServiceTest {
         testTask.setScore(200);
         testTask.setAssignee(1L);
         testTask.setReporter(2L);
+
+        aComment.setAuthorName("Someone");
+        aComment.setCommentId(1L);
+        aComment.setBelongingTask(testTask.getTaskId());
+        aComment.setContent("Some text.");
+        aComment.setAuthorId(1L);
+        Set<Comment> comments = new HashSet<>();
+        comments.add(aComment);
+        testTask.setComments(comments);
 
         when(taskRepository.save(any())).thenReturn(testTask);
 
@@ -418,6 +426,71 @@ public class TaskServiceTest {
         assertEquals(testTask.getAssignee(), deletedTask.getAssignee());
         assertEquals(testTask.getReporter(), deletedTask.getReporter());
 
+    }
+
+
+    /**
+     * METHOD TESTED: deleteComment()
+     * INPUT: valid
+     * EXPECTED RESULT: comment should be deleted from
+     */
+    @Test
+    public void deleteComment_success() {
+        // STUBBING
+        when(taskRepository.findByTaskId(anyLong())).thenReturn(Optional.of(testTask));
+        // EXECUTE METHOD
+        taskService.deleteComment(aComment);
+        // ASSERTIONS
+        verify(taskRepository, times(1)).save(any());
+    }
+
+    /**
+     * METHOD TESTED: deleteComment()
+     * INPUT: invalid
+     * EXPECTED RESULT: comment shouldn't be deleted from task
+     */
+    @Test
+    public void deleteComment_fail() {
+        // STUBBING
+        when(taskRepository.findByTaskId(anyLong())).thenReturn(Optional.empty());
+        // EXECUTE METHOD
+        assertThrows(ResponseStatusException.class, ()->{
+            taskService.deleteComment(aComment);
+        });
+        // ASSERTIONS
+        verify(taskRepository, times(0)).save(any());
+    }
+
+    /**
+     * METHOD TESTED: assignCommentToTask()
+     * INPUT: valid
+     * EXPECTED RESULT: comment should be assigned to task
+     */
+    @Test
+    public void assignCommentToTask_success() {
+        // STUBBING
+        when(taskRepository.findByTaskId(anyLong())).thenReturn(Optional.of(testTask));
+        // EXECUTE METHOD
+        taskService.assignCommentToTask(aComment);
+        // ASSERTIONS
+        verify(taskRepository, times(1)).save(any());
+    }
+
+    /**
+     * METHOD TESTED: assignCommentToTask()
+     * INPUT: invalid
+     * EXPECTED RESULT: comment shouldn't be assigned to task
+     */
+    @Test
+    public void assignCommentToTask_fail() {
+        // STUBBING
+        when(taskRepository.findByTaskId(anyLong())).thenReturn(Optional.empty());
+        // EXECUTE METHOD
+        assertThrows(ResponseStatusException.class, ()->{
+            taskService.deleteComment(aComment);
+        });
+        // ASSERTIONS
+        verify(taskRepository, times(0)).save(any());
     }
 
 }
