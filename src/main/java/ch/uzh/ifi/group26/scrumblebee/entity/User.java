@@ -1,7 +1,5 @@
 package ch.uzh.ifi.group26.scrumblebee.entity;
 
-import ch.uzh.ifi.group26.scrumblebee.constant.RoleType;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;

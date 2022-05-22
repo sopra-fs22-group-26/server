@@ -11,6 +11,7 @@ import ch.uzh.ifi.group26.scrumblebee.service.PollMeetingService;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,16 +30,14 @@ import java.util.Optional;
 @RestController
 public class PollMeetingController {
 
-    private final PollMeetingService pollMeetingService;
-    private final UserService userService;
-    private final TaskService taskService;
+    @Autowired
+    PollMeetingService pollMeetingService;
 
+    @Autowired
+    UserService userService;
 
-    PollMeetingController(PollMeetingService pollMeetingService, UserService userService, TaskService taskService) {
-        this.pollMeetingService = pollMeetingService;
-        this.userService = userService;
-        this.taskService = taskService;
-    }
+    @Autowired
+    TaskService taskService;
 
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/
@@ -76,6 +75,9 @@ public class PollMeetingController {
     @ResponseBody
     public PollMeetingGetDTO getPollMeeting(@PathVariable long meetingId) {
         PollMeeting pollMeeting = pollMeetingService.getPollMeeting(meetingId);
+        if (pollMeeting == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting ID does not exist");
+        }
         // Get creator's name
         User creator = userService.getUser(pollMeeting.getCreatorId());
         pollMeeting.setCreatorName(creator.getName() != null ? creator.getName() : creator.getUsername());

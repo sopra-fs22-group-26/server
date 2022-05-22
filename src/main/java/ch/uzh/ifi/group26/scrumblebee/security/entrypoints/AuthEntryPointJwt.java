@@ -1,4 +1,4 @@
-package ch.uzh.ifi.group26.scrumblebee.security.Entrypoints;
+package ch.uzh.ifi.group26.scrumblebee.security.entrypoints;
 
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;

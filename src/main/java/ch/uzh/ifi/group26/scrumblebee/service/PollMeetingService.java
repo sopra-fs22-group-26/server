@@ -5,10 +5,7 @@ import ch.uzh.ifi.group26.scrumblebee.constant.PollParticipantStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.*;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollMeetingRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollParticipantRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,17 +24,12 @@ import java.util.Optional;
 @Transactional
 public class PollMeetingService {
 
-    private final Logger log = LoggerFactory.getLogger(PollMeetingService.class);
-
-    private final PollMeetingRepository pollMeetingRepository;
+    @Autowired
+    PollMeetingRepository pollMeetingRepository;
 
     @Autowired
     PollParticipantRepository pollParticipantRepository;
 
-    @Autowired
-    public PollMeetingService(@Qualifier("pollMeetingRepository") PollMeetingRepository pollMeetingRepository) {
-        this.pollMeetingRepository = pollMeetingRepository;
-    }
 
     // Get all meetings, sorted by creation date
     public List<PollMeeting> getPollMeetings() {
@@ -63,10 +55,6 @@ public class PollMeetingService {
         assignTask(newPollMeeting, task);
 
         newPollMeeting.setStatus(PollMeetingStatus.OPEN);
-
-        log.debug(newPollMeeting.getCreatorId().toString());
-        log.debug(newPollMeeting.getEstimateThreshold().toString());
-        log.debug(newPollMeeting.getStatus().toString());
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
@@ -120,6 +108,7 @@ public class PollMeetingService {
             pollParticipant = Optional.of(pollMeeting.addParticipant(user));
         }
         pollParticipant.get().setStatus(PollParticipantStatus.JOINED);
+
     }
 
     // User declines an invitation
