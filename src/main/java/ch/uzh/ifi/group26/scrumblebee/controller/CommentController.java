@@ -39,32 +39,32 @@ public class CommentController {
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/
 
-    /**
-     * Type: GET
-     * URL: /comments/{taskId}
-     * Body: none
-     * @return Comments
-     */
-    @GetMapping("/comments/{taskId}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public List<CommentGetDTO> getCommentsForTask(@PathVariable long taskId) {
-        List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
-
-        // Check if taskId is valid (getTask throws an exception otherwise)
-        Optional<Task> task = taskService.getTask(taskId, 9999L);
-        if (task.isPresent()) {
-            Set<Comment> comments = task.get().getComments();
-            for (Comment comment : comments) {
-                // Get creator's name
-                User creator = userService.getUser(comment.getAuthorId());
-                comment.setAuthorName(creator.getName() != null ? creator.getName() : creator.getUsername());
-
-                commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
-            }
-        }
-        return commentGetDTOS;
-    }
+//    /**
+//     * Type: GET
+//     * URL: /comments/{taskId}
+//     * Body: none
+//     * @return Comments
+//     */
+//    @GetMapping("/comments/{taskId}")
+//    @ResponseStatus(HttpStatus.OK)
+//    @ResponseBody
+//    public List<CommentGetDTO> getCommentsForTask(@PathVariable long taskId) {
+//        List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
+//
+//        // Check if taskId is valid (getTask throws an exception otherwise)
+//        Optional<Task> task = taskService.getTask(taskId, 9999L);
+//        if (task.isPresent()) {
+//            Set<Comment> comments = task.get().getComments();
+//            for (Comment comment : comments) {
+//                // Get creator's name
+//                User creator = userService.getUser(comment.getAuthorId());
+//                comment.setAuthorName(creator.getName() != null ? creator.getName() : creator.getUsername());
+//
+//                commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
+//            }
+//        }
+//        return commentGetDTOS;
+//    }
 
 
     /*------------------------------------- POST requests ----------------------------------------------------------*/
