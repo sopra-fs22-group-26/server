@@ -487,7 +487,7 @@ public class TaskServiceTest {
         when(taskRepository.findByTaskId(anyLong())).thenReturn(Optional.empty());
         // EXECUTE METHOD
         assertThrows(ResponseStatusException.class, ()->{
-            taskService.deleteComment(aComment);
+            taskService.assignCommentToTask(aComment);
         });
         // ASSERTIONS
         verify(taskRepository, times(0)).save(any());
