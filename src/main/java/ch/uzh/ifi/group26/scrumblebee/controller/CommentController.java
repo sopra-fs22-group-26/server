@@ -67,6 +67,8 @@ public class CommentController {
 
                  commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
              }
+         } else {
+             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
          }
          return commentGetDTOS;
      }

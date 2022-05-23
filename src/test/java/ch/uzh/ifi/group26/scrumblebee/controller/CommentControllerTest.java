@@ -9,7 +9,6 @@ import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,11 +26,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -72,6 +68,96 @@ public class CommentControllerTest {
 
     }
 
+    /**
+     * Type: GET
+     * URL: /comments/{taskId}
+     * INPUT: valid
+     */
+    @Test
+    @WithMockUser
+    public void getCommentsForTask_multipleComments_success() throws Exception {
+
+        // STUBBING
+        comment2.setCommentId(2L);
+        comment2.setContent("Anything written here, which could be interesting for a task");
+        comment2.setAuthorId(3L);
+        comment2.setBelongingTask(1L);
+        Set<Comment> comments = new HashSet<>();
+        comments.add(comment1);
+        comments.add(comment2);
+
+        Task foundTask = new Task();
+        foundTask.setTaskId(1L);
+        foundTask.setComments(comments);
+        User foundUser = new User();
+        foundUser.setId(1L);
+
+        when(taskService.getTask(anyLong(), anyLong())).thenReturn(Optional.of(foundTask));
+        when(userService.getUser(anyLong())).thenReturn(foundUser);
+
+        // BUILD REQUEST
+        MockHttpServletRequestBuilder getRequest =
+                MockMvcRequestBuilders.get("/comments/{taskId}?id={id}", foundTask.getTaskId(), foundUser.getId())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // PERFORM AND ASSERT
+        mockMvc.perform(getRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$.[0]").isNotEmpty())
+                .andExpect(jsonPath("$[1]").isNotEmpty());
+
+    }
+
+    /**
+     * Type: GET
+     * URL: /comments/{taskId}
+     * INPUT: valid
+     */
+    @Test
+    @WithMockUser
+    public void getCommentsForTask_zeroComments_success() throws Exception {
+
+        // STUBBING
+        Task foundTask = new Task();
+        foundTask.setTaskId(1L);
+        User foundUser = new User();
+        foundUser.setId(1L);
+
+        when(taskService.getTask(anyLong(), anyLong())).thenReturn(Optional.of(foundTask));
+        when(userService.getUser(anyLong())).thenReturn(foundUser);
+
+        // BUILD REQUEST
+        MockHttpServletRequestBuilder getRequest =
+                MockMvcRequestBuilders.get("/comments/{taskId}?id={id}", foundTask.getTaskId(), foundUser.getId())
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        // PERFORM AND ASSERT
+        mockMvc.perform(getRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+    }
+
+    /**
+     * Type: GET
+     * URL: /comments/{taskId}
+     * INPUT: valid
+     */
+    @Test
+    @WithMockUser
+    public void getCommentsForTask_taskNotFound_fail() throws Exception {
+
+        // STUBBING
+        when(taskService.getTask(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        // BUILD REQUEST
+        MockHttpServletRequestBuilder getRequest =
+                MockMvcRequestBuilders.get("/comments/{taskId}", 9999L)
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        // PERFORM AND ASSERT
+        mockMvc.perform(getRequest).andExpect(status().isNotFound());
+
+    }
 
     /**
      * Type: POST
