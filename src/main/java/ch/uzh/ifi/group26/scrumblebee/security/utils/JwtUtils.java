@@ -46,6 +46,7 @@ public class JwtUtils {
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
+/*
 
     public String generateTokenFromUsername(String username) {
         return Jwts.builder()
@@ -69,6 +70,8 @@ public class JwtUtils {
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenDurationsMS) )
                 .signWith(key, SignatureAlgorithm.HS256).compact();
     }
+
+ */
 
     private String createTokenInfinity(Map<String, Object> claims, String subject) {
         return Jwts.builder()
