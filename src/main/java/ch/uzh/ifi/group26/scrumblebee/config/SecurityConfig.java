@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
-    private final boolean dev = false;
+    private static final boolean DEV = false;
 
     @Autowired
     AuthTokenFilter authTokenFilter;
@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // all endpoints need to be authenticated, except the ones specified in .antMatchers("/....")
-        if (dev) {
+        if (DEV) {
             http.cors().and().csrf().disable()
                     .authorizeRequests().antMatchers("/**").permitAll()
                     .antMatchers("/").permitAll()
@@ -79,6 +79,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
 }
