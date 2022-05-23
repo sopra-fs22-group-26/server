@@ -4,11 +4,7 @@ import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
-import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
-import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPostDTO;
-import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPutDTO;
-import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,10 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -43,7 +35,6 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -65,8 +56,6 @@ public class TaskControllerTest {
 
     @Autowired
     private WebApplicationContext context;
-
-    private final Logger log = LoggerFactory.getLogger(TaskControllerTest.class);
 
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
