@@ -1,5 +1,6 @@
 package ch.uzh.ifi.group26.scrumblebee.controller;
 
+import ch.uzh.ifi.group26.scrumblebee.constant.PollMeetingStatus;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskPriority;
 import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.*;
@@ -7,8 +8,10 @@ import ch.uzh.ifi.group26.scrumblebee.repository.PollMeetingRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.PollParticipantRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.TaskRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingGetDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPostDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.PollMeetingPutDTO;
+import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
 import ch.uzh.ifi.group26.scrumblebee.service.PollMeetingService;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
@@ -30,6 +33,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -72,9 +76,6 @@ public class PollMeetingControllerIntegrationTest {
     TaskRepository taskRepository;
 
     @Autowired
-    BeanFactory beanFactory;
-
-    @Autowired
     WebApplicationContext context;
 
     private SimpleDateFormat dateFormat
@@ -109,7 +110,6 @@ public class PollMeetingControllerIntegrationTest {
         testUser.setScore(0);
         testUser = userRepository.save(testUser);
         // SETTING UP THE USER WHICH PARTICIPATE IN THE MEETING
-        user1.setId(2L);
         user1.setUsername("user1");
         user1.setName("User 1");
         user1.setPassword("password");
@@ -118,7 +118,6 @@ public class PollMeetingControllerIntegrationTest {
         user1.setLoggedIn(true);
         user1.setScore(0);
         user1 = userRepository.save(user1);
-        user2.setId(3L);
         user2.setUsername("user2");
         user2.setName("User 2");
         user2.setPassword("password");
@@ -557,187 +556,48 @@ public class PollMeetingControllerIntegrationTest {
 
     }
 
-//
+
+    /**
+     * type: PUT
+     * url: /poll-meetings/{meetingId}
+     * URL-Parameter: action [join, decline, vote]
+     * Body: userId, vote, estimateThreshold, status
+     * INPUT: invalid, vote in meeting fail
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser
+    public void updatePollMeeting_wrongAction_fail() throws Exception {
+        MockHttpServletRequestBuilder putRequest =
+                MockMvcRequestBuilders.put("/poll-meetings/{meetingId}", testPollMeeting.getMeetingId().intValue())
+                        .contentType(MediaType.APPLICATION_JSON);
+        // PERFORM
+        mockMvc.perform(putRequest).andExpect(status().isBadRequest());
+    }
+
 //    /**
 //     * type: PUT
 //     * url: /poll-meetings/{meetingId}
 //     * URL-Parameter: action [join, decline, vote]
 //     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: valid, join meeting
+//     * INPUT: invalid, vote in meeting fail
 //     * @throws Exception
 //     */
 //    @Test
 //    @WithMockUser
-//    @Transactional
-//    public void updatePollMeeting_join_success() throws Exception {
-//        // PRE-REQUISITES
-//        assertTrue(userRepository.findById(testUser.getId()).isPresent());
-//        assertTrue(userRepository.findById(user1.getId()).isPresent());
-//        assertTrue(userRepository.findById(user2.getId()).isPresent());
-//        assertTrue(taskRepository.findByTaskId(testTask.getTaskId()).isPresent());
-//        assertEquals(3, pollMeetingRepository.findByMeetingId(testPollMeeting.getMeetingId()).getParticipants().size());
-//        // BUILD REQUEST
-//        User user3 = new User();
-//        user3.setUsername("user3");
-//        user3.setPassword("password");
-//        user3.setEmailAddress("mail@test.com");
-//        user3.setName("User 3");
-//        user3.setCreationDate(dateFormat.parse("1998-11-18"));
-//        user3.setLoggedIn(true);
-//        user3.setScore(0);
-//        user3 = userRepository.save(user3);
+//    public void updatePollMeeting_joinMeeting_success() throws Exception {
 //
-//        PollMeetingPutDTO requestBody = new PollMeetingPutDTO();
-//        //requestBody.setUserId(user3.getId());
-//        requestBody.setUserId(user3.getId());
+//        PollMeetingPutDTO putDTO = new PollMeetingPutDTO();
+//        putDTO.setUserId(user1.getId());
 //
 //        MockHttpServletRequestBuilder putRequest =
-//                put("/poll-meetings/{meetingId}?action=join", testPollMeeting.getMeetingId().intValue())
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(asJsonString(requestBody));
-//
+//                MockMvcRequestBuilders.put("/poll-meetings/{meetingId}?action={action}", testPollMeeting.getMeetingId().intValue(), "join")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                                .content(asJsonString(putDTO));
+//        // PERFORM
 //        mockMvc.perform(putRequest).andExpect(status().isOk());
 //    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: invalid, join meeting fail
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_joinWrongMeetingId_fail() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: invalid, join meeting fail
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_joinWrongUserId_fail() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: valid, decline meeting
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_decline_success() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: invalid, decline meeting fail
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_declineWrongMeetingId_fail() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: invalid, decline meeting fail
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_declineWrongUserId_fail() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: valid, vote in meeting
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_vote_success() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: invalid, vote in meeting fail
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_voteWrongMeetingId_fail() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: invalid, vote in meeting fail
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_voteWrongUserId_fail() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: valid, set creatorName with name
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_creatorWithName_success() {
-//
-//    }
-//
-//    /**
-//     * type: PUT
-//     * url: /poll-meetings/{meetingId}
-//     * URL-Parameter: action [join, decline, vote]
-//     * Body: userId, vote, estimateThreshold, status
-//     * INPUT: valid, set creatorName with username
-//     * @throws Exception
-//     */
-//    @Test
-//    @WithMockUser
-//    public void updatePollMeeting_creatorWithUsername_success() {
-//
-//    }
+
 
     /**
      * type: DELETE

@@ -32,7 +32,7 @@ public class RefreshTokenService {
             Optional<User> optionalUser = userRepository.findById(userId);
             if (optionalUser.isPresent()) {
                 refreshToken.setUser(optionalUser.get());
-                long refreshTokenDurationsMS = 600000L;
+                long refreshTokenDurationsMS = 3600000L;
                 refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationsMS));
                 refreshToken.setToken(UUID.randomUUID().toString());
                 refreshToken = refreshTokenRepository.save(refreshToken);
