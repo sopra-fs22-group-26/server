@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
-    private final boolean dev = true;
+    private final boolean dev = false;
 
     @Autowired
     AuthTokenFilter authTokenFilter;
