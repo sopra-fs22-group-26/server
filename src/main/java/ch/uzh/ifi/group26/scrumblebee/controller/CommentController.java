@@ -39,32 +39,37 @@ public class CommentController {
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/
 
-//    /**
-//     * Type: GET
-//     * URL: /comments/{taskId}
-//     * Body: none
-//     * @return Comments
-//     */
-//    @GetMapping("/comments/{taskId}")
-//    @ResponseStatus(HttpStatus.OK)
-//    @ResponseBody
-//    public List<CommentGetDTO> getCommentsForTask(@PathVariable long taskId) {
-//        List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
-//
-//        // Check if taskId is valid (getTask throws an exception otherwise)
-//        Optional<Task> task = taskService.getTask(taskId, 9999L);
-//        if (task.isPresent()) {
-//            Set<Comment> comments = task.get().getComments();
-//            for (Comment comment : comments) {
-//                // Get creator's name
-//                User creator = userService.getUser(comment.getAuthorId());
-//                comment.setAuthorName(creator.getName() != null ? creator.getName() : creator.getUsername());
-//
-//                commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
-//            }
-//        }
-//        return commentGetDTOS;
-//    }
+    /**
+      * Type: GET
+      * URL: /comments/{taskId}
+      * Body: none
+      * @return Comments
+      */
+     @GetMapping("/comments/{taskId}")
+     @ResponseStatus(HttpStatus.OK)
+     @ResponseBody
+     public List<CommentGetDTO> getCommentsForTask(@PathVariable long taskId,
+                                                   @RequestParam(required = false) Optional<Long> id) {
+         List<CommentGetDTO> commentGetDTOS = new ArrayList<>();
+
+         // Check if taskId is valid (getTask throws an exception otherwise)
+         long userId = 0L;
+         if (id.isPresent()) {
+             userId = id.get();
+         }
+         Optional<Task> task = taskService.getTask(taskId, userId);
+         if(task.isPresent()){
+             Set<Comment> comments = task.get().getComments();
+             for (Comment comment : comments) {
+                 // Get creator's name
+                 User creator = userService.getUser(comment.getAuthorId());
+                 comment.setAuthorName(creator.getName() != null ? creator.getName() : creator.getUsername());
+
+                 commentGetDTOS.add(DTOMapper.INSTANCE.convertEntityToCommentGetDTO(comment));
+             }
+         }
+         return commentGetDTOS;
+     }
 
 
     /*------------------------------------- POST requests ----------------------------------------------------------*/
@@ -82,15 +87,15 @@ public class CommentController {
     public CommentGetDTO createComment(@RequestBody CommentPostDTO commentPostDTO) {
         Comment commentInput = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(commentPostDTO);
         // check if the id's exist
-        Optional<Task> foundTask = taskService.getTask(commentInput.getBelongingTask(), 9999L);
         Optional<User> foundUser = Optional.ofNullable(userService.getUser(commentInput.getAuthorId()));
+        Optional<Task> foundTask = taskService.getTask(commentInput.getBelongingTask(), commentInput.getAuthorId());
         if ( foundTask.isEmpty() || foundUser.isEmpty() ) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User or Task ID do not exist.");
         }
         //create comment
         Comment createdComment = commentService.createComment(commentInput);
         //add comment to the comments List in the right task
-        taskService.assignCommentToTask(commentInput);
+        taskService.assignCommentToTask(createdComment);
         return DTOMapper.INSTANCE.convertEntityToCommentGetDTO(createdComment);
     }
 
