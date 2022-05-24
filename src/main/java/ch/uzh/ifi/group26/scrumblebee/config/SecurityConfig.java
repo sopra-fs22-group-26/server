@@ -30,8 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
-    private final boolean dev = true;
-
     @Autowired
     AuthTokenFilter authTokenFilter;
 
@@ -48,22 +46,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // all endpoints need to be authenticated, except the ones specified in .antMatchers("/....")
-        if (dev) {
-            http.cors().and().csrf().disable()
-                    .authorizeRequests().antMatchers("/**").permitAll()
-                    .antMatchers("/").permitAll()
-                    .anyRequest().authenticated().and()
-                    .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        } else {
-            http.cors().and().csrf().disable()
-                    .authorizeRequests().antMatchers("/").permitAll()
-                    .antMatchers("/register**").permitAll()
-                    .antMatchers("/auth/**").permitAll()
-                    .anyRequest().authenticated().and()
-                    .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        }
+        // Use the following code if endpoint should not be secured
+        /*
+        http.cors().and().csrf().disable()
+                .authorizeRequests().antMatchers("/**").permitAll()
+                .antMatchers("/").permitAll()
+                .anyRequest().authenticated().and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+         */
+
+        http.cors().and().csrf().disable()
+                .authorizeRequests().antMatchers("/").permitAll()
+                .antMatchers("/register**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .anyRequest().authenticated().and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         jwtUtils.setRefreshTokenDuration(30000L);
         http.addFilterBefore(this.authTokenFilter, BasicAuthenticationFilter.class);
     }
@@ -83,6 +82,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }

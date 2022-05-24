@@ -170,13 +170,15 @@ public class AuthServiceIntegrationTest {
 
         assertTrue(userRepository.findAll().isEmpty());
 
-        UserPostDTO logoutUser = new UserPostDTO();
-        logoutUser.setUsername("wrongUsername");
+        UserPostDTO logoutUserDTO = new UserPostDTO();
+        logoutUserDTO.setUsername("wrongUsername");
+
+        User logoutUserEntity = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(logoutUserDTO);
 
         // ASSERTIONS
         assertThrows(ResponseStatusException.class, ()->{
             // EXECUTE METHOD
-            User loggedOutUser = authService.logoutUser(DTOMapper.INSTANCE.convertUserPostDTOtoEntity(logoutUser));
+            User loggedOutUser = authService.logoutUser(logoutUserEntity);
         });
 
     }

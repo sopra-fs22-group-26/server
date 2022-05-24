@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+//import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -77,14 +76,17 @@ public class JwtUtils {
 
  */
 
+    /*
     private String createTokenInfinity(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenDurationsMS) )
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATIONS_MS) )
                 .signWith(key, SignatureAlgorithm.HS256).compact();
     }
+
+     */
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
