@@ -103,7 +103,7 @@ public class UserService {
             if (encoder.matches(userCredentials.getPassword(),userToUpdate.getPassword())){
                 userToUpdate.setPassword(encoder.encode(inputUser.getPassword()));
             }
-            else { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password incorrect - try again"); }
+            else { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password incorrect - try again"); }
         }
 
         userToUpdate.setBirthDate(inputUser.getBirthDate());
