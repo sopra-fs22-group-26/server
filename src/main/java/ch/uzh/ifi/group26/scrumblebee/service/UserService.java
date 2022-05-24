@@ -113,7 +113,12 @@ public class UserService {
             userToUpdate.setName(inputUser.getName());
         }
         if (inputUser.getUsername() != null) {
-            userToUpdate.setUsername(inputUser.getUsername());
+            Optional<User> foundUsername = userRepository.findByUsername(inputUser.getUsername());
+            if (foundUsername.isEmpty()) {
+                userToUpdate.setUsername(inputUser.getUsername());
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username does already exist");
+            }
         }
         if (inputUser.getEmailAddress() != null){
             userToUpdate.setEmailAddress(inputUser.getEmailAddress());
