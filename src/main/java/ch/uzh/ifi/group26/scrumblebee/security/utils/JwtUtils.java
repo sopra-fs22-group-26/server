@@ -15,13 +15,17 @@ public class JwtUtils {
 
     private SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    private static final Long REFRESH_TOKEN_DURATIONS_MS = 20000L;
+    private Long refreshTokenDurationsMS;
+
+    public void setRefreshTokenDuration(Long duration) {
+        this.refreshTokenDurationsMS = duration;
+    }
 
     public String generateJwtToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATIONS_MS))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenDurationsMS))
                 .signWith(key, SignatureAlgorithm.HS256).compact();
     }
 

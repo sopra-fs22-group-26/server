@@ -60,8 +60,8 @@ public class TaskService {
      * @param userId of Assignee
      * @return all active tasks for which user with userId is assigned
      */
-    public List<Task> getTasksForUser(long userId) {
-        List<Task> allTasks = getTasks(userId);
+    public List<Task> getTasksForUser(long userId, long requestingUserId) {
+        List<Task> allTasks = getTasks(requestingUserId);
         return allTasks.stream().filter(task -> (task.getStatus() == TaskStatus.ACTIVE) && (task.getAssignee() == userId)).collect(Collectors.toList());
     }
 

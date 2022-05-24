@@ -72,6 +72,7 @@ public class TaskServiceTest {
 
 
         task1.setTaskId(1L);
+        task1.setCreatorId(1L);
         task1.setDueDate(dateFormat.parse("1992-11-19"));
         task1.setTitle("Some@task");
         task1.setDescription("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod " +
@@ -299,7 +300,7 @@ public class TaskServiceTest {
 
         given(taskRepository.findAll()).willReturn(allTasks);
 
-        List<Task> foundTasks = taskService.getTasksForUser(task1.getAssignee());
+        List<Task> foundTasks = taskService.getTasksForUser(task1.getAssignee(), task1.getCreatorId());
 
         Mockito.verify(taskRepository, Mockito.times(1)).findAll();
         assertEquals(1, foundTasks.size());

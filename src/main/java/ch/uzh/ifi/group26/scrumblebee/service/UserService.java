@@ -85,7 +85,6 @@ public class UserService {
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newUser = userRepository.save(newUser);
-        userRepository.flush();
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
@@ -103,7 +102,7 @@ public class UserService {
             if (encoder.matches(userCredentials.getPassword(),userToUpdate.getPassword())){
                 userToUpdate.setPassword(encoder.encode(inputUser.getPassword()));
             }
-            else { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password incorrect - try again"); }
+            else { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password incorrect - try again"); }
         }
 
         userToUpdate.setBirthDate(inputUser.getBirthDate());
@@ -113,10 +112,30 @@ public class UserService {
             userToUpdate.setName(inputUser.getName());
         }
         if (inputUser.getUsername() != null) {
-            userToUpdate.setUsername(inputUser.getUsername());
+            Optional<User> userByInput = this.userRepository.findByUsername(inputUser.getUsername());
+            if (userByInput.isEmpty()) {
+                userToUpdate.setUsername(inputUser.getUsername());
+            }
+            else if (Objects.equals(userToUpdate.getUsername(), inputUser.getUsername())) {
+                userToUpdate.setUsername(inputUser.getUsername());
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username does already exist");
+            }
+
         }
         if (inputUser.getEmailAddress() != null){
-            userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+            Optional<User> foundUserByMail = userRepository.findByEmailAddress(inputUser.getEmailAddress());
+            if (foundUserByMail.isEmpty()) {
+                userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+            }
+            else if (Objects.equals(userToUpdate.getEmailAddress(), inputUser.getEmailAddress())) {
+                userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address does already exist");
+            }
+
         }
         if (inputUser.getScore() > 0) {
             userToUpdate.addScore(inputUser.getScore());
@@ -166,6 +185,21 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "email address", "is"));
         }
 
+    }
+
+    /**
+     * Return the id of the user with given username
+     * @param username of user to find
+     * @return id of user
+     */
+    public long getUserIdFromUsername (String username) {
+        Optional<User> userByUsername = this.userRepository.findByUsername(username);
+        if (userByUsername.isPresent()){
+            return userByUsername.get().getId();
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("No user found with username %s!", username));
+        }
     }
 
 }
