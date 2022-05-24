@@ -85,7 +85,6 @@ public class UserService {
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newUser = userRepository.save(newUser);
-        userRepository.flush();
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
@@ -113,15 +112,30 @@ public class UserService {
             userToUpdate.setName(inputUser.getName());
         }
         if (inputUser.getUsername() != null) {
-            Optional<User> foundUsername = userRepository.findByUsername(inputUser.getUsername());
-            if (foundUsername.isEmpty()) {
+            Optional<User> userByInput = this.userRepository.findByUsername(inputUser.getUsername());
+            if (userByInput.isEmpty()) {
                 userToUpdate.setUsername(inputUser.getUsername());
-            } else {
+            }
+            else if (Objects.equals(userToUpdate.getUsername(), inputUser.getUsername())) {
+                userToUpdate.setUsername(inputUser.getUsername());
+            }
+            else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username does already exist");
             }
+
         }
         if (inputUser.getEmailAddress() != null){
-            userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+            Optional<User> foundUserByMail = userRepository.findByEmailAddress(inputUser.getEmailAddress());
+            if (foundUserByMail.isEmpty()) {
+                userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+            }
+            else if (Objects.equals(userToUpdate.getEmailAddress(), inputUser.getEmailAddress())) {
+                userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address does already exist");
+            }
+
         }
         if (inputUser.getScore() > 0) {
             userToUpdate.addScore(inputUser.getScore());
