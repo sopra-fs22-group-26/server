@@ -3,6 +3,7 @@ package ch.uzh.ifi.group26.scrumblebee.controller;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
+import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class TaskController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    JwtUtils jwtUtils;
+
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/
 
@@ -44,9 +48,16 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<TaskGetDTO> getAllTasks(@RequestParam(required = false) String show,
-                                        @RequestParam(required = false) Long id) {
-        // Find user who made the request
-        Long userId = id != null ? id : 0L;
+                                        @RequestHeader("Authorization") String authorizationHeader) {
+
+        // Find user who made the request by extracting user from token.
+        // getUserIdFromUsername throws error if no id is found
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtils.extractUsername(token);
+        long userId = userService.getUserIdFromUsername(username);
+
+        // @RequestParam(required = false) Long id,
+        //Long userId = id != null ? id : 0L;
 
         // If parameter "show" was specified, get only active or completed tasks.
         // Otherwise get all tasks.
@@ -74,9 +85,12 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TaskGetDTO getTask(@PathVariable long taskId,
-                              @RequestParam(required = false) Long id) {
-        // Find user who made the request
-        Long userId = id != null ? id : 0L;
+                              @RequestHeader("Authorization") String authorizationHeader) {
+        // Find user who made the request by extracting user from token.
+        // getUserIdFromUsername throws error if no id is found
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtils.extractUsername(token);
+        long userId = userService.getUserIdFromUsername(username);
 
         Optional<Task> task = taskService.getTask(taskId, userId);
         if (task.isPresent()) return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task.get());
@@ -92,11 +106,18 @@ public class TaskController {
     @GetMapping("/tasks/assignee/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<TaskGetDTO> getTasksForUser(@PathVariable long userId) {
+    public List<TaskGetDTO> getTasksForUser(@PathVariable long userId,
+                                            @RequestHeader("Authorization") String authorizationHeader) {
         // check if userId is valid (getUser throws an exception otherwise)
         userService.getUser(userId);
 
-        List<Task> tasks = taskService.getTasksForUser(userId);
+        // Find user who made the request by extracting user from token.
+        // getUserIdFromUsername throws error if no id is found
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtils.extractUsername(token);
+        long requestingUserId = userService.getUserIdFromUsername(username);
+
+        List<Task> tasks = taskService.getTasksForUser(userId, requestingUserId);
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
         for (Task task : tasks) {
             taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));

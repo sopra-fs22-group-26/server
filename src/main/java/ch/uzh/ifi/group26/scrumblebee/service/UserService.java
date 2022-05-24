@@ -173,4 +173,19 @@ public class UserService {
 
     }
 
+    /**
+     * Return the id of the user with given username
+     * @param username of user to find
+     * @return id of user
+     */
+    public long getUserIdFromUsername (String username) {
+        Optional<User> userByUsername = this.userRepository.findByUsername(username);
+        if (userByUsername.isPresent()){
+            return userByUsername.get().getId();
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("No user found with username %s!", username));
+        }
+    }
+
 }

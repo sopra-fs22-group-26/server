@@ -381,7 +381,57 @@ public class UserServiceTest {
             User updateUser = userService.updateUser(testUser, inputUser, testUser);
         });
         Mockito.verify(userRepository, Mockito.times(0)).save(any());
+    }
 
+
+    /**
+     * METHOD TESTED: getUserIdFromUsername()
+     * INPUT: valid
+     * EXPECTED RESULT: the id of user with username should be returned
+     */
+    @Test
+    public void getUserId_validInput_success() throws ParseException {
+
+        // STUBBING
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setName("name1");
+        user1.setUsername("username1");
+        user1.setEmailAddress("test@domain.com");
+        user1.setPassword(encoder.encode("Password123"));
+        user1.setBirthDate(dateFormat.parse("1998-11-18"));
+        user1.setCreationDate(dateFormat.parse("2022-11-18"));
+        user1.setLoggedIn(false);
+        user1.setScore(0);
+
+        Set<Role> rolesUser1 = new HashSet<>();
+        user1.setRoles(rolesUser1);
+
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user1));
+
+        // EXECUTE METHOD
+        long userId = userService.getUserIdFromUsername(user1.getUsername());
+
+        // ASSERTIONS
+        assertEquals(user1.getId(), userId);
+    }
+
+
+    /**
+     * METHOD TESTED: getUserIdFromUsername()
+     * INPUT: invalid
+     * EXPECTED RESULT: when username is not found, an exception should be thrown
+     */
+    @Test
+    public void getUserId_invalidInput_fail() throws ParseException {
+
+        // STUBBING
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+
+        // EXECUTE METHOD
+        assertThrows(ResponseStatusException.class, () -> {
+            userService.getUserIdFromUsername(anyString());
+        });
     }
 
 }

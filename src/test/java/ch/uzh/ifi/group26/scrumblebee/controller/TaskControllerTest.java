@@ -5,14 +5,13 @@ import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.TaskPostDTO;
+import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -53,6 +52,9 @@ public class TaskControllerTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    JwtUtils jwtUtils;
 
     @Autowired
     private WebApplicationContext context;
@@ -134,9 +136,12 @@ public class TaskControllerTest {
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
 
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
         given(taskService.getTasks(0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks")
+                .header("Authorization", "my-token")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -165,9 +170,12 @@ public class TaskControllerTest {
         allTasks.add(task1);
         allTasks.add(task2);
 
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
         given(taskService.getTasks(0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks")
+                .header("Authorization", "my-token")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -223,9 +231,12 @@ public class TaskControllerTest {
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
 
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
         given(taskService.getTasks("active", 0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks?show=active")
+                .header("Authorization", "my-token")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -254,9 +265,12 @@ public class TaskControllerTest {
         allTasks.add(task1);
         allTasks.add(task2);
 
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
         given(taskService.getTasks("active", 0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks?show=active")
+                .header("Authorization", "my-token")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -312,9 +326,12 @@ public class TaskControllerTest {
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
 
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
         given(taskService.getTasks("completed", 0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks?show=completed")
+                .header("Authorization", "my-token")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -343,9 +360,12 @@ public class TaskControllerTest {
         allTasks.add(task1);
         allTasks.add(task2);
 
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
         given(taskService.getTasks("completed", 0L)).willReturn(allTasks);
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/tasks?show=completed")
+                .header("Authorization", "my-token")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -379,10 +399,13 @@ public class TaskControllerTest {
     @WithMockUser
     public void getTaskById_validInput_returnUserWithId() throws Exception {
 
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
         given(taskService.getTask(task1.getTaskId(),0L)).willReturn(Optional.ofNullable(task1));
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get(
                         "/tasks/{taskId}", task1.getTaskId())
+                .header("Authorization", "my-token")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -406,10 +429,13 @@ public class TaskControllerTest {
     @WithMockUser
     public void getTaskById_invalidInput_return404() throws Exception {
 
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
         given(taskService.getTask(anyLong(), anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get(
                         "/tasks/{taskId}", 999L)
+                .header("Authorization", "my-token")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isNotFound());
@@ -623,12 +649,17 @@ public class TaskControllerTest {
         tasksFound.add(task1);
         task2.setAssignee(1L);
         tasksFound.add(task2);
-        when(taskService.getTasksForUser(anyLong())).thenReturn(tasksFound);
+
+        when(taskService.getTasksForUser(anyLong(), anyLong())).thenReturn(tasksFound);
+
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder getRequest =
                 MockMvcRequestBuilders.get("/tasks/assignee/{userId}", anyInt())
-                .contentType(MediaType.APPLICATION_JSON);
+                        .header("Authorization", "my-token")
+                        .contentType(MediaType.APPLICATION_JSON);
 
         // then
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -647,10 +678,13 @@ public class TaskControllerTest {
     public void getTasksForUser_fail() throws Exception {
 
         when(userService.getUser(anyLong())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
+        given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder getRequest =
                 MockMvcRequestBuilders.get("/tasks/assignee/{userId}", anyInt())
+                        .header("Authorization", "my-token")
                         .contentType(MediaType.APPLICATION_JSON);
 
         // then
