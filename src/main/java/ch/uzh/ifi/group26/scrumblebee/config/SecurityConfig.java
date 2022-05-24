@@ -2,6 +2,7 @@ package ch.uzh.ifi.group26.scrumblebee.config;
 
 import ch.uzh.ifi.group26.scrumblebee.security.entrypoints.AuthEntryPointJwt;
 import ch.uzh.ifi.group26.scrumblebee.security.filters.AuthTokenFilter;
+import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     AuthTokenFilter authTokenFilter;
 
+    @Autowired
+    JwtUtils jwtUtils;
+
     // configure authentication manager with correct provider
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -60,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         }
-
+        jwtUtils.setRefreshTokenDuration(30000L);
         http.addFilterBefore(this.authTokenFilter, BasicAuthenticationFilter.class);
     }
 
