@@ -1,5 +1,6 @@
 package ch.uzh.ifi.group26.scrumblebee.controller;
 
+import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
@@ -183,6 +184,10 @@ public class TaskController {
     public TaskGetDTO updateTask(@RequestBody TaskPutDTO taskPutDTO, @PathVariable long taskId) {
         Task changesTask = DTOMapper.INSTANCE.convertTaskPutDTOtoEntity(taskPutDTO);
         Task updatedTask = taskService.updateTask(taskId, changesTask);
+        // If the task was rated, add score to assignee's score
+        if (changesTask.getStatus() == TaskStatus.REPORTED) {
+            userService.rateUser(changesTask.getAssignee(), changesTask.getScore());
+        }
         return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(updatedTask);
     }
 

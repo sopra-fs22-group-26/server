@@ -1,21 +1,14 @@
 package ch.uzh.ifi.group26.scrumblebee.service;
 
-import ch.uzh.ifi.group26.scrumblebee.constant.RoleType;
-import ch.uzh.ifi.group26.scrumblebee.entity.Role;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
-import ch.uzh.ifi.group26.scrumblebee.repository.RoleRepository;
 import ch.uzh.ifi.group26.scrumblebee.repository.UserRepository;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPostDTO;
+import ch.uzh.ifi.group26.scrumblebee.rest.dto.UserPutDTO;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -23,14 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 /**
  * Test class for the UserResource REST resource.
@@ -39,7 +27,7 @@ import static org.mockito.Mockito.when;
  */
 @WebAppConfiguration
 @SpringBootTest
-public class UserServiceIntegrationTest {
+class UserServiceIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -65,7 +53,7 @@ public class UserServiceIntegrationTest {
      * EXPECTED RESULT: user should be created
      */
     @Test
-    public void createUser_validInputs_success() {
+    void createUser_validInputs_success() {
 
         // PRE_CONDITIONS
         assertTrue(userRepository.findByUsername("testUsername").isEmpty());
@@ -100,7 +88,7 @@ public class UserServiceIntegrationTest {
      * EXPECTED RESULT: user must not be created, username already exists
      */
     @Test
-    public void createUser_duplicateUsername_throwsException() {
+    void createUser_duplicateUsername_throwsException() {
         // PRE_CONDITIONS
         assertTrue(userRepository.findByUsername("testUsername").isEmpty());
 
@@ -131,7 +119,7 @@ public class UserServiceIntegrationTest {
      * EXPECTED RESULT: user must not be created, email address already exists
      */
     @Test
-    public void createUser_duplicateEmailAddress_throwsException() {
+    void createUser_duplicateEmailAddress_throwsException() {
         // PRE_CONDITIONS
         assertTrue(userRepository.findByEmailAddress("test@mail.com").isEmpty());
 
@@ -162,7 +150,7 @@ public class UserServiceIntegrationTest {
      * EXPECTED RESULT: user must not be created, email address already exists
      */
     @Test
-    public void createUser_duplicateUsernameAndEmailAddress_throwsException() {
+    void createUser_duplicateUsernameAndEmailAddress_throwsException() {
         // PRE_CONDITIONS
         assertTrue(userRepository.findByUsername("testUsername").isEmpty());
         assertTrue(userRepository.findByEmailAddress("test@mail.com").isEmpty());
@@ -193,7 +181,7 @@ public class UserServiceIntegrationTest {
      * EXPECTED RESULT: as the old password is valid, the new password is set
      */
     @Test
-    public void updateUser_validInputs_success() throws ParseException {
+    void updateUser_validInputs_success() throws ParseException {
 
         // PRE-CONDITION
         assertTrue(userRepository.findByUsername("testUsername").isEmpty());
@@ -233,6 +221,89 @@ public class UserServiceIntegrationTest {
         assertTrue(encoder.matches(inputUser.getPassword(), updatedUser.getPassword()));
         assertEquals(inputUser.getBirthDate(), updatedUser.getBirthDate());
 
+    }
+
+
+    /**
+     * METHOD TESTED: updateUser()
+     * INPUT: invalid
+     * EXPECTED RESULT: user must not be updated, username already exists
+     */
+    @Test
+    void updateUser_duplicateUsername_throwsException() {
+        // PRE-CONDITION
+        assertTrue(userRepository.findByUsername("testUsername").isEmpty());
+
+        // Create 2 users
+        User testUser1 = new User();
+        testUser1.setName("testName1");
+        testUser1.setUsername("testUsername1");
+        testUser1.setEmailAddress("test1@mail.com");
+        testUser1.setPassword("password1");
+        userService.createUser(testUser1);
+
+        User testUser2 = new User();
+        testUser2.setName("testName2");
+        testUser2.setUsername("testUsername2");
+        testUser2.setEmailAddress("test2@mail.com");
+        testUser2.setPassword("password2");
+        userService.createUser(testUser2);
+
+        // Input parameters
+        User inputUser = new User();
+        inputUser.setUsername("testUsername1");
+        inputUser.setEmailAddress("newMail@something.com");
+
+        // EXECUTE METHOD:
+        Optional<User> userToUpdate = userRepository.findByUsername(testUser2.getUsername());
+        assertTrue(userToUpdate.isPresent());
+
+        // ASSERTIONS
+        assertThrows(ResponseStatusException.class, () -> {
+            // EXECUTE METHOD
+            userService.updateUser(userToUpdate.get(), inputUser, inputUser);
+        });
+    }
+
+    /**
+     * METHOD TESTED: updateUser()
+     * INPUT: invalid
+     * EXPECTED RESULT: user must not be updated, email address already exists
+     */
+    @Test
+    void updateUser_duplicateEmailAddress_throwsException() {
+        // PRE-CONDITION
+        assertTrue(userRepository.findByUsername("testUsername").isEmpty());
+
+        // Create 2 users
+        User testUser1 = new User();
+        testUser1.setName("testName1");
+        testUser1.setUsername("testUsername1");
+        testUser1.setEmailAddress("test1@mail.com");
+        testUser1.setPassword("password1");
+        userService.createUser(testUser1);
+
+        User testUser2 = new User();
+        testUser2.setName("testName2");
+        testUser2.setUsername("testUsername2");
+        testUser2.setEmailAddress("test2@mail.com");
+        testUser2.setPassword("password2");
+        userService.createUser(testUser2);
+
+        // Input parameters
+        User inputUser = new User();
+        inputUser.setUsername("newUsername");
+        inputUser.setEmailAddress("test1@mail.com");
+
+        // EXECUTE METHOD:
+        Optional<User> userToUpdate = userRepository.findByUsername(testUser2.getUsername());
+        assertTrue(userToUpdate.isPresent());
+
+        // ASSERTIONS
+        assertThrows(ResponseStatusException.class, () -> {
+            // EXECUTE METHOD
+            userService.updateUser(userToUpdate.get(), inputUser, inputUser);
+        });
     }
 
     @AfterEach

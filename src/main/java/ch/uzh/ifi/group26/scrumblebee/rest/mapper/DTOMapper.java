@@ -48,6 +48,7 @@ public interface DTOMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "loggedIn", ignore = true)
+    @Mapping(target = "score", ignore = true)
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "pollMeetings", ignore = true)
     User convertUserPutDTOtoTempEntity(UserPutDTO userPutDTO);
@@ -57,7 +58,7 @@ public interface DTOMapper {
     @Mapping(source = "emailAddress", target = "emailAddress")
     @Mapping(source = "birthDate", target = "birthDate")
     @Mapping(source = "newPassword", target = "password")
-    @Mapping(source = "score", target = "score")
+    @Mapping(target = "score", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "loggedIn", ignore = true)

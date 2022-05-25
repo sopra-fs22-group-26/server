@@ -9,7 +9,6 @@ import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.entity.User;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.Mapping;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests if the mapping between the internal and the external/API representation
  * works.
  */
-public class DTOMapperTest {
+class DTOMapperTest {
 
     private SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
@@ -34,7 +33,7 @@ public class DTOMapperTest {
      * @throws ParseException
      */
     @Test
-    public void testCreateUser_fromUserPostDTO_toUser_success() throws ParseException {
+    void testCreateUser_fromUserPostDTO_toUser_success() throws ParseException {
         // create UserPostDTO
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setName("name");
@@ -60,7 +59,7 @@ public class DTOMapperTest {
      *
      */
     @Test
-    public void testCreateUser_fromUserPutDTO_toUser_success() {
+    void testCreateUser_fromUserPutDTO_toUser_success() {
 
         // create UserPostDTO
         UserPutDTO userPutDTO = new UserPutDTO();
@@ -70,7 +69,6 @@ public class DTOMapperTest {
         userPutDTO.setNewPassword("newPassword");
         userPutDTO.setBirthDate("2020-11-18");
         userPutDTO.setEmailAddress("test@email.com");
-        userPutDTO.setScore(4);
 
         // MAP -> Create user
         User user = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
@@ -81,7 +79,6 @@ public class DTOMapperTest {
         assertEquals(userPutDTO.getNewPassword(), user.getPassword());
         assertEquals(userPutDTO.getBirthDate(), user.getBirthDate());
         assertEquals(userPutDTO.getEmailAddress(), user.getEmailAddress());
-        assertEquals(userPutDTO.getScore(), user.getScore());
 
     }
 
@@ -91,7 +88,7 @@ public class DTOMapperTest {
      *
      */
     @Test
-    public void testCreateUser_fromUserPutDTO_toUser_CredentialsOnly_success() {
+    void testCreateUser_fromUserPutDTO_toUser_CredentialsOnly_success() {
 
         // create UserPostDTO
         UserPutDTO userPutDTO = new UserPutDTO();
@@ -101,7 +98,6 @@ public class DTOMapperTest {
         userPutDTO.setNewPassword("newPassword");
         userPutDTO.setBirthDate("2020-11-18");
         userPutDTO.setEmailAddress("test@email.com");
-        userPutDTO.setScore(4);
 
         // MAP -> Create user
         User user = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
@@ -117,7 +113,7 @@ public class DTOMapperTest {
      *
      */
     @Test
-    public void testCreateUserGetDTO_fromUser_success() throws ParseException {
+    void testCreateUserGetDTO_fromUser_success() throws ParseException {
 
         User user = new User();
         user.setName("name");
@@ -152,7 +148,7 @@ public class DTOMapperTest {
      *
      */
     @Test
-    public void testCreateTask_fromTaskPostDTO_success() throws ParseException {
+    void testCreateTask_fromTaskPostDTO_success() throws ParseException {
 
         TaskPostDTO taskPostDTO = new TaskPostDTO();
         taskPostDTO.setDueDate(dateFormat.parse("1999-11-11"));
@@ -185,7 +181,7 @@ public class DTOMapperTest {
      *
      */
     @Test
-    public void testCreateTaskGetDTO_fromTask_success() throws ParseException {
+    void testCreateTaskGetDTO_fromTask_success() throws ParseException {
 
         Task task = new Task();
         task.setTaskId(1L);
@@ -221,7 +217,7 @@ public class DTOMapperTest {
      *
      */
     @Test
-    public void createAuthGetDTO_fromUser_success() throws ParseException {
+    void createAuthGetDTO_fromUser_success() throws ParseException {
 
         User user = new User();
         user.setName("name");
@@ -252,7 +248,7 @@ public class DTOMapperTest {
      *
      */
     @Test
-    public void createRefreshGetDTO_fromUser_success() throws ParseException {
+    void createRefreshGetDTO_fromUser_success() throws ParseException {
 
         User user = new User();
         user.setName("name");
@@ -280,7 +276,7 @@ public class DTOMapperTest {
      * CommentPostDTO ==> Comment
      */
     @Test
-    public void createComment_fromCommentPostDTO_success() {
+    void createComment_fromCommentPostDTO_success() {
         // PREPARE
         CommentPostDTO commentPostDTO = new CommentPostDTO();
         commentPostDTO.setBelongingTask(1L);
@@ -298,7 +294,7 @@ public class DTOMapperTest {
      * Comment ==> CommentGetDTO
      */
     @Test
-    public void createCommentGetDTO_fromComment_success() {
+    void createCommentGetDTO_fromComment_success() {
         // PREPARE
         Comment comment = new Comment();
         comment.setBelongingTask(1L);
