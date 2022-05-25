@@ -46,16 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // all endpoints need to be authenticated, except the ones specified in .antMatchers("/....")
-        // Use the following code if endpoint should not be secured
-        /*
-        http.cors().and().csrf().disable()
-                .authorizeRequests().antMatchers("/**").permitAll()
-                .antMatchers("/").permitAll()
-                .anyRequest().authenticated().and()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-         */
-
         http.cors().and().csrf().disable()
                 .authorizeRequests().antMatchers("/").permitAll()
                 .antMatchers("/register**").permitAll()

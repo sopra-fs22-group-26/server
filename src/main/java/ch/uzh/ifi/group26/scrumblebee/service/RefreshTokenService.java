@@ -52,19 +52,4 @@ public class RefreshTokenService {
         }
         return token;
     }
-
-/*
-    @Transactional
-    public int deleteByUserId(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            return refreshTokenRepository.deleteByUser(user.get());
-        }
-        else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token for user was not found");
-        }
-    }
-
- */
-
 }

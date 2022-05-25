@@ -430,7 +430,7 @@ public class UserServiceTest {
 
         // EXECUTE METHOD
         assertThrows(ResponseStatusException.class, () -> {
-            userService.getUserIdFromUsername(anyString());
+            userService.getUserIdFromUsername("invalidUsername");
         });
     }
 
