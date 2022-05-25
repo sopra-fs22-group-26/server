@@ -99,7 +99,7 @@ public class UserService {
     public User updateUser(User userToUpdate, User inputUser, User userCredentials){
         // Check if user wants to change password => if yes, verify credentials
         if (inputUser.getPassword() != null && userCredentials.getPassword() != null ){
-            if (encoder.matches(userCredentials.getPassword(),userToUpdate.getPassword())){
+            if (encoder.matches(userCredentials.getPassword(), userToUpdate.getPassword())){
                 userToUpdate.setPassword(encoder.encode(inputUser.getPassword()));
             }
             else { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password incorrect - try again"); }
@@ -112,39 +112,46 @@ public class UserService {
             userToUpdate.setName(inputUser.getName());
         }
         if (inputUser.getUsername() != null) {
-            Optional<User> userByInput = this.userRepository.findByUsername(inputUser.getUsername());
-            if (userByInput.isEmpty()) {
-                userToUpdate.setUsername(inputUser.getUsername());
-            }
-            else if (Objects.equals(userToUpdate.getUsername(), inputUser.getUsername())) {
-                userToUpdate.setUsername(inputUser.getUsername());
-            }
-            else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username does already exist");
-            }
-
+            checkAndUpdateUsername(userToUpdate, inputUser);
         }
         if (inputUser.getEmailAddress() != null){
-            Optional<User> foundUserByMail = userRepository.findByEmailAddress(inputUser.getEmailAddress());
-            if (foundUserByMail.isEmpty()) {
-                userToUpdate.setEmailAddress(inputUser.getEmailAddress());
-            }
-            else if (Objects.equals(userToUpdate.getEmailAddress(), inputUser.getEmailAddress())) {
-                userToUpdate.setEmailAddress(inputUser.getEmailAddress());
-            }
-            else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address does already exist");
-            }
-
+            checkAndUpdateEmail(userToUpdate, inputUser);
         }
         if (inputUser.getScore() > 0) {
             userToUpdate.addScore(inputUser.getScore());
         }
-
         return updateRepository(userToUpdate);
-
     }
 
+    /**
+     * Helper function to update the username if it is not already taken
+     * @param userToUpdate is the affected user
+     * @param inputUser are the parameters to update
+     */
+    private void checkAndUpdateUsername(User userToUpdate, User inputUser){
+        Optional<User> foundUserByUsername = this.userRepository.findByUsername(inputUser.getUsername());
+        if (foundUserByUsername.isEmpty()) {
+            userToUpdate.setUsername(inputUser.getUsername());
+        }
+        else if (!Objects.equals(userToUpdate.getUsername(), inputUser.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username does already exist!");
+        }
+    }
+
+    /**
+     * Helper function to update the email address if it is not already taken
+     * @param userToUpdate is the affected user
+     * @param inputUser are the parameters to update
+     */
+    private void checkAndUpdateEmail(User userToUpdate, User inputUser) {
+        Optional<User> foundUserByMail = userRepository.findByEmailAddress(inputUser.getEmailAddress());
+        if (foundUserByMail.isEmpty()) {
+            userToUpdate.setEmailAddress(inputUser.getEmailAddress());
+        }
+        else if (!Objects.equals(userToUpdate.getEmailAddress(), inputUser.getEmailAddress())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address does already exist!");
+        }
+    }
 
     /**
      * Used by: PUT /users/{id}
