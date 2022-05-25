@@ -23,7 +23,7 @@ public class AuthService {
 
     /**
      * Handles login procedure
-     * @param currentUser
+     * @param currentUser is user that wants to log in
      * @return User
      */
     public User verifyUser(User currentUser) {
@@ -35,8 +35,8 @@ public class AuthService {
 
     /**
      * Handles logout procedure. User is identified by token.
-     * @param currentUser
-     * @return
+     * @param currentUser is user who wants to log out
+     * @return logged-out user
      */
     public User logoutUser(User currentUser) {
         Optional<User> repUser = userRepository.findByUsername(currentUser.getUsername());
@@ -53,14 +53,14 @@ public class AuthService {
     /**
      * This is a helper function that will check credentials of user who wants to log in
      * and throws an error if username or password does not match any user
-     * @param userToCheck
+     * @param userToCheck will be checked for correct credentials
      */
     private User checkCredentials(User userToCheck) {
         String providedUsername = userToCheck.getUsername();
         String providedPassword = userToCheck.getPassword();
 
         Optional<User> userByUsername = userRepository.findByUsername(providedUsername);
-        String errorMessage = "Error: The username/password combination did not match any user. Login failed.";
+        String errorMessage = "Error: The username/password combination did not match any user.\nLogin failed.";
 
         if (!userByUsername.isPresent()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, errorMessage);
