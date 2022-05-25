@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebAppConfiguration
 @SpringBootTest
-public class TaskControllerTest {
+class TaskControllerTest {
 
     private MockMvc mockMvc;
 
@@ -109,7 +109,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getAllTasks_zeroTasks_thenReturnJsonArray() throws Exception {
+    void getAllTasks_zeroTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
 
@@ -131,7 +131,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getAllTasks_oneTasks_thenReturnJsonArray() throws Exception {
+    void getAllTasks_oneTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
@@ -164,7 +164,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getAllTasks_multipleTasks_thenReturnJsonArray() throws Exception {
+    void getAllTasks_multipleTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
@@ -204,7 +204,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getActiveTasks_zeroTasks_thenReturnJsonArray() throws Exception {
+    void getActiveTasks_zeroTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
 
@@ -226,7 +226,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getActiveTasks_oneTasks_thenReturnJsonArray() throws Exception {
+    void getActiveTasks_oneTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
@@ -259,7 +259,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getActiveTasks_multipleTasks_thenReturnJsonArray() throws Exception {
+    void getActiveTasks_multipleTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
@@ -299,7 +299,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getCompletedTasks_zeroTasks_thenReturnJsonArray() throws Exception {
+    void getCompletedTasks_zeroTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
 
@@ -321,7 +321,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getCompletedTasks_oneTasks_thenReturnJsonArray() throws Exception {
+    void getCompletedTasks_oneTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
@@ -354,7 +354,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getCompletedTasks_multipleTasks_thenReturnJsonArray() throws Exception {
+    void getCompletedTasks_multipleTasks_thenReturnJsonArray() throws Exception {
 
         List<Task> allTasks = new ArrayList<>();
         allTasks.add(task1);
@@ -397,7 +397,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getTaskById_validInput_returnUserWithId() throws Exception {
+    void getTaskById_validInput_returnUserWithId() throws Exception {
 
         given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
         given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
@@ -427,7 +427,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getTaskById_invalidInput_return404() throws Exception {
+    void getTaskById_invalidInput_return404() throws Exception {
 
         given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
         given(userService.getUserIdFromUsername(anyString())).willReturn(0L);
@@ -453,7 +453,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void createTask_validInput_taskCreated() throws Exception {
+    void createTask_validInput_taskCreated() throws Exception {
 
         TaskPostDTO taskPostDTO = new TaskPostDTO();
         taskPostDTO.setTaskId(1L);
@@ -496,13 +496,13 @@ public class TaskControllerTest {
 
     /**
      * type: PUT
-     * url: /users/{id}
+     * url: /tasks/{id}
      * INPUT: valid
      * @throws Exception
      */
     @Test
     @WithMockUser
-    public void updateTask_validInput_taskUpdated() throws Exception {
+    void updateTask_validInput_taskUpdated() throws Exception {
 
         TaskPostDTO taskPostDTO = new TaskPostDTO();
         taskPostDTO.setDueDate(dateFormat.parse("1980-11-19"));
@@ -514,7 +514,8 @@ public class TaskControllerTest {
                 "no sea takimata sanctus est Lorem ipsum dolor sit amet.");
         taskPostDTO.setEstimate(8);
         taskPostDTO.setPriority("LOW");
-        taskPostDTO.setStatus("COMPLETED");
+        taskPostDTO.setScore(4);
+        taskPostDTO.setStatus("REPORTED");
 
         Task updatedTask = new Task();
         updatedTask.setTaskId(1L);
@@ -527,7 +528,8 @@ public class TaskControllerTest {
                 "no sea takimata sanctus est Lorem ipsum dolor sit amet.");
         updatedTask.setEstimate(8);
         updatedTask.setPriority(TaskPriority.LOW);
-        updatedTask.setStatus(TaskStatus.COMPLETED);
+        updatedTask.setScore(4);
+        updatedTask.setStatus(TaskStatus.REPORTED);
 
         when(taskService.updateTask(anyLong(), any(Task.class))).thenReturn(updatedTask);
 
@@ -589,7 +591,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void deleteTask_validInput_returnDeletedTask() throws Exception {
+    void deleteTask_validInput_returnDeletedTask() throws Exception {
 
         given(taskService.deleteTask(task1.getTaskId())).willReturn(task1);
 
@@ -619,7 +621,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void deleteTask_invalidInput_return404() throws Exception {
+    void deleteTask_invalidInput_return404() throws Exception {
 
         when(taskService.deleteTask(anyLong()))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -641,7 +643,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getTasksForUser_success() throws Exception {
+    void getTasksForUser_success() throws Exception {
 
         when(userService.getUser(anyLong())).thenReturn(testUser);
         List<Task> tasksFound = new ArrayList<>();
@@ -675,7 +677,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getTasksForUser_fail() throws Exception {
+    void getTasksForUser_fail() throws Exception {
 
         when(userService.getUser(anyLong())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
         given(jwtUtils.extractUsername(anyString())).willReturn("correctUsername");
@@ -699,7 +701,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getTasksToReportForUser_success() throws Exception {
+    void getTasksToReportForUser_success() throws Exception {
 
         when(userService.getUser(anyLong())).thenReturn(testUser);
         List<Task> tasksFound = new ArrayList<>();
@@ -728,7 +730,7 @@ public class TaskControllerTest {
      */
     @Test
     @WithMockUser
-    public void getTasksToReportForUser_fail() throws Exception {
+    void getTasksToReportForUser_fail() throws Exception {
 
         when(userService.getUser(anyLong())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
 @SpringBootTest
-public class TaskServiceIntegrationTest {
+class TaskServiceIntegrationTest {
 
     @Autowired
     TaskRepository taskRepository;
@@ -93,7 +93,7 @@ public class TaskServiceIntegrationTest {
      * INTEGRATION: this test aims for the interaction with the repository to get all tasks (findAll() call)
      */
     @Test
-    public void getTasks_zeroTasks_success() {
+    void getTasks_zeroTasks_success() {
 
         assertTrue(taskRepository.findAll().isEmpty());
 
@@ -110,7 +110,7 @@ public class TaskServiceIntegrationTest {
      * INTEGRATION: this test aims for the interaction with the repository to get all tasks (findAll() call)
      */
     @Test
-    public void getTasks_multipleTasks_success() {
+    void getTasks_multipleTasks_success() {
 
         assertTrue(taskRepository.findAll().isEmpty());
 
@@ -165,7 +165,7 @@ public class TaskServiceIntegrationTest {
      * INTEGRATION: this test aims for the interaction with the repository to get a task by its id
      */
     @Test
-    public void getTask_withId_success() {
+    void getTask_withId_success() {
 
         assertTrue(taskRepository.findAll().isEmpty());
         Task saved = taskRepository.save(task2);
@@ -194,7 +194,7 @@ public class TaskServiceIntegrationTest {
      * INTEGRATION: this test aims for the interaction with the repository to get a task by its id
      */
     @Test
-    public void getTask_withId_fail() {
+    void getTask_withId_fail() {
 
         assertTrue(taskRepository.findAll().isEmpty());
         taskRepository.save(task1);
@@ -214,7 +214,7 @@ public class TaskServiceIntegrationTest {
      * INTEGRATION: this test aims for the interaction with the repository to get a task by its id
      */
     @Test
-    public void createTask_validInput_success() {
+    void createTask_validInput_success() {
 
         assertTrue(taskRepository.findAll().isEmpty());
         task1.setStatus(null);
@@ -243,7 +243,7 @@ public class TaskServiceIntegrationTest {
      * INTEGRATION: this test aims for the interaction with the repository to update an existing task
      */
     @Test
-    public void updateTask_validInput_success() throws ParseException {
+    void updateTask_validInput_success() throws ParseException {
 
         assertTrue(taskRepository.findAll().isEmpty());
         Task saved = taskRepository.save(task1);
@@ -301,7 +301,7 @@ public class TaskServiceIntegrationTest {
      * INTEGRATION: this test aims for the interaction with the repository to delete an existing task
      */
     @Test
-    public void deleteTask_validInput_success() {
+    void deleteTask_validInput_success() {
 
         assertTrue(taskRepository.findAll().isEmpty());
         Task saved = taskRepository.save(task1);
@@ -312,6 +312,30 @@ public class TaskServiceIntegrationTest {
         // VERIFY
         assertTrue(taskRepository.findByTaskId(deletedTask.getTaskId()).isEmpty());
 
+    }
+
+
+    /**
+     * METHOD TESTED: deleteTask()
+     * INPUT: invalid
+     * EXPECTED RESULT: error because no task with given id was found on second deletion attempt
+     * INTEGRATION: this test aims for the interaction with the repository
+     */
+    @Test
+    void deleteTask_invalidInput_error() {
+
+        assertTrue(taskRepository.findAll().isEmpty());
+        Task saved = taskRepository.save(task1);
+
+        // EXECUTE AND VERIFY SUCCESSFUL METHOD
+        long savedTaskId = saved.getTaskId();
+        Task deletedTask = taskService.deleteTask(savedTaskId);
+        assertTrue(taskRepository.findByTaskId(deletedTask.getTaskId()).isEmpty());
+
+        // SECOND ATTEMPT TO DELETE THE SAME TASK SHOULD FAIL
+        assertThrows(ResponseStatusException.class, ()->{
+            taskService.deleteTask(savedTaskId);
+        });
     }
 
     @AfterEach

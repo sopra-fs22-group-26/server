@@ -11,7 +11,6 @@ public class UserPutDTO {
     private Date birthDate;
     private String password;
     private String newPassword;
-    private int score;
 
     private final Logger log = LoggerFactory.getLogger(UserPutDTO.class);
 
@@ -56,11 +55,4 @@ public class UserPutDTO {
 
     public String getNewPassword(){ return newPassword; }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public int getScore() {
-        return score;
-    }
 }
