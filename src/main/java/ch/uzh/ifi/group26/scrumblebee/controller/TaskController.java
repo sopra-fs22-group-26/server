@@ -56,9 +56,6 @@ public class TaskController {
         String username = jwtUtils.extractUsername(token);
         long userId = userService.getUserIdFromUsername(username);
 
-        // @RequestParam(required = false) Long id,
-        //Long userId = id != null ? id : 0L;
-
         // If parameter "show" was specified, get only active or completed tasks.
         // Otherwise get all tasks.
         List<Task> tasks;

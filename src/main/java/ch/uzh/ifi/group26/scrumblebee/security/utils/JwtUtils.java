@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-//import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -49,44 +48,6 @@ public class JwtUtils {
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
-/*
-
-    public String generateTokenFromUsername(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + refreshTokenDurationsMS))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return createTokenInfinity(claims, username);
-    }
-
-    private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenDurationsMS) )
-                .signWith(key, SignatureAlgorithm.HS256).compact();
-    }
-
- */
-
-    /*
-    private String createTokenInfinity(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATIONS_MS) )
-                .signWith(key, SignatureAlgorithm.HS256).compact();
-    }
-
-     */
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
