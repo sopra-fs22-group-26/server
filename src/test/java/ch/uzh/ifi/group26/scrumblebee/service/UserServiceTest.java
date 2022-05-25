@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-public class UserServiceTest {
+class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
@@ -65,7 +65,7 @@ public class UserServiceTest {
      * EXPECTED RESULT: an empty list should be returned
      */
     @Test
-    public void getUsers_NoUsers_success() throws ParseException {
+    void getUsers_NoUsers_success() throws ParseException {
 
         List<User> listAllUsers = new ArrayList<>();
 
@@ -85,7 +85,7 @@ public class UserServiceTest {
      * EXPECTED RESULT: a list of all users should be returned
      */
     @Test
-    public void getUsers_validInput_success() throws ParseException {
+    void getUsers_validInput_success() throws ParseException {
 
         // STUBBING
         User user1 = new User();
@@ -156,7 +156,7 @@ public class UserServiceTest {
      * EXPECTED RESULT: the user with id should be returned
      */
     @Test
-    public void getUser_validInput_success() throws ParseException {
+    void getUser_validInput_success() throws ParseException {
 
         // STUBBING
         User user1 = new User();
@@ -198,7 +198,7 @@ public class UserServiceTest {
      * EXPECTED RESULT: when id is not found, an exception should be thrown
      */
     @Test
-    public void getUser_invalidInput_fail() throws ParseException {
+    void getUser_invalidInput_fail() throws ParseException {
 
         // STUBBING
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -217,7 +217,7 @@ public class UserServiceTest {
      *                  to the repository.
      */
     @Test
-    public void createUser_validInputs_success() {
+    void createUser_validInputs_success() {
 
         // STUBBING
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
@@ -253,7 +253,7 @@ public class UserServiceTest {
      *                  that a user was found), therefore a ResponseStatusException should be thrown.
      */
     @Test
-    public void createUser_duplicateUsername_throwsException() {
+    void createUser_duplicateUsername_throwsException() {
 
         // STUBBING
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(testUser));
@@ -272,7 +272,7 @@ public class UserServiceTest {
      *                  simulates that a user was found), therefore a ResponseStatusException should be thrown.
      */
     @Test
-    public void createUser_duplicateEmailAddress_throwsException() {
+    void createUser_duplicateEmailAddress_throwsException() {
 
         // STUBBING
         when(userRepository.findByEmailAddress(anyString())).thenReturn(Optional.ofNullable(testUser));
@@ -290,7 +290,7 @@ public class UserServiceTest {
      *                  which simulates that a user was found), therefore a ResponseStatusException should be thrown.
      */
     @Test
-    public void createUser_duplicateUsernameAndEmailAddress_throwsException() {
+    void createUser_duplicateUsernameAndEmailAddress_throwsException() {
 
         // STUBBING
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(testUser));
@@ -308,7 +308,7 @@ public class UserServiceTest {
      * EXPECTED RESULT: as the old password is valid, the new password is set
      */
     @Test
-    public void updateUser_validInputs_success() throws ParseException {
+    void updateUser_validInputs_success() throws ParseException {
 
         // STUBBING
         User inputUser = new User();
@@ -362,7 +362,7 @@ public class UserServiceTest {
      * EXPECTED RESULT: as the old password is invalid, an exception is thrown
      */
     @Test
-    public void updateUser_invalidPassword_fail() throws ParseException {
+    void updateUser_invalidPassword_fail() throws ParseException {
 
         User inputUser = new User();
         inputUser.setPassword("newPassword");
@@ -390,7 +390,7 @@ public class UserServiceTest {
      * EXPECTED RESULT: the id of user with username should be returned
      */
     @Test
-    public void getUserId_validInput_success() throws ParseException {
+    void getUserId_validInput_success() throws ParseException {
 
         // STUBBING
         User user1 = new User();
@@ -423,7 +423,7 @@ public class UserServiceTest {
      * EXPECTED RESULT: when username is not found, an exception should be thrown
      */
     @Test
-    public void getUserId_invalidInput_fail() throws ParseException {
+    void getUserId_invalidInput_fail() throws ParseException {
 
         // STUBBING
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
@@ -432,6 +432,30 @@ public class UserServiceTest {
         assertThrows(ResponseStatusException.class, () -> {
             userService.getUserIdFromUsername("invalidUsername");
         });
+    }
+
+
+    @Test
+    void rateUser_success() throws ParseException {
+        // STUBBING
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setName("name1");
+        user1.setUsername("username1");
+        user1.setEmailAddress("test@domain.com");
+        user1.setPassword(encoder.encode("Password123"));
+        user1.setBirthDate(dateFormat.parse("1998-11-18"));
+        user1.setCreationDate(dateFormat.parse("2022-11-18"));
+        user1.setLoggedIn(false);
+        user1.setScore(10);
+        Set<Role> rolesUser1 = new HashSet<>();
+        user1.setRoles(rolesUser1);
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+
+        // EXECUTE METHOD: Rating of 4 should be added to the score of 10 => New score = 14
+        userService.rateUser(user1.getId(), 4);
+        assertEquals(14, user1.getScore());
     }
 
 }

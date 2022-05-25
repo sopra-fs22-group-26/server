@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
 @SpringBootTest
-public class RefreshTokenServiceIntegrationTest {
+class RefreshTokenServiceIntegrationTest {
 
     @Autowired
     RefreshTokenService refreshTokenService;
@@ -53,7 +53,7 @@ public class RefreshTokenServiceIntegrationTest {
      *
      */
     @Test
-    public void integrationTest_findByToken_success() {
+    void integrationTest_findByToken_success() {
         // PREPARATION
         //  assert repositories are empty
         assertTrue(refreshTokenRepository.findAll().isEmpty());
@@ -80,10 +80,9 @@ public class RefreshTokenServiceIntegrationTest {
      * METHOD TESTED: createRefreshToken()
      * INPUT: valid
      * EXPECTED RESULT: the refreshToken is found and returned
-     *
      */
     @Test
-    public void integrationTest_createRefreshToken_success() {
+    void integrationTest_createRefreshToken_success() {
         // PREPARATION
         //  assert repositories are empty
         assertTrue(refreshTokenRepository.findAll().isEmpty());
@@ -98,6 +97,25 @@ public class RefreshTokenServiceIntegrationTest {
         assertNotNull(createdRefreshToken.getToken());
     }
 
+
+    /**
+     * METHOD TESTED: createRefreshToken()
+     * INPUT: invalid
+     * EXPECTED RESULT: the refreshToken cannot be created because no user was found
+     */
+    @Test
+    void integrationTest_createRefreshToken_error() {
+        // PREPARATION
+        //  assert repositories are empty
+        assertTrue(refreshTokenRepository.findAll().isEmpty());
+        assertTrue(userRepository.findAll().isEmpty());
+        // ASSERTION
+        assertThrows(ResponseStatusException.class, ()->{
+            // EXECUTE METHOD
+            refreshTokenService.createRefreshToken(42L);
+        });
+    }
+
     /**
      * METHOD TESTED: verifyExpiration()
      * INPUT: valid
@@ -105,7 +123,7 @@ public class RefreshTokenServiceIntegrationTest {
      *
      */
     @Test
-    public void integrationTest_verifyExpiration_success() throws InterruptedException {
+    void integrationTest_verifyExpiration_success() throws InterruptedException {
         // PREPARATION
         //  assert repositories are empty
         assertTrue(refreshTokenRepository.findAll().isEmpty());
@@ -128,7 +146,7 @@ public class RefreshTokenServiceIntegrationTest {
      *
      */
     @Test
-    public void integrationTest_verifyExpiration_fail() throws InterruptedException {
+    void integrationTest_verifyExpiration_fail() throws InterruptedException {
         // PREPARATION
         //  assert repositories are empty
         assertTrue(refreshTokenRepository.findAll().isEmpty());

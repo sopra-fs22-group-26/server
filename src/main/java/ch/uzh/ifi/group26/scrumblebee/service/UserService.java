@@ -82,8 +82,6 @@ public class UserService {
         userRole.ifPresent(roles::add);
         newUser.setRoles(roles);
 
-        // saves the given entity but data is only persisted in the database once
-        // flush() is called
         newUser = userRepository.save(newUser);
 
         log.debug("Created Information for User: {}", newUser);
@@ -117,9 +115,7 @@ public class UserService {
         if (inputUser.getEmailAddress() != null){
             checkAndUpdateEmail(userToUpdate, inputUser);
         }
-        if (inputUser.getScore() > 0) {
-            userToUpdate.addScore(inputUser.getScore());
-        }
+
         return updateRepository(userToUpdate);
     }
 
@@ -207,6 +203,17 @@ public class UserService {
         else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("No user found with username %s!", username));
         }
+    }
+
+
+    /**
+     * Add rating for completed task to user's score
+     * @param userId of user to rate
+     * @param score to add
+     */
+    public void rateUser (long userId, int score) {
+        Optional<User> reporter = userRepository.findById(userId);
+        reporter.ifPresent(user -> user.addScore(score));
     }
 
 }
