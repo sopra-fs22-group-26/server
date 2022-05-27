@@ -4,7 +4,7 @@ import ch.uzh.ifi.group26.scrumblebee.constant.TaskStatus;
 import ch.uzh.ifi.group26.scrumblebee.entity.Task;
 import ch.uzh.ifi.group26.scrumblebee.rest.dto.*;
 import ch.uzh.ifi.group26.scrumblebee.rest.mapper.DTOMapper;
-import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
+//import ch.uzh.ifi.group26.scrumblebee.security.utils.JwtUtils;
 import ch.uzh.ifi.group26.scrumblebee.service.TaskService;
 import ch.uzh.ifi.group26.scrumblebee.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +32,11 @@ public class TaskController {
     @Autowired
     UserService userService;
 
+    /*
     @Autowired
     JwtUtils jwtUtils;
+
+     */
 
 
     /*------------------------------------- GET requests -----------------------------------------------------------*/
@@ -54,8 +57,9 @@ public class TaskController {
         // Find user who made the request by extracting user from token.
         // getUserIdFromUsername throws error if no id is found
         String token = authorizationHeader.substring(7);
-        String username = jwtUtils.extractUsername(token);
-        long userId = userService.getUserIdFromUsername(username);
+        //String username = jwtUtils.extractUsername(token);
+        //long userId = userService.getUserIdFromUsername(username);
+        long userId = 1L;
 
         // If parameter "show" was specified, get only active or completed tasks.
         // Otherwise get all tasks.
@@ -87,8 +91,9 @@ public class TaskController {
         // Find user who made the request by extracting user from token.
         // getUserIdFromUsername throws error if no id is found
         String token = authorizationHeader.substring(7);
-        String username = jwtUtils.extractUsername(token);
-        long userId = userService.getUserIdFromUsername(username);
+//        String username = jwtUtils.extractUsername(token);
+//        long userId = userService.getUserIdFromUsername(username);
+        long userId = 1L;
 
         Optional<Task> task = taskService.getTask(taskId, userId);
         if (task.isPresent()) return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task.get());
@@ -112,8 +117,9 @@ public class TaskController {
         // Find user who made the request by extracting user from token.
         // getUserIdFromUsername throws error if no id is found
         String token = authorizationHeader.substring(7);
-        String username = jwtUtils.extractUsername(token);
-        long requestingUserId = userService.getUserIdFromUsername(username);
+//        String username = jwtUtils.extractUsername(token);
+//        long requestingUserId = userService.getUserIdFromUsername(username);
+        long requestingUserId = 1L;
 
         List<Task> tasks = taskService.getTasksForUser(userId, requestingUserId);
         List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
