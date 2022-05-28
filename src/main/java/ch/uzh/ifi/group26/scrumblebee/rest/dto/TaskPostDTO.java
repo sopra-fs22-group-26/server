@@ -15,6 +15,7 @@ public class TaskPostDTO {
     private int estimate;
     private TaskPriority priority;
     private String location;
+    private String geoLocation;
     private TaskStatus status;
     private int score;
     private long assignee;
@@ -77,6 +78,14 @@ public class TaskPostDTO {
     public void setLocation(String location) { this.location = location; }
 
     public String getLocation() { return location; }
+
+    public void setGeoLocation(String geoLocation) {
+        this.geoLocation = geoLocation;
+    }
+
+    public String getGeoLocation() {
+        return geoLocation;
+    }
 
     public void setStatus(String status) {
         switch (status) {

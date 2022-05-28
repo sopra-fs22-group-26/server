@@ -19,6 +19,7 @@ public class TaskGetDTO {
     private int estimate;
     private TaskPriority priority;
     private String location;
+    private String geoLocation;
     private TaskStatus status;
     private int score;
     private long assignee;
@@ -106,6 +107,14 @@ public class TaskGetDTO {
 
     public String getLocation() {
         return location;
+    }
+
+    public void setGeoLocation(String geoLocation) {
+        this.geoLocation = geoLocation;
+    }
+
+    public String getGeoLocation() {
+        return geoLocation;
     }
 
     public void setStatus(TaskStatus status) {
