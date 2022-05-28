@@ -135,6 +135,9 @@ public class TaskService {
         if (changesTask.getLocation() != null) {
             taskById.setLocation(changesTask.getLocation());
         }
+        if (changesTask.getGeoLocation() != null) {
+            taskById.setGeoLocation(changesTask.getGeoLocation());
+        }
         if (changesTask.getStatus() != null) {
             taskById.setStatus(changesTask.getStatus());
         }

@@ -50,6 +50,9 @@ public class Task implements Serializable {
     @Column
     private String location;
 
+    @Column
+    private String geoLocation;
+
     @Column(nullable = false)
     private TaskStatus status;
 
@@ -142,7 +145,17 @@ public class Task implements Serializable {
 
     public void setLocation(String location) { this.location = location; }
 
-     /***/
+    /***/
+
+    public String getGeoLocation() {
+        return geoLocation;
+    }
+
+    public void setGeoLocation(String geoLocation) {
+        this.geoLocation = geoLocation;
+    }
+
+    /***/
     public TaskStatus getStatus() { return status; }
 
     public void setStatus(TaskStatus status) { this.status = status; }
