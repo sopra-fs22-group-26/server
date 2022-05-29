@@ -1,40 +1,58 @@
-# SoPra FS22 - Group 26
-## ScrumbleBee
 
-## Getting started with Spring Boot
+<div align="center">
+    <h2>SoPra FS22 - Group 26 Server</h2>
+</div>
+<p align="center">
+<img src="https://github.com/sopra-fs22-group-26/client/blob/main/src/images/scrumblebee_logo_508x95.png?raw=true" width="508" height="95" />
+</p>
 
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: http://spring.io/guides/tutorials/bookmarks/
 
-## Setup this Template with your IDE of choice
 
-Download your IDE of choice: (e.g., [Eclipse](http://www.eclipse.org/downloads/), [IntelliJ](https://www.jetbrains.com/idea/download/)), [Visual Studio Code](https://code.visualstudio.com/) and make sure Java 15 is installed on your system (for Windows-users, please make sure your JAVA_HOME environment variable is set to the correct version of Java).
+# Scrumble(:bee:)
+## Introduction
+The idea of our project ScrumbleBee is to create an online task management system which encourages its users to complete their tasks by including gamification elements. In addition to the basic capabilities, like assigning users, due dates and comments to tasks, the members of ScrumbleBee can award points to each other for having successfully completed tasks - which peaks in a fiercely battle for the number one spot on the scoreboard!
+As this platform could also be used in a Scrum environment, we include an	 “Estimate Poll” widget, where the members can estimate the time needed to complete a task in real-time. By considering information from external sources like google maps API location or dates of public holidays, time collisions should belong to the past, and a calendar export function allows the product to be integrated in your daily workflow.
 
-1. File -> Open... -> SoPra Server Template
-2. Accept to import the project as a `gradle project`
+## Technologies
 
-To build right click the `build.gradle` file and choose `Run Build`
+- Java 
+- SpringBoot
+- JPA (with H2 database)
+- Github Actions
+- Heroku
+- REST API
 
-### VS Code
-The following extensions will help you to run it more easily:
--   `pivotal.vscode-spring-boot`
--   `vscjava.vscode-spring-initializr`
--   `vscjava.vscode-spring-boot-dashboard`
--   `vscjava.vscode-java-pack`
--   `richardwillis.vscode-gradle`
+## High-Level Components
 
-**Note:** You'll need to build the project first with Gradle, just click on the `build` command in the _Gradle Tasks_ extension. Then check the _Spring Boot Dashboard_ extension if it already shows `soprafs22` and hit the play button to start the server. If it doesn't show up, restart VS Code and check again.
+The most important components are:
+- [User](src/main/java/ch/uzh/ifi/group26/scrumblebee/entity/User.java)
+- [Task](src/main/java/ch/uzh/ifi/group26/scrumblebee/entity/Task.java)
+- [Poll Meeting](src/main/java/ch/uzh/ifi/group26/scrumblebee/entity/PollMeeting.java)
 
-## Building with Gradle
+### User
+The user is one of the most important component in ScrumbleBee. A user can create, rate or change a task. When a user completes a task, they can climb up the scoreboard! The user entity is also used to create the [PollParticipant](src/main/java/ch/uzh/ifi/group26/scrumblebee/entity/PollParticipant.java)
+in order to take part in poll meetings.
 
-You can use the local Gradle Wrapper to build the application.
+### Task
+Besides the user the task entity is the heart of any task-management system. It also has a strong connection to the [Comment](src/main/java/ch/uzh/ifi/group26/scrumblebee/entity/Comment.java)
+class, since users can post comments on any task.
+
+### Poll Meeting
+
+When a user is not sure about the time estimate for a specific task, they can start a poll session. The user invites other users (then called poll participants) and each one of them can 
+give their guess on how long the task is going to take. The average of all guesses will be set as time estimate.
+
+
+## Launch & Deployment
+
+To build the application you can use the local Gradle Wrapper.
 -   macOS: `./gradlew`
 -   Linux: `./gradlew`
 -   Windows: `./gradlew.bat`
 
-More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) and [Gradle](https://gradle.org/docs/).
+After that, you can build, run  and test the application with the following commands:
+
+ 
 
 ### Build
 
@@ -53,7 +71,7 @@ More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguid
 ```bash
 ./gradlew test
 ```
-
+**Note**: _Don't forget to update/reset the frontend URL_
 ### Development Mode
 
 You can start the backend in development mode, this will automatically trigger a new build and reload the application
@@ -71,27 +89,36 @@ If you want to avoid running all tests with every change, use the following comm
 
 `./gradlew build --continuous -xtest`
 
-## API Endpoint Testing
+
+
+
+
+## Roadmap
+Potential improvements or extensions in the future may include:
+
+- Implement a group feature, such that users are able to create and join subgroups. E.g. a user is part of a work group and part of a family group.
+- Since ScrumbleBee is not a round-based game it is critical than you can log in with the same credentials everytime. A user doesn't want to lose all his scoreboard points just because they forgot the password. So a "Forgot Password" feature could be a next improvement.
+- To further develop the calendar integration, one could also connect a company or private calendar to not only prevent national holiday conflicts but also personal or company ones.
 
 ### Postman
 
--   We highly recommend to use [Postman](https://www.getpostman.com) in order to test your API Endpoints.
+- If you plan to add new API Endpoints to the application, we highly recommend to use [Postman](https://www.getpostman.com) in order to test your API Endpoints.
+However, be aware that the REST Endpoints are secured by a Token authentication. We recommend turning this functionality off for development purposes.
+## Learn More
 
-## Debugging
+- Spring Documentation [Spring Documentation](https://spring.io/guides/gs/spring-boot/)
+- Getting started with Java [Java Documentation](https://docs.oracle.com/en/java/)
+- SpringBoot Testing: [SpringBoot testing](https://www.baeldung.com/spring-boot-testing/)
 
-If something is not working and/or you don't know what is going on. We highly recommend that you use a debugger and step
-through the process step-by-step.
 
-To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command),
-do the following:
+## Authors & Acknowledement
+>J. Zellweger, R. Hany, W. Chang & N. Mantzanas
 
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug"Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
+>SoPra Team for the template and our TA T. Alakmeh
 
-## Testing
+## License
 
-Have a look here: https://www.baeldung.com/spring-boot-testing
+Licensed under GNU General Public License v3.0
+- See [License](LICENSE)
+
+
