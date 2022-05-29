@@ -49,6 +49,8 @@ Potential improvements or extensions in the future may include:
 
 - Spring Documentation [Spring Documentation](https://spring.io/guides/gs/spring-boot/)
 - Getting started with Java [Java Documentation](https://docs.oracle.com/en/java/)
+- SpringBoot Testing: [SpringBoot testing](https://www.baeldung.com/spring-boot-testing/)
+
 
 ## Authors & Acknowledement
 >J. Zellweger, R. Hany, W. Chang & N. Mantzanas
@@ -160,6 +162,3 @@ do the following:
 5. Set breakpoints in the application where you need it
 6. Step through the process one step at a time
 
-## Testing
-
-Have a look here: https://www.baeldung.com/spring-boot-testing
