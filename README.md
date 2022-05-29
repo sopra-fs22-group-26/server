@@ -1,3 +1,71 @@
+
+<div align="center">
+    <h2>SoPra FS22 - Group 26 Client</h2>
+</div>
+<p align="center">
+<img src="https://github.com/sopra-fs22-group-26/client/blob/main/src/images/scrumblebee_logo_508x95.png?raw=true" width="508" height="95" />
+</p>
+
+
+
+# Scrumble(:bee:)
+## Introduction
+The idea of our project ScrumbleBee is to create an online task management system which encourages its users to complete their tasks by including gamification elements. In addition to the basic capabilities, like assigning users, due dates and comments to tasks, the members of ScrumbleBee can award points to each other for having successfully completed tasks - which peaks in a fiercely battle for the number one spot on the scoreboard!
+. As this platform could also be used in a Scrum environment, we include an	 “Estimate Poll” widget, where the members can estimate the time needed to complete a task in real-time. By considering information from external sources like travel time to a location or dates of public holidays, time collisions should belong to the past, and a calendar export function allows the product to be integrated in your daily workflow.
+
+## Technologies
+
+- Java 
+- SpringBoot
+- JPA
+- Github Actions
+- Heroku
+- REST API
+
+## High-Level Components
+
+The most important components are:
+- blabnla
+- alsdfnalsdfn
+
+
+## Launch & Deployment
+how to launch eervasdfasdjkf
+
+
+
+
+## Roadmap
+Potential improvements or extensions in the future may include:
+
+- Implement a group feature, such that users are able to create and join subgroups. E.g. a user is part of a work group and part of a family group.
+- Since ScrumbleBee is not a round-based game it is critical than you can log in with the same credentials everytime. A user doesn't want to lose all his scoreboard points just because they forgot the password. So a "Forgot Password" feature could be a next improvement.
+- To further develope the calender integration, one could also connect a company or private calender to not only prevent national holiday conflicts but also personal or company ones.
+
+### Postman
+
+-   If you plan to add new API Endpoints to the application, we highly recommend to use [Postman](https://www.getpostman.com) in order to test your API Endpoints.
+## Learn More
+
+- Spring Documentation [Spring Documentation](https://spring.io/guides/gs/spring-boot/)
+- Getting started with Java [Java Documentation](https://docs.oracle.com/en/java/)
+
+## Authors & Acknowledement
+>J. Zellweger, R. Hany, W. Chang & N. Mantzanas
+
+>SoPra Team for the template and our TA T. Alakmeh
+
+## License
+
+Licensed under GNU General Public License v3.0
+- See [License](LICENSE)
+
+
+
+
+
+
+
 # SoPra FS22 - Group 26
 ## ScrumbleBee
 
