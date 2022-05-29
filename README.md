@@ -1,6 +1,6 @@
 
 <div align="center">
-    <h2>SoPra FS22 - Group 26 Client</h2>
+    <h2>SoPra FS22 - Group 26 Server</h2>
 </div>
 <p align="center">
 <img src="https://github.com/sopra-fs22-group-26/client/blob/main/src/images/scrumblebee_logo_508x95.png?raw=true" width="508" height="95" />
