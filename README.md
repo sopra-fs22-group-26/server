@@ -39,7 +39,7 @@ class, since users can post comments on any task.
 
 ### Poll Meeting
 
-When a user is not sure about the time estimate for a specific task, they can start a poll session. The user invites other users and each one of them can 
+When a user is not sure about the time estimate for a specific task, they can start a poll session. The user invites other users (than called poll participants) and each one of them can 
 give their guess on how long the task is going to take. The average of all guesses will be set as time estimate.
 
 
